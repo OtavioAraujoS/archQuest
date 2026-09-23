@@ -30,3 +30,20 @@ export interface ElementFactoryService {
 export interface CanvasService {
   getRootElement(): unknown
 }
+
+export interface ModelingService {
+  updateModdleProperties(
+    element: unknown,
+    moddleElement: unknown,
+    properties: Record<string, unknown>,
+  ): void
+}
+
+export interface CommandStackService {
+  execute(command: string, context: Record<string, unknown>): void
+  registerHandler(command: string, handlerClass: unknown): void
+}
+
+export interface BpmnFactoryService {
+  create<T = unknown>(type: string, attrs?: Record<string, unknown>): T
+}
