@@ -55,6 +55,6 @@ function applyTextStyle(parentNode: SVGElement, element: unknown) {
     "font-weight": style.bold ? "bold" : null,
     "font-style": style.italic ? "italic" : null,
     "text-decoration": style.underline ? "underline" : null,
-    fill: style.color || null,
   });
+  if (style.color) label.style.setProperty("fill", style.color, "important");
 }

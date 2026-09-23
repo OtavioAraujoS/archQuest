@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" id="Definitions_em_branco_raias" targetNamespace="http://archquest.dev/templates">
+  <bpmn:collaboration id="Collaboration_em_branco">
+    <bpmn:participant id="Participant_processo" name="Processo" processRef="Process_em_branco" />
+  </bpmn:collaboration>
+  <bpmn:process id="Process_em_branco" isExecutable="false">
+    <bpmn:laneSet id="LaneSet_em_branco">
+      <bpmn:lane id="Lane_primeira" name="Raia 1">
+        <bpmn:flowNodeRef>Start_inicio</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_segunda" name="Raia 2" />
+    </bpmn:laneSet>
+    <bpmn:startEvent id="Start_inicio" name="Início" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_em_branco">
+    <bpmndi:BPMNPlane id="Plane_em_branco" bpmnElement="Collaboration_em_branco">
+      <bpmndi:BPMNShape id="Participant_processo_di" bpmnElement="Participant_processo" isHorizontal="true"><dc:Bounds x="160" y="80" width="700" height="260" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_primeira_di" bpmnElement="Lane_primeira" isHorizontal="true"><dc:Bounds x="190" y="80" width="670" height="130" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_segunda_di" bpmnElement="Lane_segunda" isHorizontal="true"><dc:Bounds x="190" y="210" width="670" height="130" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Start_inicio_di" bpmnElement="Start_inicio"><dc:Bounds x="242" y="127" width="36" height="36" /></bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
