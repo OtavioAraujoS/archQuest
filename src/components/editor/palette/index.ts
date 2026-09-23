@@ -1,6 +1,6 @@
-import EventPaletteProvider from './EventPaletteProvider'
+import GroupedPaletteProvider from './GroupedPaletteProvider'
 
 export default {
-  __init__: ['eventPaletteProvider'],
-  eventPaletteProvider: ['type', EventPaletteProvider],
+  __init__: ['groupedPaletteProvider'],
+  groupedPaletteProvider: ['type', GroupedPaletteProvider],
 }

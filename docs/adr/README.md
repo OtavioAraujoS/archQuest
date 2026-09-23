@@ -28,6 +28,7 @@ Decisões de arquitetura do archQuest. Formato e regras em
 | [0019](0019-file-system-access-como-espelho.md) | Usar a File System Access API como espelho opcional em disco | Accepted |
 | [0020](0020-paleta-agrupada-e-painel-de-propriedades.md) | Agrupar eventos na paleta e criar um painel de propriedades próprio | Accepted |
 | [0021](0021-templates-estaticos.md) | Distribuir templates como arquivos `.bpmn` estáticos | Accepted |
+| [0022](0022-grupos-de-gateways-tarefas-e-sub-processos.md) | Transformar os botões de gateway, tarefa e sub-processo em grupos | Accepted |
 
 ## Criando um ADR
 
