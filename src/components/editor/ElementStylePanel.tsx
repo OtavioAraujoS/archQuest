@@ -1,5 +1,5 @@
 import type BpmnModeler from 'bpmn-js/lib/Modeler'
-import { isLabel } from 'bpmn-js/lib/util/LabelUtil'
+import { isLabel, isLabelExternal } from 'bpmn-js/lib/util/LabelUtil'
 import { isConnection } from 'diagram-js/lib/util/ModelUtil'
 import type { RefObject } from 'react'
 
@@ -25,8 +25,15 @@ type ColorModeling = TextStyleModeling & {
   setColor(elements: unknown[], colors: { fill?: string; stroke?: string }): void
 }
 
-function defaultTextColor(isDarkTheme: boolean) {
-  return isDarkTheme ? '#E5E7EB' : '#000000'
+const TEXT_COLOR_ON_SHAPE = '#000000'
+const TEXT_COLOR_ON_DARK_CANVAS = '#E5E7EB'
+
+function defaultTextColor(isDarkTheme: boolean, element: unknown) {
+  const textSitsOnCanvas =
+    isLabel(element as never) || isLabelExternal(element as never)
+  return isDarkTheme && textSitsOnCanvas
+    ? TEXT_COLOR_ON_DARK_CANVAS
+    : TEXT_COLOR_ON_SHAPE
 }
 
 export function ElementStylePanel({
@@ -78,7 +85,9 @@ export function ElementStylePanel({
       <ColorPickerField
         label="Texto"
         title="Cor do texto"
-        value={textStyle.color ?? defaultTextColor(isDarkTheme)}
+        value={
+          textStyle.color ?? defaultTextColor(isDarkTheme, selectedElements[0])
+        }
         onColorChange={(color) => applyTextStyle({ color })}
       />
       <TextFormatButtons

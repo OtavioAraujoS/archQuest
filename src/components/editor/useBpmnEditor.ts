@@ -45,6 +45,12 @@ export function useBpmnEditor(id: string | undefined) {
       if (cancelled) return
       modeler.get<{ zoom: (level: string) => void }>('canvas').zoom('fit-viewport')
       setStatus('ready')
+      if (!record.thumbnail) await saveMissingThumbnail()
+    }
+
+    async function saveMissingThumbnail() {
+      const { svg } = await modeler.saveSVG()
+      if (!cancelled) await db.diagrams.update(id!, { thumbnail: svg })
     }
 
     load().catch((error) => {

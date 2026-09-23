@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { db, type DiagramRecord } from '@/lib/db'
+import { DIAGRAM_TEMPLATES } from '@/templates'
 
 const { mockNavigate } = vi.hoisted(() => ({ mockNavigate: vi.fn() }))
 
@@ -44,6 +45,34 @@ describe('DiagramLibrary', () => {
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledTimes(1))
     expect(mockNavigate.mock.calls[0][0]).toMatch(/^\/editor\/[\w-]+$/)
     await expect(db.diagrams.toArray()).resolves.toHaveLength(1)
+  })
+
+  it('creates a diagram from a template and navigates to its editor', async () => {
+    const [purchaseApproval] = DIAGRAM_TEMPLATES
+    render(<DiagramLibrary />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'A partir de template' }))
+    fireEvent.click(
+      screen.getByRole('button', { name: new RegExp(purchaseApproval.name) }),
+    )
+
+    await waitFor(() => expect(mockNavigate).toHaveBeenCalledTimes(1))
+    const [createdDiagram] = await db.diagrams.toArray()
+    expect(createdDiagram).toMatchObject({
+      name: purchaseApproval.name,
+      bpmnXml: purchaseApproval.xml,
+    })
+    expect(mockNavigate).toHaveBeenCalledWith(`/editor/${createdDiagram.id}`)
+  })
+
+  it('closes the template picker without creating anything', () => {
+    render(<DiagramLibrary />)
+
+    fireEvent.click(screen.getByRole('button', { name: 'A partir de template' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Fechar' }))
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    expect(mockNavigate).not.toHaveBeenCalled()
   })
 
   it('deletes a diagram after confirmation', async () => {

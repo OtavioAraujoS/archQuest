@@ -1,5 +1,6 @@
 import '@testing-library/jest-dom/vitest'
 import 'fake-indexeddb/auto'
+import './polyfills/dialog-element'
 
 if (!window.matchMedia) {
   window.matchMedia = (query: string) =>
