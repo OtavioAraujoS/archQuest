@@ -45,3 +45,34 @@
 .archquest-bpmn .djs-context-pad .entry {
   box-shadow: 0 1px 3px color-mix(in oklch, var(--foreground) 15%, transparent);
 }
+
+.dark .archquest-bpmn text,
+.dark .archquest-bpmn .djs-label {
+  fill: var(--bio-text);
+  color: var(--bio-text);
+}
+
+.dark .archquest-bpmn .djs-direct-editing,
+.dark .archquest-bpmn .djs-direct-editing input,
+.dark .archquest-bpmn .djs-direct-editing textarea,
+.dark .archquest-bpmn [contenteditable],
+.dark .archquest-bpmn tspan {
+  fill: var(--bio-text) !important;
+  color: var(--bio-text) !important;
+  caret-color: var(--bio-text) !important;
+}
+
+.dark .archquest-bpmn svg text {
+  fill: var(--bio-text) !important;
+}
+
+.dark .djs-direct-editing-parent {
+  background-color: var(--popover) !important;
+  border-color: var(--border) !important;
+}
+
+.dark .djs-direct-editing-active,
+.dark .djs-direct-editing-active * {
+  color: var(--bio-text) !important;
+  fill: var(--bio-text) !important;
+}

@@ -1,0 +1,36 @@
+{
+  "name": "ArchQuestTextStyle",
+  "uri": "http://archquest.dev/schema/bpmn/text-style",
+  "prefix": "archquest",
+  "xml": {
+    "tagAlias": "lowerCase"
+  },
+  "types": [
+    {
+      "name": "TextStyle",
+      "superClass": ["Element"],
+      "properties": [
+        {
+          "name": "bold",
+          "isAttr": true,
+          "type": "Boolean"
+        },
+        {
+          "name": "italic",
+          "isAttr": true,
+          "type": "Boolean"
+        },
+        {
+          "name": "underline",
+          "isAttr": true,
+          "type": "Boolean"
+        },
+        {
+          "name": "color",
+          "isAttr": true,
+          "type": "String"
+        }
+      ]
+    }
+  ]
+}
