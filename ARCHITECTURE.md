@@ -33,7 +33,19 @@ contribuidores.
 - **Exportação**: arquivo `.bpmn` (XML) e imagem PNG/SVG, ambos já no v1.
 - **Colaboração**: single-player (edição individual) para começar; multiplayer em tempo
   real fica para uma fase futura.
-- **Fora do v1**: galeria de templates prontos, dark mode.
+- **Tema**: claro/escuro, com toggle manual (persistido em `localStorage`) e detecção da
+  preferência do sistema no primeiro acesso.
+- **Estilização de elementos**: usuário pode customizar, por elemento selecionado, a cor
+  de preenchimento e borda (via `modeling.setColor()`, nativo do bpmn-js — usa os
+  namespaces `bioc:`/`color:` já entendidos por outras ferramentas BPMN) e a cor/negrito/
+  itálico/sublinhado do texto. Como BPMN não tem conceito de texto rico, essas quatro
+  propriedades de texto são persistidas numa extensão XML própria
+  (`archquest:textStyle`, ver `src/components/editor/text-style-moddle.json`) e
+  renderizadas por um `TextStyleRenderer` customizado que decora o texto já desenhado
+  pelo bpmn-js. Isso mantém o restante do XML 100% interoperável — outras ferramentas
+  simplesmente ignoram a extensão desconhecida — mas o negrito/itálico/sublinhado em si
+  só é visível dentro do archQuest.
+- **Fora do v1**: galeria de templates prontos.
 
 ## Arquitetura técnica
 

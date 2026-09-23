@@ -31,6 +31,7 @@ import { BpmnEditor } from './BpmnEditor'
 function setHookReturn(overrides: Record<string, unknown> = {}) {
   mockUseBpmnEditor.mockReturnValue({
     containerRef: { current: null },
+    modelerRef: { current: null },
     name: 'Processo de vendas',
     status: 'ready',
     persistName: mockPersistName,
@@ -55,7 +56,9 @@ describe('BpmnEditor', () => {
   it('renders the diagram name and navigates back on click', () => {
     render(<BpmnEditor />)
 
-    expect(screen.getByPlaceholderText('Nome do diagrama')).toHaveValue('Processo de vendas')
+    expect(screen.getByPlaceholderText('Nome do diagrama')).toHaveValue(
+      'Processo de vendas',
+    )
 
     fireEvent.click(screen.getByRole('button', { name: 'Voltar' }))
 
@@ -90,7 +93,9 @@ describe('BpmnEditor', () => {
     render(<BpmnEditor />)
 
     expect(
-      screen.getByText('Não foi possível carregar este diagrama. Ele pode ter sido removido.'),
+      screen.getByText(
+        'Não foi possível carregar este diagrama. Ele pode ter sido removido.',
+      ),
     ).toBeInTheDocument()
   })
 })

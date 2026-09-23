@@ -22,15 +22,17 @@ interface Props {
   status: 'loading' | 'ready' | 'error'
 }
 
-function getDefaultTextColor(): string {
-  return document.documentElement.classList.contains('dark') ? '#E5E7EB' : '#000000'
+function getDefaultTextColor(isDark: boolean): string {
+  return isDark ? '#E5E7EB' : '#000000'
 }
 
-export function ElementStylePanel({ modelerRef, status }: Props) {
+export function ElementStylePanel({ modelerRef, status }: Readonly<Props>) {
   const [modeler, setModeler] = useState<BpmnModeler | null>(null)
   const [selected, setSelected] = useState<unknown[]>([])
   const [style, setStyle] = useState<TextStyle>(DEFAULT_TEXT_STYLE)
-  const [, setThemeChanged] = useState(0)
+  const [isDark, setIsDark] = useState(() =>
+    document.documentElement.classList.contains('dark'),
+  )
 
   useEffect(() => {
     if (status !== 'ready' || !modelerRef.current) {
@@ -50,7 +52,11 @@ export function ElementStylePanel({ modelerRef, status }: Props) {
     function onSelectionChanged() {
       const elements = selection.get()
       setSelected(elements)
-      setStyle(elements.length ? getTextStyle(elements[0] as never) : DEFAULT_TEXT_STYLE)
+      setStyle(
+        elements.length
+          ? getTextStyle(elements[0] as never)
+          : DEFAULT_TEXT_STYLE,
+      )
     }
 
     eventBus.on('selection.changed', onSelectionChanged)
@@ -61,7 +67,7 @@ export function ElementStylePanel({ modelerRef, status }: Props) {
 
   useEffect(() => {
     const observer = new MutationObserver(() => {
-      setThemeChanged((prev) => prev + 1)
+      setIsDark(document.documentElement.classList.contains('dark'))
     })
 
     observer.observe(document.documentElement, {
@@ -76,14 +82,21 @@ export function ElementStylePanel({ modelerRef, status }: Props) {
 
   const modeling = modeler.get<
     TextStyleModeling & {
-      setColor: (elements: unknown[], colors: { fill?: string; stroke?: string }) => void
+      setColor: (
+        elements: unknown[],
+        colors: { fill?: string; stroke?: string },
+      ) => void
     }
   >('modeling')
   const bpmnFactory = modeler.get<BpmnFactory>('bpmnFactory')
   const eventBus = modeler.get<TextStyleEventBus>('eventBus')
 
-  const shapesAndConnections = selected.filter((element) => !isLabel(element as never))
-  const canFill = shapesAndConnections.some((element) => !isConnection(element as never))
+  const shapesAndConnections = selected.filter(
+    (element) => !isLabel(element as never),
+  )
+  const canFill = shapesAndConnections.some(
+    (element) => !isConnection(element as never),
+  )
 
   function applyFill(color: string) {
     modeling.setColor(shapesAndConnections, { fill: color })
@@ -97,15 +110,22 @@ export function ElementStylePanel({ modelerRef, status }: Props) {
     const merged = { ...style, ...next }
     setStyle(merged)
     selected.forEach((element) =>
-      setTextStyle(element as never, merged, { modeling, bpmnFactory, eventBus }),
+      setTextStyle(element as never, merged, {
+        modeling,
+        bpmnFactory,
+        eventBus,
+      }),
     )
   }
 
   return (
     <div className="bg-popover text-popover-foreground absolute top-4 right-4 z-10 flex items-center gap-3 rounded-lg border p-2 shadow-md">
       {canFill && (
-        <label className="flex items-center gap-1 text-xs" title="Cor de preenchimento">
-          Fundo
+        <label
+          className="flex items-center gap-1 text-xs"
+          title="Cor de preenchimento"
+        >
+          <span>Fundo</span>
           <input
             type="color"
             className="size-6 cursor-pointer rounded border"
@@ -114,7 +134,7 @@ export function ElementStylePanel({ modelerRef, status }: Props) {
         </label>
       )}
       <label className="flex items-center gap-1 text-xs" title="Cor da borda">
-        Borda
+        <span>Borda</span>
         <input
           type="color"
           className="size-6 cursor-pointer rounded border"
@@ -122,10 +142,10 @@ export function ElementStylePanel({ modelerRef, status }: Props) {
         />
       </label>
       <label className="flex items-center gap-1 text-xs" title="Cor do texto">
-        Texto
+        <span>Texto</span>
         <input
           type="color"
-          value={style.color ?? getDefaultTextColor()}
+          value={style.color ?? getDefaultTextColor(isDark)}
           className="size-6 cursor-pointer rounded border"
           onChange={(event) => applyTextStyle({ color: event.target.value })}
         />

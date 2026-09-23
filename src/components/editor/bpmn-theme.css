@@ -46,14 +46,12 @@
   box-shadow: 0 1px 3px color-mix(in oklch, var(--foreground) 15%, transparent);
 }
 
-/* Fix text color visibility in dark mode - SVG text elements */
 .dark .archquest-bpmn text,
 .dark .archquest-bpmn .djs-label {
   fill: var(--bio-text);
   color: var(--bio-text);
 }
 
-/* Fix direct text editing visibility in dark mode */
 .dark .archquest-bpmn .djs-direct-editing,
 .dark .archquest-bpmn .djs-direct-editing input,
 .dark .archquest-bpmn .djs-direct-editing textarea,
@@ -64,12 +62,15 @@
   caret-color: var(--bio-text) !important;
 }
 
-/* Fallback for any text that might be hidden */
 .dark .archquest-bpmn svg text {
   fill: var(--bio-text) !important;
 }
 
-/* Override bpmn-js default black text in dark mode */
+.dark .djs-direct-editing-parent {
+  background-color: var(--popover) !important;
+  border-color: var(--border) !important;
+}
+
 .dark .djs-direct-editing-active,
 .dark .djs-direct-editing-active * {
   color: var(--bio-text) !important;
