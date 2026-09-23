@@ -66,7 +66,7 @@ contribuidores.
 convenção/maturidade do ecossistema)
 
 - Bundler: Vite.
-- Gerenciador de pacotes: pnpm.
+- Gerenciador de pacotes: npm (zero setup adicional para novos contribuidores).
 - Persistência IndexedDB: Dexie.js.
 - Gerenciamento de estado de UI: a definir durante a implementação (Zustand é o
   candidato natural para um app de canvas).
