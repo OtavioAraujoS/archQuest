@@ -30,8 +30,13 @@ navegador e os diagramas ficam salvos localmente via IndexedDB.
 - `npm run build` — build de produção (`dist/`)
 - `npm run preview` — serve o build de produção localmente
 - `npm run lint` — roda o oxlint
+- `npm test` — roda os testes (Vitest)
 
 ## Aviso de licença
 
 Este projeto depende do [bpmn-js](https://bpmn.io/license/), cuja licença exige manter
 visível a marca d'água "powered by bpmn.io" nos diagramas renderizados. Não a remova.
+
+## Contribuindo
+
+Veja [CONTRIBUTING.md](./CONTRIBUTING.md) para o checklist antes de abrir um PR.
