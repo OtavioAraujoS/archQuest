@@ -1,181 +1,90 @@
 import type BpmnModeler from 'bpmn-js/lib/Modeler'
 import { isLabel } from 'bpmn-js/lib/util/LabelUtil'
 import { isConnection } from 'diagram-js/lib/util/ModelUtil'
-import { Bold, Italic, Underline } from 'lucide-react'
-import { useEffect, useState } from 'react'
 import type { RefObject } from 'react'
 
-import { Button } from '@/components/ui/button'
-
+import { ColorPickerField } from './style/ColorPickerField'
+import { TextFormatButtons } from './style/TextFormatButtons'
+import { useIsDarkTheme } from './style/useIsDarkTheme'
 import {
   type BpmnFactory,
-  DEFAULT_TEXT_STYLE,
   getTextStyle,
   setTextStyle,
   type TextStyle,
   type TextStyleEventBus,
   type TextStyleModeling,
 } from './text-style'
+import { type EditorStatus, useSelectedElements } from './useSelectedElements'
 
-interface Props {
+interface ElementStylePanelProps {
   modelerRef: RefObject<BpmnModeler | null>
-  status: 'loading' | 'ready' | 'error'
+  status: EditorStatus
 }
 
-function getDefaultTextColor(isDark: boolean): string {
-  return isDark ? '#E5E7EB' : '#000000'
+type ColorModeling = TextStyleModeling & {
+  setColor(elements: unknown[], colors: { fill?: string; stroke?: string }): void
 }
 
-export function ElementStylePanel({ modelerRef, status }: Readonly<Props>) {
-  const [modeler, setModeler] = useState<BpmnModeler | null>(null)
-  const [selected, setSelected] = useState<unknown[]>([])
-  const [style, setStyle] = useState<TextStyle>(DEFAULT_TEXT_STYLE)
-  const [isDark, setIsDark] = useState(() =>
-    document.documentElement.classList.contains('dark'),
-  )
+function defaultTextColor(isDarkTheme: boolean) {
+  return isDarkTheme ? '#E5E7EB' : '#000000'
+}
 
-  useEffect(() => {
-    if (status !== 'ready' || !modelerRef.current) {
-      setModeler(null)
-      return
-    }
+export function ElementStylePanel({
+  modelerRef,
+  status,
+}: Readonly<ElementStylePanelProps>) {
+  const { modeler, selectedElements } = useSelectedElements(modelerRef, status)
+  const isDarkTheme = useIsDarkTheme()
 
-    const current = modelerRef.current
-    setModeler(current)
+  if (selectedElements.length === 0 || !modeler) return null
 
-    const eventBus = current.get<{
-      on: (event: string, cb: () => void) => void
-      off: (event: string, cb: () => void) => void
-    }>('eventBus')
-    const selection = current.get<{ get: () => unknown[] }>('selection')
-
-    function onSelectionChanged() {
-      const elements = selection.get()
-      setSelected(elements)
-      setStyle(
-        elements.length
-          ? getTextStyle(elements[0] as never)
-          : DEFAULT_TEXT_STYLE,
-      )
-    }
-
-    eventBus.on('selection.changed', onSelectionChanged)
-    onSelectionChanged()
-
-    return () => eventBus.off('selection.changed', onSelectionChanged)
-  }, [status, modelerRef])
-
-  useEffect(() => {
-    const observer = new MutationObserver(() => {
-      setIsDark(document.documentElement.classList.contains('dark'))
-    })
-
-    observer.observe(document.documentElement, {
-      attributes: true,
-      attributeFilter: ['class'],
-    })
-
-    return () => observer.disconnect()
-  }, [])
-
-  if (selected.length === 0 || !modeler) return null
-
-  const modeling = modeler.get<
-    TextStyleModeling & {
-      setColor: (
-        elements: unknown[],
-        colors: { fill?: string; stroke?: string },
-      ) => void
-    }
-  >('modeling')
-  const bpmnFactory = modeler.get<BpmnFactory>('bpmnFactory')
-  const eventBus = modeler.get<TextStyleEventBus>('eventBus')
-
-  const shapesAndConnections = selected.filter(
+  const modeling = modeler.get<ColorModeling>('modeling')
+  const textStyleServices = {
+    modeling,
+    bpmnFactory: modeler.get<BpmnFactory>('bpmnFactory'),
+    eventBus: modeler.get<TextStyleEventBus>('eventBus'),
+  }
+  const textStyle = getTextStyle(selectedElements[0] as never)
+  const colorableElements = selectedElements.filter(
     (element) => !isLabel(element as never),
   )
-  const canFill = shapesAndConnections.some(
+  const canSetFillColor = colorableElements.some(
     (element) => !isConnection(element as never),
   )
 
-  function applyFill(color: string) {
-    modeling.setColor(shapesAndConnections, { fill: color })
-  }
-
-  function applyBorder(color: string) {
-    modeling.setColor(shapesAndConnections, { stroke: color })
-  }
-
-  function applyTextStyle(next: Partial<TextStyle>) {
-    const merged = { ...style, ...next }
-    setStyle(merged)
-    selected.forEach((element) =>
-      setTextStyle(element as never, merged, {
-        modeling,
-        bpmnFactory,
-        eventBus,
-      }),
+  function applyTextStyle(change: Partial<TextStyle>) {
+    const nextTextStyle = { ...textStyle, ...change }
+    selectedElements.forEach((element) =>
+      setTextStyle(element as never, nextTextStyle, textStyleServices),
     )
   }
 
   return (
     <div className="bg-popover text-popover-foreground absolute top-4 right-4 z-10 flex items-center gap-3 rounded-lg border p-2 shadow-md">
-      {canFill && (
-        <label
-          className="flex items-center gap-1 text-xs"
+      {canSetFillColor && (
+        <ColorPickerField
+          label="Fundo"
           title="Cor de preenchimento"
-        >
-          <span>Fundo</span>
-          <input
-            type="color"
-            className="size-6 cursor-pointer rounded border"
-            onChange={(event) => applyFill(event.target.value)}
-          />
-        </label>
+          onColorChange={(fill) => modeling.setColor(colorableElements, { fill })}
+        />
       )}
-      <label className="flex items-center gap-1 text-xs" title="Cor da borda">
-        <span>Borda</span>
-        <input
-          type="color"
-          className="size-6 cursor-pointer rounded border"
-          onChange={(event) => applyBorder(event.target.value)}
-        />
-      </label>
-      <label className="flex items-center gap-1 text-xs" title="Cor do texto">
-        <span>Texto</span>
-        <input
-          type="color"
-          value={style.color ?? getDefaultTextColor(isDark)}
-          className="size-6 cursor-pointer rounded border"
-          onChange={(event) => applyTextStyle({ color: event.target.value })}
-        />
-      </label>
-      <div className="flex items-center gap-1 border-l pl-2">
-        <Button
-          variant={style.bold ? 'secondary' : 'ghost'}
-          size="icon"
-          aria-label="Negrito"
-          onClick={() => applyTextStyle({ bold: !style.bold })}
-        >
-          <Bold />
-        </Button>
-        <Button
-          variant={style.italic ? 'secondary' : 'ghost'}
-          size="icon"
-          aria-label="Itálico"
-          onClick={() => applyTextStyle({ italic: !style.italic })}
-        >
-          <Italic />
-        </Button>
-        <Button
-          variant={style.underline ? 'secondary' : 'ghost'}
-          size="icon"
-          aria-label="Sublinhado"
-          onClick={() => applyTextStyle({ underline: !style.underline })}
-        >
-          <Underline />
-        </Button>
-      </div>
+      <ColorPickerField
+        label="Borda"
+        title="Cor da borda"
+        onColorChange={(stroke) =>
+          modeling.setColor(colorableElements, { stroke })
+        }
+      />
+      <ColorPickerField
+        label="Texto"
+        title="Cor do texto"
+        value={textStyle.color ?? defaultTextColor(isDarkTheme)}
+        onColorChange={(color) => applyTextStyle({ color })}
+      />
+      <TextFormatButtons
+        textStyle={textStyle}
+        onTextStyleChange={applyTextStyle}
+      />
     </div>
   )
 }

@@ -2,6 +2,7 @@ import { ArrowLeft, Download, FileUp, Image as ImageIcon } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router-dom'
 
 import { ElementStylePanel } from '@/components/editor/ElementStylePanel'
+import { PropertiesPanel } from '@/components/editor/properties/PropertiesPanel'
 import { useBpmnEditor } from '@/components/editor/useBpmnEditor'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
@@ -65,6 +66,7 @@ export function BpmnEditor() {
       <div className="relative min-h-0 flex-1">
         <div ref={containerRef} className="archquest-bpmn size-full" />
         <ElementStylePanel modelerRef={modelerRef} status={status} />
+        <PropertiesPanel modelerRef={modelerRef} status={status} />
       </div>
     </div>
   )

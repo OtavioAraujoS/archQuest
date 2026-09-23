@@ -5,10 +5,11 @@ localmente e abrir um PR.
 
 ## Contexto do projeto
 
-Antes de mexer em arquitetura, dê uma lida em [ARCHITECTURE.md](./ARCHITECTURE.md) — lá
-estão as decisões já tomadas (motor BPMN, armazenamento, stack, escopo do MVP) e o
-raciocínio por trás delas. Ajuda a evitar propor de novo algo que já foi decidido
-conscientemente.
+Antes de mexer em arquitetura, dê uma lida nos [ADRs](./docs/adr/README.md) — lá
+estão as decisões já tomadas (motor BPMN, armazenamento, stack, escopo) e o raciocínio
+por trás delas, incluindo as alternativas descartadas. Ajuda a evitar propor de novo algo
+que já foi decidido conscientemente. Para propor uma mudança de arquitetura, abra um PR
+com um novo ADR a partir do [template](./docs/adr/template.md).
 
 ## Rodando o projeto localmente
 
@@ -50,3 +51,6 @@ remova, oculte ou sobreponha essa marca d'água** em nenhuma mudança de UI ou d
   diferentes (ex.: lógica de integração com uma lib externa + renderização de UI), separe
   em módulos — veja `src/components/editor/useBpmnEditor.ts` (lógica) vs.
   `BpmnEditor.tsx` (apresentação) como exemplo do padrão.
+- Testes ficam em `__tests__/`, na raiz, espelhando as pastas de `src/`: o teste de
+  `src/lib/db.ts` é `__tests__/lib/db.test.ts`. Importe o código testado pelo alias
+  `@/` (inclusive em `vi.mock`). Helpers só de teste também ficam em `__tests__/`.
