@@ -1,10 +1,10 @@
 import { Suspense, lazy } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
-import { DiagramLibrary } from '@/features/library/DiagramLibrary'
+import { DiagramLibrary } from '@/components/library/DiagramLibrary'
 
 const BpmnEditor = lazy(() =>
-  import('@/features/editor/BpmnEditor').then((module) => ({ default: module.BpmnEditor })),
+  import('@/components/editor/BpmnEditor').then((module) => ({ default: module.BpmnEditor })),
 )
 
 function App() {

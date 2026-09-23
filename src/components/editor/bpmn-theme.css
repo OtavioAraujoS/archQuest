@@ -1,0 +1,47 @@
+.archquest-bpmn .bio-theme-parent,
+.archquest-bpmn .djs-parent {
+  --bio-surface: var(--background);
+  --bio-surface-overlay: var(--popover);
+  --bio-surface-subtle: var(--muted);
+  --bio-surface-medium: var(--secondary);
+  --bio-surface-inverted: var(--foreground);
+  --bio-surface-inverted-subtle: color-mix(
+    in oklch,
+    var(--foreground) 80%,
+    transparent
+  );
+  --bio-text: var(--foreground);
+  --bio-text-subtle: var(--muted-foreground);
+  --bio-text-subtlest: var(--muted-foreground);
+  --bio-text-on-primary: var(--primary-foreground);
+  --bio-text-on-inverted: var(--background);
+  --bio-border: var(--border);
+  --bio-border-disabled: var(--border);
+  --bio-primary: var(--primary);
+  --bio-primary-surface: var(--accent);
+  --bio-danger: var(--destructive);
+  --bio-danger-surface-subtle: color-mix(
+    in oklch,
+    var(--destructive) 12%,
+    var(--background)
+  );
+  --bio-focus: var(--ring);
+  --bio-focus-surface: var(--accent);
+  --bio-canvas-accent: var(--primary);
+  --bio-canvas-accent-subtle: color-mix(
+    in oklch,
+    var(--primary) 45%,
+    transparent
+  );
+  --bio-radius-sm: var(--radius-sm);
+  --bio-radius-md: var(--radius-sm);
+  --bio-radius-lg: var(--radius-lg);
+}
+
+.archquest-bpmn .djs-palette {
+  box-shadow: 0 1px 4px color-mix(in oklch, var(--foreground) 10%, transparent);
+}
+
+.archquest-bpmn .djs-context-pad .entry {
+  box-shadow: 0 1px 3px color-mix(in oklch, var(--foreground) 15%, transparent);
+}
