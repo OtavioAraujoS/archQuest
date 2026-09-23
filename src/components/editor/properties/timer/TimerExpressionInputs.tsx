@@ -1,3 +1,4 @@
+import { CycleInputs } from './CycleInputs'
 import { DurationInputs } from './DurationInputs'
 import {
   cycleToIso,
@@ -49,29 +50,10 @@ export function TimerExpressionInputs({
   const cycle = kind === 'timeCycle' && parseIsoCycle(isoExpression)
   if (cycle) {
     return (
-      <div className="flex flex-col gap-2">
-        <DurationInputs
-          label="A cada"
-          duration={cycle.interval}
-          onDurationChange={(interval) =>
-            onIsoExpressionChange(cycleToIso({ ...cycle, interval }))
-          }
-        />
-        <input
-          type="number"
-          min={1}
-          aria-label="Repetições"
-          placeholder="Repetições (vazio = sem limite)"
-          value={cycle.repetitions ?? ''}
-          onChange={(event) => {
-            const repetitions = Math.floor(Number(event.target.value))
-            onIsoExpressionChange(
-              cycleToIso({ ...cycle, repetitions: repetitions || undefined }),
-            )
-          }}
-          className={INPUT_CLASS}
-        />
-      </div>
+      <CycleInputs
+        cycle={cycle}
+        onCycleChange={(next) => onIsoExpressionChange(cycleToIso(next))}
+      />
     )
   }
 
