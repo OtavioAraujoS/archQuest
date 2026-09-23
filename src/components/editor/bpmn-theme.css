@@ -45,3 +45,10 @@
 .archquest-bpmn .djs-context-pad .entry {
   box-shadow: 0 1px 3px color-mix(in oklch, var(--foreground) 15%, transparent);
 }
+
+/* Fix text color visibility in dark mode */
+.dark .archquest-bpmn text,
+.dark .archquest-bpmn .djs-label {
+  fill: var(--bio-text);
+  color: var(--bio-text);
+}

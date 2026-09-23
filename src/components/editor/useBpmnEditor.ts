@@ -4,6 +4,9 @@ import { useEffect, useRef, useState } from 'react'
 import { db } from '@/lib/db'
 import { downloadBlob, exportPng, exportSvg } from '@/lib/export'
 
+import TextStyleRenderer from './TextStyleRenderer'
+import textStyleModdle from './text-style-moddle.json'
+
 const AUTOSAVE_DEBOUNCE_MS = 800
 
 export function useBpmnEditor(id: string | undefined) {
@@ -16,7 +19,16 @@ export function useBpmnEditor(id: string | undefined) {
   useEffect(() => {
     if (!id || !containerRef.current) return
 
-    const modeler = new BpmnModeler({ container: containerRef.current })
+    const modeler = new BpmnModeler({
+      container: containerRef.current,
+      moddleExtensions: { archquest: textStyleModdle },
+      additionalModules: [
+        {
+          __init__: ['textStyleRenderer'],
+          textStyleRenderer: ['type', TextStyleRenderer],
+        },
+      ],
+    })
     modelerRef.current = modeler
 
     let cancelled = false
@@ -108,6 +120,7 @@ export function useBpmnEditor(id: string | undefined) {
 
   return {
     containerRef,
+    modelerRef,
     name,
     status,
     persistName,
