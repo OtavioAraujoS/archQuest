@@ -52,10 +52,18 @@ export function DiagramLibrary() {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {diagrams?.map((diagram) => (
-          <button
+          <div
             key={diagram.id}
+            role="button"
+            tabIndex={0}
             onClick={() => navigate(`/editor/${diagram.id}`)}
-            className="group relative flex flex-col overflow-hidden rounded-lg border text-left transition-colors hover:border-ring"
+            onKeyDown={(event) => {
+              if (event.key === 'Enter' || event.key === ' ') {
+                event.preventDefault()
+                navigate(`/editor/${diagram.id}`)
+              }
+            }}
+            className="group relative flex cursor-pointer flex-col overflow-hidden rounded-lg border text-left transition-colors hover:border-ring"
           >
             <div
               className="flex h-36 items-center justify-center overflow-hidden bg-muted [&_svg]:h-full [&_svg]:w-full"
@@ -78,7 +86,7 @@ export function DiagramLibrary() {
                 <Trash2 />
               </Button>
             </div>
-          </button>
+          </div>
         ))}
       </div>
     </div>

@@ -1,32 +1,37 @@
-# React + TypeScript + Vite
+# archQuest
 
-This template provides a minimal setup to get React working in Vite with HMR and some Oxlint rules.
+Modelagem de processos de negócio (BPMN 2.0) com a facilidade de uso de um
+whiteboard. Pense: a robustez do Bizagi, com a simplicidade do Whimsical.
 
-Currently, two official plugins are available:
+Projeto open-source, licenciado sob MIT.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Stack
 
-## React Compiler
+- [bpmn-js](https://github.com/bpmn-io/bpmn-js) — motor de renderização/edição BPMN 2.0
+- React + TypeScript + Vite
+- Tailwind CSS + shadcn/ui
+- Dexie (IndexedDB) para armazenamento local-first — sem backend
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+As decisões de arquitetura completas estão documentadas em [ARCHITECTURE.md](./ARCHITECTURE.md).
 
-## Expanding the Oxlint configuration
+## Rodando localmente
 
-If you are developing a production application, we recommend enabling type-aware lint rules by installing `oxlint-tsgolint` and editing `.oxlintrc.json`:
-
-```json
-{
-  "$schema": "./node_modules/oxlint/configuration_schema.json",
-  "plugins": ["react", "typescript", "oxc"],
-  "options": {
-    "typeAware": true
-  },
-  "rules": {
-    "react/rules-of-hooks": "error",
-    "react/only-export-components": ["warn", { "allowConstantExport": true }]
-  }
-}
+```bash
+npm install
+npm run dev
 ```
 
-See the [Oxlint rules documentation](https://oxc.rs/docs/guide/usage/linter/rules) for the full list of rules and categories.
+Abra http://localhost:5173. Nenhuma conta ou servidor é necessário — tudo roda no
+navegador e os diagramas ficam salvos localmente via IndexedDB.
+
+## Scripts
+
+- `npm run dev` — servidor de desenvolvimento
+- `npm run build` — build de produção (`dist/`)
+- `npm run preview` — serve o build de produção localmente
+- `npm run lint` — roda o oxlint
+
+## Aviso de licença
+
+Este projeto depende do [bpmn-js](https://bpmn.io/license/), cuja licença exige manter
+visível a marca d'água "powered by bpmn.io" nos diagramas renderizados. Não a remova.
