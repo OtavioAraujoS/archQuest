@@ -5,10 +5,11 @@ localmente e abrir um PR.
 
 ## Contexto do projeto
 
-Antes de mexer em arquitetura, dê uma lida em [ARCHITECTURE.md](./ARCHITECTURE.md) — lá
-estão as decisões já tomadas (motor BPMN, armazenamento, stack, escopo do MVP) e o
-raciocínio por trás delas. Ajuda a evitar propor de novo algo que já foi decidido
-conscientemente.
+Antes de mexer em arquitetura, dê uma lida nos [ADRs](./docs/adr/README.md) — lá
+estão as decisões já tomadas (motor BPMN, armazenamento, stack, escopo) e o raciocínio
+por trás delas, incluindo as alternativas descartadas. Ajuda a evitar propor de novo algo
+que já foi decidido conscientemente. Para propor uma mudança de arquitetura, abra um PR
+com um novo ADR a partir do [template](./docs/adr/template.md).
 
 ## Rodando o projeto localmente
 

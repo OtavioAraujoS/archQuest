@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import { db } from '@/lib/db'
 import { downloadBlob, exportPng, exportSvg } from '@/lib/export'
 
+import eventPaletteModule from './palette'
 import TextStyleRenderer from './TextStyleRenderer'
 import textStyleModdle from './text-style-moddle.json'
 
@@ -23,6 +24,7 @@ export function useBpmnEditor(id: string | undefined) {
       container: containerRef.current,
       moddleExtensions: { archquest: textStyleModdle },
       additionalModules: [
+        eventPaletteModule,
         {
           __init__: ['textStyleRenderer'],
           textStyleRenderer: ['type', TextStyleRenderer],
