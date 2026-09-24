@@ -9,7 +9,11 @@ import { LIBRARY_PATH } from '@/lib/routes'
 export function LandingHeader() {
   return (
     <header className="mx-auto flex w-full max-w-6xl items-center justify-between gap-4 px-4 py-4 sm:px-6">
-      <Link to="/" aria-label="archQuest, página inicial" className="rounded-md">
+      <Link
+        to="/"
+        aria-label="archQuest, página inicial"
+        className="rounded-md"
+      >
         <ArchQuestWordmark />
       </Link>
       <nav aria-label="Principal" className="flex items-center gap-1 sm:gap-2">

@@ -7,16 +7,16 @@ import {
   fakeModeler,
   makeDiagramRecord,
   resetBpmnEditorFakes,
-} from './test-support/bpmn-editor-fakes'
+} from '../../components/editor/test-support/bpmn-editor-fakes'
 import {
   renderBpmnEditor,
   renderLoadedBpmnEditor,
   waitForEditorStatus,
-} from './test-support/render-bpmn-editor'
+} from '../../components/editor/test-support/render-bpmn-editor'
 
 vi.mock(
   'bpmn-js/lib/Modeler',
-  async () => (await import('./test-support/bpmn-editor-fakes')).fakeBpmnModelerModule,
+  async () => (await import('../../components/editor/test-support/bpmn-editor-fakes')).fakeBpmnModelerModule,
 )
 
 describe('useBpmnEditor loading', () => {

@@ -25,7 +25,7 @@ vi.mock('react-router-dom', () => ({
   useParams: () => ({ id: 'diagram-1' }),
 }))
 
-vi.mock('@/components/editor/useBpmnEditor', () => ({
+vi.mock('@/hooks/editor/useBpmnEditor', () => ({
   useBpmnEditor: mockUseBpmnEditor,
 }))
 

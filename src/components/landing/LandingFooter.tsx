@@ -5,7 +5,8 @@ import {
   REPOSITORY_URL,
 } from '@/components/landing/landing-links'
 
-const FOOTER_LINK_CLASS = 'hover:text-foreground underline-offset-4 hover:underline'
+const FOOTER_LINK_CLASS =
+  'hover:text-foreground underline-offset-4 hover:underline'
 
 export function LandingFooter() {
   return (
@@ -16,7 +17,12 @@ export function LandingFooter() {
           archQuest · código aberto sob licença MIT
         </p>
         <nav aria-label="Rodapé" className="flex flex-wrap gap-x-5 gap-y-2">
-          <a className={FOOTER_LINK_CLASS} href={REPOSITORY_URL} target="_blank" rel="noreferrer">
+          <a
+            className={FOOTER_LINK_CLASS}
+            href={REPOSITORY_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
             GitHub
           </a>
           <a
@@ -27,7 +33,12 @@ export function LandingFooter() {
           >
             Decisões de arquitetura
           </a>
-          <a className={FOOTER_LINK_CLASS} href={BPMN_IO_URL} target="_blank" rel="noreferrer">
+          <a
+            className={FOOTER_LINK_CLASS}
+            href={BPMN_IO_URL}
+            target="_blank"
+            rel="noreferrer"
+          >
             Diagramas desenhados com bpmn.io
           </a>
         </nav>

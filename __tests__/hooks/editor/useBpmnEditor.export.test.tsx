@@ -3,16 +3,16 @@ import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { db } from '@/lib/db'
 
-import { fakeExport, resetBpmnEditorFakes } from './test-support/bpmn-editor-fakes'
-import { renderLoadedBpmnEditor } from './test-support/render-bpmn-editor'
+import { fakeExport, resetBpmnEditorFakes } from '../../components/editor/test-support/bpmn-editor-fakes'
+import { renderLoadedBpmnEditor } from '../../components/editor/test-support/render-bpmn-editor'
 
 vi.mock(
   'bpmn-js/lib/Modeler',
-  async () => (await import('./test-support/bpmn-editor-fakes')).fakeBpmnModelerModule,
+  async () => (await import('../../components/editor/test-support/bpmn-editor-fakes')).fakeBpmnModelerModule,
 )
 vi.mock(
   '@/lib/export',
-  async () => (await import('./test-support/bpmn-editor-fakes')).fakeExport,
+  async () => (await import('../../components/editor/test-support/bpmn-editor-fakes')).fakeExport,
 )
 
 describe('useBpmnEditor export', () => {

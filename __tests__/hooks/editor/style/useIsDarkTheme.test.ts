@@ -1,7 +1,7 @@
 import { act, renderHook, waitFor } from '@testing-library/react'
 import { afterEach, describe, expect, it } from 'vitest'
 
-import { useIsDarkTheme } from '@/components/editor/style/useIsDarkTheme'
+import { useIsDarkTheme } from '@/hooks/editor/style/useIsDarkTheme'
 
 describe('useIsDarkTheme', () => {
   afterEach(() => document.documentElement.classList.remove('dark'))

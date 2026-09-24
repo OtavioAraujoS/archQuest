@@ -2,7 +2,7 @@ import Viewer from 'bpmn-js/lib/Viewer'
 import { useEffect, useRef, useState } from 'react'
 
 import TextStyleRenderer from '@/components/editor/TextStyleRenderer'
-import { useIsDarkTheme } from '@/components/editor/style/useIsDarkTheme'
+import { useIsDarkTheme } from '@/hooks/editor/style/useIsDarkTheme'
 import textStyleModdle from '@/components/editor/text-style-moddle.json'
 import { readDiagramThemeColors } from '@/components/templates/read-diagram-theme-colors'
 

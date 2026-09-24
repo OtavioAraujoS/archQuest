@@ -1,6 +1,10 @@
 import { fireEvent, render, screen, within } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
+vi.mock('@/components/templates/TemplatePreviewCanvas', () => ({
+  default: () => <div data-testid="template-preview" />,
+}))
+
 import { TemplatePicker } from '@/components/library/TemplatePicker'
 import { DIAGRAM_TEMPLATES } from '@/templates'
 
@@ -11,7 +15,7 @@ function renderTemplatePicker() {
     <TemplatePicker onTemplateChosen={onTemplateChosen} onClose={onClose} />,
   )
   const dialog = screen.getByRole('dialog', {
-    name: 'Começar a partir de um template',
+    name: 'Começar a partir de um modelo',
   }) as HTMLDialogElement
   return { dialog, onTemplateChosen, onClose }
 }
@@ -26,11 +30,14 @@ describe('TemplatePicker', () => {
   })
 
   it('lists every template with its name and description', () => {
-    const { dialog } = renderTemplatePicker()
+    renderTemplatePicker()
+    const templateTabs = screen.getByRole('tablist')
 
     for (const template of DIAGRAM_TEMPLATES) {
-      expect(within(dialog).getByText(template.name)).toBeInTheDocument()
-      expect(within(dialog).getByText(template.description)).toBeInTheDocument()
+      expect(within(templateTabs).getByText(template.name)).toBeInTheDocument()
+      expect(
+        within(templateTabs).getByText(template.description),
+      ).toBeInTheDocument()
     }
   })
 
@@ -39,8 +46,9 @@ describe('TemplatePicker', () => {
     const [, onboardingTemplate] = DIAGRAM_TEMPLATES
 
     fireEvent.click(
-      screen.getByRole('button', { name: new RegExp(onboardingTemplate.name) }),
+      screen.getByRole('tab', { name: new RegExp(onboardingTemplate.name) }),
     )
+    fireEvent.click(screen.getByRole('button', { name: 'Usar este modelo' }))
 
     expect(onTemplateChosen).toHaveBeenCalledWith(onboardingTemplate)
   })

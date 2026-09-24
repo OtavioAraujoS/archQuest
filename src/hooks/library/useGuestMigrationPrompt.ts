@@ -11,7 +11,9 @@ export function useGuestMigrationPrompt(
   guestDiagrams: DiagramRecord[] | undefined,
 ) {
   const [isOpenedByUser, setIsOpenedByUser] = useState(false)
-  const [ownerIdThatAnswered, setOwnerIdThatAnswered] = useState<string | null>(null)
+  const [ownerIdThatAnswered, setOwnerIdThatAnswered] = useState<string | null>(
+    null,
+  )
 
   const hasGuestDiagrams = (guestDiagrams?.length ?? 0) > 0
   const isAwaitingFirstAnswer =
@@ -19,7 +21,9 @@ export function useGuestMigrationPrompt(
     ownerIdThatAnswered !== ownerId &&
     !hasAnsweredGuestMigration(ownerId)
   const isGuestMigrationOpen =
-    ownerId !== null && hasGuestDiagrams && (isOpenedByUser || isAwaitingFirstAnswer)
+    ownerId !== null &&
+    hasGuestDiagrams &&
+    (isOpenedByUser || isAwaitingFirstAnswer)
 
   function openGuestMigration() {
     setIsOpenedByUser(true)

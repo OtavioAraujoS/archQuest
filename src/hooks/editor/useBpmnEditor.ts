@@ -9,10 +9,10 @@ import {
 } from '@/lib/diagrams/local-diagram-changes'
 import { downloadBlob, exportPng, exportSvg } from '@/lib/export'
 
-import groupedPaletteModule from './palette'
-import propertyCommandsModule from './properties'
-import TextStyleRenderer from './TextStyleRenderer'
-import textStyleModdle from './text-style-moddle.json'
+import groupedPaletteModule from '@/components/editor/palette'
+import propertyCommandsModule from '@/components/editor/properties'
+import TextStyleRenderer from '@/components/editor/TextStyleRenderer'
+import textStyleModdle from '@/components/editor/text-style-moddle.json'
 
 const AUTOSAVE_DEBOUNCE_MS = 800
 

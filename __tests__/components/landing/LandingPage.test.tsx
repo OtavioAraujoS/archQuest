@@ -40,11 +40,12 @@ describe('LandingPage', () => {
   it('states the value proposition and links to the diagram library', () => {
     renderLandingPage()
 
-    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent('BPMN 2.0')
-    expect(screen.getByRole('link', { name: 'Meus diagramas' })).toHaveAttribute(
-      'href',
-      '/diagramas',
+    expect(screen.getByRole('heading', { level: 1 })).toHaveTextContent(
+      'BPMN 2.0',
     )
+    expect(
+      screen.getByRole('link', { name: 'Meus diagramas' }),
+    ).toHaveAttribute('href', '/diagramas')
   })
 
   it('creates a blank diagram and opens it in the editor', async () => {
@@ -52,7 +53,9 @@ describe('LandingPage', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Novo diagrama' }))
 
-    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/editor/new-diagram'))
+    await waitFor(() =>
+      expect(mockNavigate).toHaveBeenCalledWith('/editor/new-diagram'),
+    )
     expect(mockCreateDiagram).toHaveBeenCalledWith()
   })
 
@@ -60,18 +63,27 @@ describe('LandingPage', () => {
     const [, onboardingTemplate] = DIAGRAM_TEMPLATES
     renderLandingPage()
 
-    fireEvent.click(screen.getByRole('tab', { name: new RegExp(onboardingTemplate.name) }))
+    fireEvent.click(
+      screen.getByRole('tab', { name: new RegExp(onboardingTemplate.name) }),
+    )
     fireEvent.click(screen.getByRole('button', { name: 'Usar este modelo' }))
 
-    await waitFor(() => expect(mockNavigate).toHaveBeenCalledWith('/editor/new-diagram'))
-    expect(mockCreateDiagram).toHaveBeenCalledWith(onboardingTemplate.name, onboardingTemplate.xml)
+    await waitFor(() =>
+      expect(mockNavigate).toHaveBeenCalledWith('/editor/new-diagram'),
+    )
+    expect(mockCreateDiagram).toHaveBeenCalledWith(
+      onboardingTemplate.name,
+      onboardingTemplate.xml,
+    )
   })
 
   it('previews the selected template', async () => {
     const [, onboardingTemplate] = DIAGRAM_TEMPLATES
     renderLandingPage()
 
-    fireEvent.click(screen.getByRole('tab', { name: new RegExp(onboardingTemplate.name) }))
+    fireEvent.click(
+      screen.getByRole('tab', { name: new RegExp(onboardingTemplate.name) }),
+    )
 
     expect(await screen.findByTestId('preview')).toHaveAttribute(
       'data-bpmn-xml',

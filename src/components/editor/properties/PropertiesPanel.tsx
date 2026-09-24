@@ -1,13 +1,13 @@
 import type BpmnModeler from 'bpmn-js/lib/Modeler'
 import type { RefObject } from 'react'
 
-import type { EditorStatus } from '../useSelectedElements'
+import type { EditorStatus } from '@/hooks/editor/useSelectedElements'
 import { findMessageEventDefinition } from './message/message-event-definition'
 import { MessageField } from './message/MessageField'
 import { propertyEditingServices } from './property-editing-services'
 import { findTimerEventDefinition } from './timer/timer-event-definition'
 import { TimerField } from './timer/TimerField'
-import { useSelectedElement } from './useSelectedElement'
+import { useSelectedElement } from '@/hooks/editor/properties/useSelectedElement'
 
 interface PropertiesPanelProps {
   modelerRef: RefObject<BpmnModeler | null>

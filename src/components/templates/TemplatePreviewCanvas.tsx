@@ -1,4 +1,4 @@
-import { useTemplatePreviewViewer } from '@/components/templates/useTemplatePreviewViewer'
+import { useTemplatePreviewViewer } from '@/hooks/templates/useTemplatePreviewViewer'
 
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
 import 'bpmn-js/dist/assets/bpmn-js.css'
@@ -9,7 +9,9 @@ interface TemplatePreviewCanvasProps {
   bpmnXml: string
 }
 
-export default function TemplatePreviewCanvas({ bpmnXml }: Readonly<TemplatePreviewCanvasProps>) {
+export default function TemplatePreviewCanvas({
+  bpmnXml,
+}: Readonly<TemplatePreviewCanvasProps>) {
   const { containerRef, hasRenderFailed } = useTemplatePreviewViewer(bpmnXml)
 
   return (

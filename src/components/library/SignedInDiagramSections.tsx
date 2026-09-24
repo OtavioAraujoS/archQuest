@@ -2,7 +2,7 @@ import { UploadCloud } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 import { DiagramGrid } from '@/components/library/DiagramGrid'
-import type { CloudPullStatus } from '@/components/library/useLibraryDiagrams'
+import type { CloudPullStatus } from '@/hooks/library/useLibraryDiagrams'
 import { Button } from '@/components/ui/button'
 import type { DiagramRecord } from '@/lib/db'
 

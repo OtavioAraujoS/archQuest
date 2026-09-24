@@ -2,7 +2,7 @@ import type BpmnModeler from 'bpmn-js/lib/Modeler'
 import { render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { useFileLink } from '@/components/editor/file-link/useFileLink'
+import { useFileLink } from '@/hooks/editor/file-link/useFileLink'
 import { FileWritePermissionDeniedError } from '@/lib/file-system/bpmn-file-access'
 
 const { saveDiagramToFile, isFileSystemAccessSupported } = vi.hoisted(() => ({

@@ -5,7 +5,7 @@ import type { RefObject } from 'react'
 
 import { ColorPickerField } from './style/ColorPickerField'
 import { TextFormatButtons } from './style/TextFormatButtons'
-import { useIsDarkTheme } from './style/useIsDarkTheme'
+import { useIsDarkTheme } from '@/hooks/editor/style/useIsDarkTheme'
 import {
   type BpmnFactory,
   getTextStyle,
@@ -14,7 +14,7 @@ import {
   type TextStyleEventBus,
   type TextStyleModeling,
 } from './text-style'
-import { type EditorStatus, useSelectedElements } from './useSelectedElements'
+import { type EditorStatus, useSelectedElements } from '@/hooks/editor/useSelectedElements'
 
 interface ElementStylePanelProps {
   modelerRef: RefObject<BpmnModeler | null>
