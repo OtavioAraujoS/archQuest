@@ -15,6 +15,7 @@ import { createDiagram } from '@/lib/create-diagram'
 import { deleteDiagram } from '@/lib/diagrams/delete-diagram'
 import { isFileSystemAccessSupported } from '@/lib/file-system/file-system-support'
 import { openDiagramFromFile } from '@/lib/file-system/open-diagram-from-file'
+import { editorPath } from '@/lib/routes'
 import type { DiagramTemplate } from '@/templates'
 
 async function confirmAndDeleteDiagram(id: string) {
@@ -33,7 +34,7 @@ export function DiagramLibrary() {
     useGuestMigrationPrompt(ownerId, guestDiagrams)
   const [isTemplatePickerOpen, setIsTemplatePickerOpen] = useState(false)
   const closeTemplatePicker = useCallback(() => setIsTemplatePickerOpen(false), [])
-  const openDiagram = (id: string) => navigate(`/editor/${id}`)
+  const openDiagram = (id: string) => navigate(editorPath(id))
 
   async function createBlankDiagram() {
     openDiagram(await createDiagram())

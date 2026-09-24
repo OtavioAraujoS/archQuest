@@ -11,6 +11,7 @@ import { ShareButton } from '@/components/editor/sharing/ShareButton'
 import { useBpmnEditor } from '@/components/editor/useBpmnEditor'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
+import { LIBRARY_PATH } from '@/lib/routes'
 import { useSyncStore } from '@/lib/sync/sync-store'
 
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
@@ -46,7 +47,7 @@ export function BpmnEditor() {
   return (
     <div className="flex h-svh flex-col">
       <header className="flex items-center gap-3 border-b px-4 py-2">
-        <Button variant="ghost" size="icon" onClick={() => navigate('/')} aria-label="Voltar">
+        <Button variant="ghost" size="icon" onClick={() => navigate(LIBRARY_PATH)} aria-label="Voltar">
           <ArrowLeft />
         </Button>
         <input
@@ -87,7 +88,7 @@ export function BpmnEditor() {
         <ConflictDialog
           diagramId={id}
           onCloudVersionLoaded={reloadDiagram}
-          onDiagramDeletedInCloud={() => navigate('/', { replace: true })}
+          onDiagramDeletedInCloud={() => navigate(LIBRARY_PATH, { replace: true })}
         />
       )}
       {status === 'error' && (

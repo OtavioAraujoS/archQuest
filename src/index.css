@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import '@fontsource-variable/archivo/wdth.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -69,6 +70,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --font-display: 'Archivo Variable', ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -77,5 +79,8 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  ::selection {
+    background-color: color-mix(in oklch, var(--primary) 28%, transparent);
   }
 }

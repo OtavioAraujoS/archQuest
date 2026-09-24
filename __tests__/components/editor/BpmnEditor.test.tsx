@@ -70,7 +70,7 @@ describe('BpmnEditor', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Voltar' }))
 
-    expect(mockNavigate).toHaveBeenCalledWith('/')
+    expect(mockNavigate).toHaveBeenCalledWith('/diagramas')
   })
 
   it('calls persistName when the diagram name changes', () => {
