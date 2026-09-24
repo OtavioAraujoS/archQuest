@@ -2,16 +2,13 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { UPLOAD_LOCK_NAME, withUploadLock } from '@/lib/sync/with-upload-lock'
 
-function installSerializingLockManager() {
-  let lockQueue = Promise.resolve()
-  const request = vi.fn((_name: string, task: () => Promise<unknown>) => {
-    const taskRun = lockQueue.then(task)
-    lockQueue = taskRun.then(
-      () => undefined,
-      () => undefined,
-    )
-    return taskRun
-  })
+type LockCallback = (lock: object | null) => Promise<unknown>
+
+function installLockManager({ isHeldByAnotherTab }: { isHeldByAnotherTab: boolean }) {
+  const request = vi.fn(
+    (_name: string, _options: { ifAvailable: boolean }, callback: LockCallback) =>
+      callback(isHeldByAnotherTab ? null : { name: UPLOAD_LOCK_NAME }),
+  )
   vi.stubGlobal('navigator', { ...navigator, locks: { request } })
   return request
 }
@@ -27,29 +24,24 @@ describe('withUploadLock', () => {
     await expect(withUploadLock(async () => 'uploaded')).resolves.toBe('uploaded')
   })
 
-  it('runs the upload under the lock shared by every tab', async () => {
-    const request = installSerializingLockManager()
+  it('runs the upload under the lock shared by every tab, without waiting for it', async () => {
+    const request = installLockManager({ isHeldByAnotherTab: false })
 
     await expect(withUploadLock(async () => 'uploaded')).resolves.toBe('uploaded')
-    expect(request).toHaveBeenCalledWith(UPLOAD_LOCK_NAME, expect.any(Function))
+    expect(request).toHaveBeenCalledWith(
+      UPLOAD_LOCK_NAME,
+      { ifAvailable: true },
+      expect.any(Function),
+    )
   })
 
-  it('never lets two uploads overlap', async () => {
-    installSerializingLockManager()
-    const uploadSteps: string[] = []
-    const uploadNamed = (uploadName: string) => async () => {
-      uploadSteps.push(`${uploadName} started`)
-      await new Promise((resolve) => setTimeout(resolve, 10))
-      uploadSteps.push(`${uploadName} finished`)
-    }
+  it('skips the upload and fails when another tab is already uploading', async () => {
+    installLockManager({ isHeldByAnotherTab: true })
+    const uploadTask = vi.fn(async () => 'uploaded')
 
-    await Promise.all([withUploadLock(uploadNamed('first tab')), withUploadLock(uploadNamed('second tab'))])
-
-    expect(uploadSteps).toEqual([
-      'first tab started',
-      'first tab finished',
-      'second tab started',
-      'second tab finished',
-    ])
+    await expect(withUploadLock(uploadTask)).rejects.toThrow(
+      'Upload em progresso por outra instância',
+    )
+    expect(uploadTask).not.toHaveBeenCalled()
   })
 })

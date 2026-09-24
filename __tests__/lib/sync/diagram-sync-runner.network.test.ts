@@ -77,6 +77,22 @@ describe('diagram sync runner network handling', () => {
     expect(useSyncStore.getState().lastUploadFailed).toBe(false)
   })
 
+  it('keeps uploading the other diagrams when one of them fails', async () => {
+    const failingDiagram = makeAccountDiagram({ id: 'failing', dirty: true })
+    const healthyDiagram = makeAccountDiagram({ id: 'healthy', dirty: true })
+    givenPendingUploads([failingDiagram, healthyDiagram])
+    syncRunnerFakes.uploadDiagram.mockImplementation(async (diagram) => {
+      if (diagram.id === 'failing') throw new Error('invalid input syntax')
+      return 'uploaded'
+    })
+
+    stopDiagramSync = startDiagramSync(OWNER_ID)
+    await waitForUploadDebounce()
+
+    expect(syncRunnerFakes.uploadDiagram).toHaveBeenCalledWith(healthyDiagram)
+    expect(useSyncStore.getState().lastUploadFailed).toBe(true)
+  })
+
   it('doubles the pause between failed retries', async () => {
     syncRunnerFakes.uploadDiagram.mockRejectedValue(new Error('Failed to fetch'))
     stopDiagramSync = startDiagramSync(OWNER_ID)
