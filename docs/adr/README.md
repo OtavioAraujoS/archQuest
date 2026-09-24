@@ -22,13 +22,14 @@ Decisões de arquitetura do archQuest. Formato e regras em
 | [0013](0013-ci-github-actions-e-deploy-netlify.md) | Rodar CI no GitHub Actions e fazer deploy no Netlify | Accepted |
 | [0014](0014-supabase-como-backend.md) | Usar Supabase como backend | Accepted |
 | [0015](0015-nuvem-como-fonte-da-verdade.md) | Tornar a nuvem a fonte da verdade, com cache offline | Accepted |
-| [0016](0016-modo-convidado-e-autenticacao.md) | Manter modo convidado e autenticar com magic link + Google | Accepted |
+| [0016](0016-modo-convidado-e-autenticacao.md) | Manter modo convidado e autenticar com magic link + Google | Superseded por 0023 |
 | [0017](0017-conflitos-por-versao.md) | Detectar conflitos por número de versão | Accepted |
 | [0018](0018-links-publicos-de-leitura.md) | Compartilhar diagramas por link público só de leitura | Accepted |
 | [0019](0019-file-system-access-como-espelho.md) | Usar a File System Access API como espelho opcional em disco | Accepted |
 | [0020](0020-paleta-agrupada-e-painel-de-propriedades.md) | Agrupar eventos na paleta e criar um painel de propriedades próprio | Accepted |
 | [0021](0021-templates-estaticos.md) | Distribuir templates como arquivos `.bpmn` estáticos | Accepted |
 | [0022](0022-grupos-de-gateways-tarefas-e-sub-processos.md) | Transformar os botões de gateway, tarefa e sub-processo em grupos | Accepted |
+| [0023](0023-autenticacao-com-magic-link-e-github.md) | Autenticar com magic link + GitHub em vez de Google | Accepted |
 
 ## Criando um ADR
 
