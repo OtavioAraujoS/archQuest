@@ -2,6 +2,7 @@ import { Suspense, lazy, useEffect } from 'react'
 import { BrowserRouter, Route, Routes } from 'react-router-dom'
 
 import { AuthCallback } from '@/components/auth/AuthCallback'
+import { EditorSkeleton } from '@/components/editor/EditorSkeleton'
 import { LandingPage } from '@/components/landing/LandingPage'
 import { DiagramLibrary } from '@/components/library/DiagramLibrary'
 import { AUTH_CALLBACK_PATH } from '@/lib/auth/auth-actions'
@@ -38,7 +39,7 @@ function App() {
         <Route
           path="/editor/:id"
           element={
-            <Suspense fallback={null}>
+            <Suspense fallback={<EditorSkeleton />}>
               <BpmnEditor />
             </Suspense>
           }

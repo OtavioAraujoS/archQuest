@@ -28,10 +28,10 @@ export function PropertiesPanel({
   const services = propertyEditingServices(modeler)
 
   return (
-    <aside
-      aria-label="Propriedades"
-      className="bg-popover text-popover-foreground absolute top-20 right-4 z-10 flex w-64 flex-col gap-3 rounded-lg border p-3 shadow-md"
-    >
+    <section aria-label="Propriedades" className="flex flex-col gap-3">
+      <h3 className="text-muted-foreground text-xs font-medium">
+        Propriedades
+      </h3>
       {messageDefinition && (
         <MessageField
           services={services}
@@ -46,6 +46,6 @@ export function PropertiesPanel({
           timerDefinition={timerDefinition}
         />
       )}
-    </aside>
+    </section>
   )
 }

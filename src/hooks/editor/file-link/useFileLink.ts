@@ -14,7 +14,11 @@ interface UseFileLinkOptions {
 }
 
 function isSaveShortcut(event: KeyboardEvent) {
-  return (event.ctrlKey || event.metaKey) && !event.altKey && event.key.toLowerCase() === 's'
+  return (
+    (event.ctrlKey || event.metaKey) &&
+    !event.altKey &&
+    event.key.toLowerCase() === 's'
+  )
 }
 
 function fileSaveProblemMessage(error: unknown) {
@@ -59,7 +63,10 @@ export function useFileLink({
 
   useEffect(() => {
     window.addEventListener('keydown', handleSaveShortcut, { capture: true })
-    return () => window.removeEventListener('keydown', handleSaveShortcut, { capture: true })
+    return () =>
+      window.removeEventListener('keydown', handleSaveShortcut, {
+        capture: true,
+      })
   }, [])
 
   return {

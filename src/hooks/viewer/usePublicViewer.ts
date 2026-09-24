@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react'
 
 import TextStyleRenderer from '@/components/editor/TextStyleRenderer'
 import textStyleModdle from '@/components/editor/text-style-moddle.json'
+import { THEMED_DIAGRAM_RENDERER_COLORS } from '@/lib/diagram-colors'
 import { downloadBpmnXml, exportPng, exportSvg } from '@/lib/export'
 import type { PublicDiagram } from '@/lib/supabase/database-types'
 
@@ -18,6 +19,7 @@ export function usePublicViewer(diagram: PublicDiagram) {
     if (!containerRef.current) return
     const viewer = new NavigatedViewer({
       container: containerRef.current,
+      bpmnRenderer: THEMED_DIAGRAM_RENDERER_COLORS,
       moddleExtensions: { archquest: textStyleModdle },
       additionalModules: [
         {
@@ -32,7 +34,9 @@ export function usePublicViewer(diagram: PublicDiagram) {
       .importXML(diagram.bpmn_xml)
       .then(() => {
         if (isViewerDiscarded) return
-        viewer.get<{ zoom: (level: string) => void }>('canvas').zoom('fit-viewport')
+        viewer
+          .get<{ zoom: (level: string) => void }>('canvas')
+          .zoom('fit-viewport')
         setHasRenderFailed(false)
       })
       .catch(() => {
@@ -58,5 +62,11 @@ export function usePublicViewer(diagram: PublicDiagram) {
     if (viewerRef.current) await exportPng(viewerRef.current, fileName)
   }
 
-  return { containerRef, hasRenderFailed, downloadBpmn, downloadSvg, downloadPng }
+  return {
+    containerRef,
+    hasRenderFailed,
+    downloadBpmn,
+    downloadSvg,
+    downloadPng,
+  }
 }

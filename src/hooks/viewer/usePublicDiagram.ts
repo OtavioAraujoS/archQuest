@@ -14,8 +14,12 @@ interface FinishedLookup {
   lookup: PublicDiagramLookup
 }
 
-export function usePublicDiagram(slug: string | undefined): PublicDiagramLookup {
-  const [finishedLookup, setFinishedLookup] = useState<FinishedLookup | null>(null)
+export function usePublicDiagram(
+  slug: string | undefined,
+): PublicDiagramLookup {
+  const [finishedLookup, setFinishedLookup] = useState<FinishedLookup | null>(
+    null,
+  )
 
   useEffect(() => {
     if (!slug) return
@@ -24,7 +28,10 @@ export function usePublicDiagram(slug: string | undefined): PublicDiagramLookup 
       if (!isCancelled) setFinishedLookup({ slug, lookup })
     }
     fetchPublicDiagram(slug).then(
-      (diagram) => finishLookup(diagram ? { status: 'found', diagram } : { status: 'not-found' }),
+      (diagram) =>
+        finishLookup(
+          diagram ? { status: 'found', diagram } : { status: 'not-found' },
+        ),
       () => finishLookup({ status: 'failed' }),
     )
     return () => {

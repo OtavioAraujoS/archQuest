@@ -24,6 +24,8 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.623 0.214 259.815);
+  --bpmn-shape-fill: var(--card);
+  --bpmn-shape-stroke: var(--foreground);
 }
 
 .dark {

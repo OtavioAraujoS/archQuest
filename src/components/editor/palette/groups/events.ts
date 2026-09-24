@@ -27,19 +27,28 @@ export const EVENT_GROUP: PaletteGroup = {
       id: 'intermediate-message-catch',
       label: 'Intermediário de mensagem (captura)',
       className: 'bpmn-icon-intermediate-event-catch-message',
-      attrs: { type: 'bpmn:IntermediateCatchEvent', eventDefinitionType: MESSAGE },
+      attrs: {
+        type: 'bpmn:IntermediateCatchEvent',
+        eventDefinitionType: MESSAGE,
+      },
     },
     {
       id: 'intermediate-message-throw',
       label: 'Intermediário de mensagem (envio)',
       className: 'bpmn-icon-intermediate-event-throw-message',
-      attrs: { type: 'bpmn:IntermediateThrowEvent', eventDefinitionType: MESSAGE },
+      attrs: {
+        type: 'bpmn:IntermediateThrowEvent',
+        eventDefinitionType: MESSAGE,
+      },
     },
     {
       id: 'intermediate-timer',
       label: 'Intermediário de timer',
       className: 'bpmn-icon-intermediate-event-catch-timer',
-      attrs: { type: 'bpmn:IntermediateCatchEvent', eventDefinitionType: TIMER },
+      attrs: {
+        type: 'bpmn:IntermediateCatchEvent',
+        eventDefinitionType: TIMER,
+      },
     },
     {
       id: 'end-message',

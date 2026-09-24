@@ -9,7 +9,9 @@ import type { PaletteGroup } from './palette-group'
 
 const MENU_OFFSET_FROM_BUTTON = 8
 
-export function menuPositionNextToClickedButton(event: MouseEvent): MenuPosition {
+export function menuPositionNextToClickedButton(
+  event: MouseEvent,
+): MenuPosition {
   const clickedElement = event.target instanceof Element ? event.target : null
   const buttonRect = (
     clickedElement?.closest('.entry') ?? clickedElement

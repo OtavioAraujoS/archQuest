@@ -1,11 +1,11 @@
 import type BpmnModeler from 'bpmn-js/lib/Modeler'
-import { isLabel, isLabelExternal } from 'bpmn-js/lib/util/LabelUtil'
+import { isLabel } from 'bpmn-js/lib/util/LabelUtil'
 import { isConnection } from 'diagram-js/lib/util/ModelUtil'
 import type { RefObject } from 'react'
 
-import { ColorPickerField } from './style/ColorPickerField'
-import { TextFormatButtons } from './style/TextFormatButtons'
-import { useIsDarkTheme } from '@/hooks/editor/style/useIsDarkTheme'
+import { ColorPickerField } from '@/components/editor/style/ColorPickerField'
+import { readElementColors } from '@/components/editor/style/element-colors'
+import { TextFormatButtons } from '@/components/editor/style/TextFormatButtons'
 import {
   type BpmnFactory,
   getTextStyle,
@@ -13,8 +13,12 @@ import {
   type TextStyle,
   type TextStyleEventBus,
   type TextStyleModeling,
-} from './text-style'
-import { type EditorStatus, useSelectedElements } from '@/hooks/editor/useSelectedElements'
+} from '@/components/editor/text-style'
+import { useIsDarkTheme } from '@/hooks/editor/style/useIsDarkTheme'
+import {
+  type EditorStatus,
+  useSelectedElements,
+} from '@/hooks/editor/useSelectedElements'
 
 interface ElementStylePanelProps {
   modelerRef: RefObject<BpmnModeler | null>
@@ -22,18 +26,10 @@ interface ElementStylePanelProps {
 }
 
 type ColorModeling = TextStyleModeling & {
-  setColor(elements: unknown[], colors: { fill?: string; stroke?: string }): void
-}
-
-const TEXT_COLOR_ON_SHAPE = '#000000'
-const TEXT_COLOR_ON_DARK_CANVAS = '#E5E7EB'
-
-function defaultTextColor(isDarkTheme: boolean, element: unknown) {
-  const textSitsOnCanvas =
-    isLabel(element as never) || isLabelExternal(element as never)
-  return isDarkTheme && textSitsOnCanvas
-    ? TEXT_COLOR_ON_DARK_CANVAS
-    : TEXT_COLOR_ON_SHAPE
+  setColor(
+    elements: unknown[],
+    colors: { fill?: string; stroke?: string },
+  ): void
 }
 
 export function ElementStylePanel({
@@ -52,6 +48,11 @@ export function ElementStylePanel({
     eventBus: modeler.get<TextStyleEventBus>('eventBus'),
   }
   const textStyle = getTextStyle(selectedElements[0] as never)
+  const colors = readElementColors(
+    selectedElements[0],
+    textStyle.color,
+    isDarkTheme,
+  )
   const colorableElements = selectedElements.filter(
     (element) => !isLabel(element as never),
   )
@@ -67,17 +68,22 @@ export function ElementStylePanel({
   }
 
   return (
-    <div className="bg-popover text-popover-foreground absolute top-4 right-4 z-10 flex items-center gap-3 rounded-lg border p-2 shadow-md">
+    <section aria-label="Aparência" className="flex flex-col gap-3">
+      <h3 className="text-muted-foreground text-xs font-medium">Aparência</h3>
       {canSetFillColor && (
         <ColorPickerField
           label="Fundo"
           title="Cor de preenchimento"
-          onColorChange={(fill) => modeling.setColor(colorableElements, { fill })}
+          value={colors.fill}
+          onColorChange={(fill) =>
+            modeling.setColor(colorableElements, { fill })
+          }
         />
       )}
       <ColorPickerField
         label="Borda"
         title="Cor da borda"
+        value={colors.stroke}
         onColorChange={(stroke) =>
           modeling.setColor(colorableElements, { stroke })
         }
@@ -85,15 +91,13 @@ export function ElementStylePanel({
       <ColorPickerField
         label="Texto"
         title="Cor do texto"
-        value={
-          textStyle.color ?? defaultTextColor(isDarkTheme, selectedElements[0])
-        }
+        value={colors.text}
         onColorChange={(color) => applyTextStyle({ color })}
       />
       <TextFormatButtons
         textStyle={textStyle}
         onTextStyleChange={applyTextStyle}
       />
-    </div>
+    </section>
   )
 }

@@ -46,15 +46,6 @@
   box-shadow: 0 1px 3px color-mix(in oklch, var(--foreground) 15%, transparent);
 }
 
-.dark
-  .archquest-bpmn
-  [class*='layer-root']
-  > .djs-group
-  > :is([data-element-id$='_label'], [data-element-id^='TextAnnotation_'])
-  .djs-label {
-  fill: var(--bio-text) !important;
-}
-
 .dark .archquest-bpmn .djs-direct-editing,
 .dark .archquest-bpmn .djs-direct-editing input,
 .dark .archquest-bpmn .djs-direct-editing textarea,

@@ -12,14 +12,22 @@ export function ColorPickerField({
   onColorChange,
 }: Readonly<ColorPickerFieldProps>) {
   return (
-    <label className="flex items-center gap-1 text-xs" title={title}>
+    <label
+      className="flex items-center justify-between gap-3 text-sm"
+      title={title}
+    >
       <span>{label}</span>
-      <input
-        type="color"
-        value={value}
-        className="size-6 cursor-pointer rounded border"
-        onChange={(event) => onColorChange(event.target.value)}
-      />
+      <span className="flex items-center gap-2">
+        <span className="text-muted-foreground font-mono text-xs uppercase tabular-nums">
+          {value}
+        </span>
+        <input
+          type="color"
+          value={value}
+          className="focus-visible:ring-ring/50 size-7 cursor-pointer rounded-md border bg-transparent p-0.5 outline-none focus-visible:ring-[3px]"
+          onChange={(event) => onColorChange(event.target.value)}
+        />
+      </span>
     </label>
   )
 }

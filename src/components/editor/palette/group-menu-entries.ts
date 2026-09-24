@@ -6,7 +6,10 @@ export function groupMenuId(group: PaletteGroup) {
   return `archquest-${group.id}`
 }
 
-export function variantMenuEntryKey(group: PaletteGroup, variant: PaletteVariant) {
+export function variantMenuEntryKey(
+  group: PaletteGroup,
+  variant: PaletteVariant,
+) {
   return `archquest.create.${group.id}.${variant.id}`
 }
 

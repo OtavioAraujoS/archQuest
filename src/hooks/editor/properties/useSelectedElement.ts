@@ -1,7 +1,10 @@
 import type BpmnModeler from 'bpmn-js/lib/Modeler'
 import type { RefObject } from 'react'
 
-import { type EditorStatus, useSelectedElements } from '@/hooks/editor/useSelectedElements'
+import {
+  type EditorStatus,
+  useSelectedElements,
+} from '@/hooks/editor/useSelectedElements'
 
 export function useSelectedElement(
   modelerRef: RefObject<BpmnModeler | null>,

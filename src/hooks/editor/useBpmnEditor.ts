@@ -1,38 +1,46 @@
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import { useEffect, useRef, useState } from 'react'
 
-import { findDiagram } from '@/lib/diagrams/find-diagram'
-import {
-  renameDiagram,
-  saveDiagramContent,
-  saveDiagramThumbnail,
-} from '@/lib/diagrams/local-diagram-changes'
-import { downloadBlob, exportPng, exportSvg } from '@/lib/export'
-
 import groupedPaletteModule from '@/components/editor/palette'
 import propertyCommandsModule from '@/components/editor/properties'
 import TextStyleRenderer from '@/components/editor/TextStyleRenderer'
 import textStyleModdle from '@/components/editor/text-style-moddle.json'
-
-const AUTOSAVE_DEBOUNCE_MS = 800
+import portugueseTranslationModule from '@/components/editor/translations'
+import { useDiagramExports } from '@/hooks/editor/useDiagramExports'
+import {
+  resolveThemedColorsForExport,
+  THEMED_DIAGRAM_RENDERER_COLORS,
+} from '@/lib/diagram-colors'
+import {
+  createDiagramAutosave,
+  type AutosaveState,
+} from '@/lib/diagrams/diagram-autosave'
+import { findDiagram } from '@/lib/diagrams/find-diagram'
+import {
+  renameDiagram,
+  saveDiagramThumbnail,
+} from '@/lib/diagrams/local-diagram-changes'
 
 export function useBpmnEditor(id: string | undefined) {
   const containerRef = useRef<HTMLDivElement>(null)
   const modelerRef = useRef<BpmnModeler | null>(null)
-  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [name, setName] = useState('')
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
+  const [autosaveState, setAutosaveState] = useState<AutosaveState>('idle')
   const [loadRevision, setLoadRevision] = useState(0)
+  const diagramExports = useDiagramExports(modelerRef, name)
 
   useEffect(() => {
     if (!id || !containerRef.current) return
 
     const modeler = new BpmnModeler({
       container: containerRef.current,
+      bpmnRenderer: THEMED_DIAGRAM_RENDERER_COLORS,
       moddleExtensions: { archquest: textStyleModdle },
       additionalModules: [
         groupedPaletteModule,
         propertyCommandsModule,
+        portugueseTranslationModule,
         {
           __init__: ['textStyleRenderer'],
           textStyleRenderer: ['type', TextStyleRenderer],
@@ -42,6 +50,9 @@ export function useBpmnEditor(id: string | undefined) {
     modelerRef.current = modeler
 
     let cancelled = false
+    const autosave = createDiagramAutosave(modeler, id, (state) => {
+      if (!cancelled) setAutosaveState(state)
+    })
 
     async function load() {
       const record = await findDiagram(id!)
@@ -49,14 +60,18 @@ export function useBpmnEditor(id: string | undefined) {
       setName(record.name)
       await modeler.importXML(record.bpmnXml)
       if (cancelled) return
-      modeler.get<{ zoom: (level: string) => void }>('canvas').zoom('fit-viewport')
+      modeler
+        .get<{ zoom: (level: string) => void }>('canvas')
+        .zoom('fit-viewport')
       setStatus('ready')
       if (!record.thumbnail) await saveMissingThumbnail()
     }
 
     async function saveMissingThumbnail() {
       const { svg } = await modeler.saveSVG()
-      if (!cancelled) await saveDiagramThumbnail(id!, svg)
+      if (!cancelled) {
+        await saveDiagramThumbnail(id!, resolveThemedColorsForExport(svg))
+      }
     }
 
     load().catch((error) => {
@@ -64,31 +79,13 @@ export function useBpmnEditor(id: string | undefined) {
       if (!cancelled) setStatus('error')
     })
 
-    const eventBus = modeler.get<{
-      on: (event: string, cb: () => void) => void
-    }>('eventBus')
-    eventBus.on('commandStack.changed', scheduleAutosave)
-
-    function scheduleAutosave() {
-      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
-      saveTimeoutRef.current = setTimeout(persist, AUTOSAVE_DEBOUNCE_MS)
-    }
-
-    async function persist() {
-      if (!id) return
-      try {
-        const { xml } = await modeler.saveXML({ format: true })
-        const { svg } = await modeler.saveSVG()
-        if (!xml) return
-        await saveDiagramContent(id, { bpmnXml: xml, thumbnail: svg })
-      } catch (error) {
-        console.error('Autosave failed', error)
-      }
-    }
+    modeler
+      .get<{ on: (event: string, callback: () => void) => void }>('eventBus')
+      .on('commandStack.changed', autosave.scheduleSave)
 
     return () => {
       cancelled = true
-      if (saveTimeoutRef.current) clearTimeout(saveTimeoutRef.current)
+      autosave.cancelPendingSave()
       modeler.destroy()
       modelerRef.current = null
     }
@@ -105,46 +102,14 @@ export function useBpmnEditor(id: string | undefined) {
     await renameDiagram(id, nextName)
   }
 
-  async function handleExportBpmn() {
-    const modeler = modelerRef.current
-    if (!modeler) return
-    const { xml } = await modeler.saveXML({ format: true })
-    if (!xml) return
-    downloadBlob(new Blob([xml], { type: 'application/xml' }), `${name || 'diagram'}.bpmn`)
-  }
-
-  async function handleExportSvg() {
-    const modeler = modelerRef.current
-    if (!modeler) return
-    await exportSvg(modeler, name || 'diagram')
-  }
-
-  async function handleExportPng() {
-    const modeler = modelerRef.current
-    if (!modeler) return
-    await exportPng(modeler, name || 'diagram')
-  }
-
-  async function handleImport(event: React.ChangeEvent<HTMLInputElement>) {
-    const file = event.target.files?.[0]
-    event.target.value = ''
-    const modeler = modelerRef.current
-    if (!file || !modeler) return
-    const xml = await file.text()
-    await modeler.importXML(xml)
-    modeler.get<{ zoom: (level: string) => void }>('canvas').zoom('fit-viewport')
-  }
-
   return {
     containerRef,
     modelerRef,
     name,
     status,
+    autosaveState,
     persistName,
     reloadDiagram,
-    handleExportBpmn,
-    handleExportSvg,
-    handleExportPng,
-    handleImport,
+    ...diagramExports,
   }
 }

@@ -2,7 +2,11 @@ import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 
 export type TimerKind = 'timeDate' | 'timeDuration' | 'timeCycle'
 
-export const TIMER_KINDS: TimerKind[] = ['timeDate', 'timeDuration', 'timeCycle']
+export const TIMER_KINDS: TimerKind[] = [
+  'timeDate',
+  'timeDuration',
+  'timeCycle',
+]
 
 export interface FormalExpression {
   $type: 'bpmn:FormalExpression'

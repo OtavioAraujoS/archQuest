@@ -26,19 +26,22 @@ export function TextFormatButtons({
   onTextStyleChange,
 }: Readonly<TextFormatButtonsProps>) {
   return (
-    <div className="flex items-center gap-1 border-l pl-2">
-      {TEXT_FORMAT_BUTTONS.map(({ format, label, Icon }) => (
-        <Button
-          key={format}
-          variant={textStyle[format] ? 'secondary' : 'ghost'}
-          size="icon"
-          aria-label={label}
-          aria-pressed={textStyle[format]}
-          onClick={() => onTextStyleChange({ [format]: !textStyle[format] })}
-        >
-          <Icon />
-        </Button>
-      ))}
+    <div className="flex items-center justify-between gap-3 text-sm">
+      <span>Formato</span>
+      <div className="flex items-center gap-1">
+        {TEXT_FORMAT_BUTTONS.map(({ format, label, Icon }) => (
+          <Button
+            key={format}
+            variant={textStyle[format] ? 'secondary' : 'ghost'}
+            size="icon"
+            aria-label={label}
+            aria-pressed={textStyle[format]}
+            onClick={() => onTextStyleChange({ [format]: !textStyle[format] })}
+          >
+            <Icon />
+          </Button>
+        ))}
+      </div>
     </div>
   )
 }

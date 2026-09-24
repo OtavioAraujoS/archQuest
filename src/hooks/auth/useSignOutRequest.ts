@@ -3,10 +3,13 @@ import { useState } from 'react'
 import { signOutOfThisDevice } from '@/lib/auth/sign-out-of-this-device'
 import { listPendingUploads } from '@/lib/diagrams/diagram-lists'
 
-const SIGN_OUT_FAILED_MESSAGE = 'Não foi possível sair. Confira a conexão e tente de novo.'
+const SIGN_OUT_FAILED_MESSAGE =
+  'Não foi possível sair. Confira a conexão e tente de novo.'
 
 export function useSignOutRequest(ownerId: string | null) {
-  const [pendingDiagramCount, setPendingDiagramCount] = useState<number | null>(null)
+  const [pendingDiagramCount, setPendingDiagramCount] = useState<number | null>(
+    null,
+  )
   const [ownerIdOfTheWarning, setOwnerIdOfTheWarning] = useState(ownerId)
 
   if (ownerIdOfTheWarning !== ownerId) {

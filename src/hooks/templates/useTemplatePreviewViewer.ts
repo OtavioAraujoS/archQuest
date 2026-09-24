@@ -2,13 +2,11 @@ import Viewer from 'bpmn-js/lib/Viewer'
 import { useEffect, useRef, useState } from 'react'
 
 import TextStyleRenderer from '@/components/editor/TextStyleRenderer'
-import { useIsDarkTheme } from '@/hooks/editor/style/useIsDarkTheme'
 import textStyleModdle from '@/components/editor/text-style-moddle.json'
-import { readDiagramThemeColors } from '@/components/templates/read-diagram-theme-colors'
+import { THEMED_DIAGRAM_RENDERER_COLORS } from '@/lib/diagram-colors'
 
 export function useTemplatePreviewViewer(bpmnXml: string) {
   const containerRef = useRef<HTMLDivElement>(null)
-  const isDarkTheme = useIsDarkTheme()
   const [hasRenderFailed, setHasRenderFailed] = useState(false)
 
   useEffect(() => {
@@ -16,7 +14,7 @@ export function useTemplatePreviewViewer(bpmnXml: string) {
     if (!container) return
     const viewer = new Viewer({
       container,
-      bpmnRenderer: readDiagramThemeColors(container),
+      bpmnRenderer: THEMED_DIAGRAM_RENDERER_COLORS,
       moddleExtensions: { archquest: textStyleModdle },
       additionalModules: [
         {
@@ -43,7 +41,7 @@ export function useTemplatePreviewViewer(bpmnXml: string) {
       isViewerDiscarded = true
       viewer.destroy()
     }
-  }, [bpmnXml, isDarkTheme])
+  }, [bpmnXml])
 
   return { containerRef, hasRenderFailed }
 }
