@@ -5,6 +5,7 @@ import { CloudSyncIndicator } from '@/components/editor/CloudSyncIndicator'
 import { ConflictDialog } from '@/components/editor/ConflictDialog'
 import { ElementStylePanel } from '@/components/editor/ElementStylePanel'
 import { PropertiesPanel } from '@/components/editor/properties/PropertiesPanel'
+import { ShareButton } from '@/components/editor/sharing/ShareButton'
 import { useBpmnEditor } from '@/components/editor/useBpmnEditor'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
@@ -47,6 +48,7 @@ export function BpmnEditor() {
           placeholder="Nome do diagrama"
         />
         <CloudSyncIndicator diagramId={id} />
+        <ShareButton diagramId={id} />
         <label>
           <Button variant="outline" size="sm" asChild>
             <span>
