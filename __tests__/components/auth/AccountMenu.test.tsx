@@ -1,4 +1,4 @@
-import { act, fireEvent, render, screen } from '@testing-library/react'
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { AccountMenu } from '@/components/auth/AccountMenu'
@@ -63,11 +63,11 @@ describe('AccountMenu', () => {
     expect(screen.queryByRole('button', { name: 'Entrar' })).not.toBeInTheDocument()
   })
 
-  it('signs out through the sign out button', () => {
+  it('signs out through the sign out button', async () => {
     renderAccountMenuWith(SIGNED_IN_STATE)
 
     fireEvent.click(screen.getByRole('button', { name: 'Sair' }))
 
-    expect(signOut).toHaveBeenCalledOnce()
+    await waitFor(() => expect(signOut).toHaveBeenCalledOnce())
   })
 })
