@@ -1,4 +1,4 @@
-import { FilePlus2, LayoutTemplate } from 'lucide-react'
+import { FileUp, FilePlus2, LayoutTemplate } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
@@ -13,6 +13,8 @@ import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
 import { createDiagram } from '@/lib/create-diagram'
 import { deleteDiagram } from '@/lib/diagrams/delete-diagram'
+import { isFileSystemAccessSupported } from '@/lib/file-system/file-system-support'
+import { openDiagramFromFile } from '@/lib/file-system/open-diagram-from-file'
 import type { DiagramTemplate } from '@/templates'
 
 async function confirmAndDeleteDiagram(id: string) {
@@ -37,6 +39,15 @@ export function DiagramLibrary() {
     openDiagram(await createDiagram())
   }
 
+  async function openFileAsDiagram() {
+    try {
+      const diagramId = await openDiagramFromFile()
+      if (diagramId) openDiagram(diagramId)
+    } catch {
+      alert('Não foi possível abrir o arquivo. Confira se ele é um .bpmn válido.')
+    }
+  }
+
   async function createDiagramFromTemplate(template: DiagramTemplate) {
     openDiagram(await createDiagram(template.name, template.xml))
   }
@@ -55,6 +66,11 @@ export function DiagramLibrary() {
         <div className="flex items-center gap-2">
           <AccountMenu />
           <ThemeToggle />
+          {isFileSystemAccessSupported() && (
+            <Button variant="outline" onClick={openFileAsDiagram}>
+              <FileUp /> Abrir arquivo
+            </Button>
+          )}
           <Button variant="outline" onClick={() => setIsTemplatePickerOpen(true)}>
             <LayoutTemplate /> A partir de template
           </Button>

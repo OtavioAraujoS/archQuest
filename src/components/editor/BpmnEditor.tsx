@@ -4,6 +4,8 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { CloudSyncIndicator } from '@/components/editor/CloudSyncIndicator'
 import { ConflictDialog } from '@/components/editor/ConflictDialog'
 import { ElementStylePanel } from '@/components/editor/ElementStylePanel'
+import { SaveToFileButton } from '@/components/editor/file-link/SaveToFileButton'
+import { useFileLink } from '@/components/editor/file-link/useFileLink'
 import { PropertiesPanel } from '@/components/editor/properties/PropertiesPanel'
 import { ShareButton } from '@/components/editor/sharing/ShareButton'
 import { useBpmnEditor } from '@/components/editor/useBpmnEditor'
@@ -31,6 +33,12 @@ export function BpmnEditor() {
     handleExportPng,
     handleImport,
   } = useBpmnEditor(id)
+  const { isFileSystemSupported, linkedFileName, isSavingToFile, saveToFile } = useFileLink({
+    diagramId: id,
+    diagramName: name,
+    modelerRef,
+    downloadBpmnInstead: handleExportBpmn,
+  })
   const isConflicted = useSyncStore(
     (state) => id !== undefined && state.conflictedDiagramIds.includes(id),
   )
@@ -57,6 +65,13 @@ export function BpmnEditor() {
           </Button>
           <input type="file" accept=".bpmn,.xml" className="hidden" onChange={handleImport} />
         </label>
+        {isFileSystemSupported && (
+          <SaveToFileButton
+            linkedFileName={linkedFileName}
+            isSavingToFile={isSavingToFile}
+            onSaveToFile={() => void saveToFile()}
+          />
+        )}
         <Button variant="outline" size="sm" onClick={handleExportBpmn}>
           <Download /> .bpmn
         </Button>
