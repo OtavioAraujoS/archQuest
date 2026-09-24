@@ -106,8 +106,12 @@ remova, oculte ou sobreponha essa marca d'água** em nenhuma mudança de UI ou d
   uma limitação de uma lib externa, etc.).
 - Mantenha arquivos pequenos e coesos: se um arquivo está misturando responsabilidades
   diferentes (ex.: lógica de integração com uma lib externa + renderização de UI), separe
-  em módulos — veja `src/components/editor/useBpmnEditor.ts` (lógica) vs.
-  `BpmnEditor.tsx` (apresentação) como exemplo do padrão.
+  em módulos — veja `src/hooks/editor/useBpmnEditor.ts` (lógica) vs.
+  `src/components/editor/BpmnEditor.tsx` (apresentação) como exemplo do padrão.
+- Hooks (arquivos que começam com `use`, como `useGuestMigrationPrompt.ts`) ficam em
+  `src/hooks/`, agrupados pela área de onde vêm: `src/hooks/library/`,
+  `src/hooks/editor/style/` etc. Importe pelo alias `@/hooks/...`; os testes deles ficam
+  em `__tests__/hooks/`, espelhando o mesmo caminho.
 - Testes ficam em `__tests__/`, na raiz, espelhando as pastas de `src/`: o teste de
   `src/lib/db.ts` é `__tests__/lib/db.test.ts`. Importe o código testado pelo alias
   `@/` (inclusive em `vi.mock`). Helpers só de teste também ficam em `__tests__/`.

@@ -14,7 +14,9 @@ export function LandingPage() {
       <main className="flex-1">
         <HeroSection onStartBlankDiagram={() => void startBlankDiagram()} />
         <TemplateShowcase
-          onTemplateChosen={(template) => void startDiagramFromTemplate(template)}
+          onTemplateChosen={(template) =>
+            void startDiagramFromTemplate(template)
+          }
         />
         <PrinciplesSection />
       </main>

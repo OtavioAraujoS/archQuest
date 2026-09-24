@@ -28,7 +28,7 @@ export function DiagramCard({
       />
       <div
         aria-hidden="true"
-        className="bg-muted/60 group-hover:bg-muted pointer-events-none flex aspect-video items-center justify-center overflow-hidden p-3 transition-colors dark:[&_svg]:hue-rotate-180 dark:[&_svg]:invert [&_svg]:h-full [&_svg]:w-full"
+        className="bg-muted/60 group-hover:bg-muted pointer-events-none flex aspect-video items-center justify-center overflow-hidden p-3 transition-colors dark:[&_svg]:hue-rotate-180 dark:[&_svg]:invert [&_svg]:h-auto [&_svg]:max-h-full [&_svg]:w-auto [&_svg]:max-w-full"
         dangerouslySetInnerHTML={{ __html: diagram.thumbnail ?? '' }}
       />
       <div className="flex items-center justify-between gap-2 border-t py-2 pr-2 pl-4">
