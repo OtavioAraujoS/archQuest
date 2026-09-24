@@ -21,6 +21,60 @@ npm install
 npm run dev
 ```
 
+Sem nenhuma variável de ambiente, o app roda em modo convidado, só no navegador. Para a
+maior parte das mudanças (editor, paleta, templates, estilos) isso basta, e é assim que
+o CI roda: nenhum teste depende do Supabase.
+
+## Rodando com o Supabase local
+
+Para mexer em login, sincronização, links públicos ou no banco, rode o Supabase no
+Docker. A CLI já vem como dependência de desenvolvimento.
+
+1. Com o Docker rodando, suba o Supabase local (na primeira vez ele baixa as imagens):
+
+   ```bash
+   npx supabase start
+   ```
+
+   Isso aplica as migrations de [`supabase/migrations/`](./supabase/migrations/) e usa a
+   configuração de [`supabase/config.toml`](./supabase/config.toml).
+2. Crie o `.env.local` a partir do exemplo e preencha com os valores de `API_URL` e
+   `ANON_KEY` que aparecem em `npx supabase status`:
+
+   ```bash
+   cp .env.example .env.local
+   ```
+
+3. Rode `npm run dev`. Aparece o botão "Entrar".
+4. Link mágico: os e-mails do Supabase local não saem da sua máquina; abra a caixa de
+   entrada de teste em http://127.0.0.1:54324.
+5. Login por GitHub (opcional): crie um OAuth App só para desenvolvimento, com a
+   *Authorization callback URL* `http://127.0.0.1:54321/auth/v1/callback`, e adicione ao
+   `supabase/config.toml`:
+
+   ```toml
+   [auth.external.github]
+   enabled = true
+   client_id = "env(SUPABASE_AUTH_EXTERNAL_GITHUB_CLIENT_ID)"
+   secret = "env(SUPABASE_AUTH_EXTERNAL_GITHUB_SECRET)"
+   ```
+
+   As duas variáveis ficam em `supabase/.env`, que não vai para o git. Reinicie com
+   `npx supabase stop` e `npx supabase start`.
+
+Para desligar a nuvem de novo, apague o `.env.local` (ou deixe as variáveis em branco).
+
+### Mudando o banco
+
+- Crie uma migration nova com `npx supabase migration new <nome>`; não edite migrations
+  que já foram aplicadas em produção.
+- `npx supabase db reset` recria o banco local aplicando todas as migrations.
+- `npx supabase test db` roda os testes pgTAP de
+  [`supabase/tests/database/`](./supabase/tests/database/). Toda mudança de tabela,
+  política de RLS ou função deve vir com testes ali, cobrindo o dono, outro usuário e o
+  papel `anon`.
+- Quem mantém o projeto aplica as migrations em produção com `npx supabase db push`.
+
 ## Antes de abrir um PR
 
 Rode localmente os mesmos checks que o CI ([`.github/workflows/ci.yml`](./.github/workflows/ci.yml))
@@ -31,6 +85,9 @@ npm run lint
 npm run build
 npm test
 ```
+
+Se a mudança tocar em `supabase/`, rode também `npx supabase db reset` e
+`npx supabase test db` com o Supabase local.
 
 Um PR só é revisado depois que esses três passam. Se algum falhar por um motivo que você
 acha que não tem a ver com sua mudança, mencione isso na descrição do PR.
