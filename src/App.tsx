@@ -5,6 +5,7 @@ import { AuthCallback } from '@/components/auth/AuthCallback'
 import { DiagramLibrary } from '@/components/library/DiagramLibrary'
 import { AUTH_CALLBACK_PATH } from '@/lib/auth/auth-actions'
 import { startAuthSession } from '@/lib/auth/auth-session'
+import { startDiagramSyncWhileSignedIn } from '@/lib/sync/sync-while-signed-in'
 
 const BpmnEditor = lazy(() =>
   import('@/components/editor/BpmnEditor').then((module) => ({ default: module.BpmnEditor })),
@@ -12,6 +13,7 @@ const BpmnEditor = lazy(() =>
 
 function App() {
   useEffect(() => startAuthSession(), [])
+  useEffect(() => startDiagramSyncWhileSignedIn(), [])
 
   return (
     <BrowserRouter>

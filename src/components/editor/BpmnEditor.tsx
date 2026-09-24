@@ -1,6 +1,7 @@
 import { ArrowLeft, Download, FileUp, Image as ImageIcon } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router-dom'
 
+import { CloudSyncIndicator } from '@/components/editor/CloudSyncIndicator'
 import { ElementStylePanel } from '@/components/editor/ElementStylePanel'
 import { PropertiesPanel } from '@/components/editor/properties/PropertiesPanel'
 import { useBpmnEditor } from '@/components/editor/useBpmnEditor'
@@ -39,6 +40,7 @@ export function BpmnEditor() {
           className="min-w-0 flex-1 rounded-md border-none bg-transparent px-2 py-1 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring"
           placeholder="Nome do diagrama"
         />
+        <CloudSyncIndicator diagramId={id} />
         <label>
           <Button variant="outline" size="sm" asChild>
             <span>
