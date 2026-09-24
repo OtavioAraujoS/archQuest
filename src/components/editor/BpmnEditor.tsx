@@ -1,11 +1,14 @@
 import { ArrowLeft, Download, FileUp, Image as ImageIcon } from 'lucide-react'
 import { useNavigate, useParams } from 'react-router-dom'
 
+import { CloudSyncIndicator } from '@/components/editor/CloudSyncIndicator'
+import { ConflictDialog } from '@/components/editor/ConflictDialog'
 import { ElementStylePanel } from '@/components/editor/ElementStylePanel'
 import { PropertiesPanel } from '@/components/editor/properties/PropertiesPanel'
 import { useBpmnEditor } from '@/components/editor/useBpmnEditor'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
+import { useSyncStore } from '@/lib/sync/sync-store'
 
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
 import 'bpmn-js/dist/assets/bpmn-js.css'
@@ -21,11 +24,15 @@ export function BpmnEditor() {
     name,
     status,
     persistName,
+    reloadDiagram,
     handleExportBpmn,
     handleExportSvg,
     handleExportPng,
     handleImport,
   } = useBpmnEditor(id)
+  const isConflicted = useSyncStore(
+    (state) => id !== undefined && state.conflictedDiagramIds.includes(id),
+  )
 
   return (
     <div className="flex h-svh flex-col">
@@ -39,6 +46,7 @@ export function BpmnEditor() {
           className="min-w-0 flex-1 rounded-md border-none bg-transparent px-2 py-1 text-sm font-medium outline-none focus-visible:ring-2 focus-visible:ring-ring"
           placeholder="Nome do diagrama"
         />
+        <CloudSyncIndicator diagramId={id} />
         <label>
           <Button variant="outline" size="sm" asChild>
             <span>
@@ -58,6 +66,13 @@ export function BpmnEditor() {
         </Button>
         <ThemeToggle />
       </header>
+      {isConflicted && id && (
+        <ConflictDialog
+          diagramId={id}
+          onCloudVersionLoaded={reloadDiagram}
+          onDiagramDeletedInCloud={() => navigate('/', { replace: true })}
+        />
+      )}
       {status === 'error' && (
         <p className="p-4 text-sm text-destructive">
           Não foi possível carregar este diagrama. Ele pode ter sido removido.

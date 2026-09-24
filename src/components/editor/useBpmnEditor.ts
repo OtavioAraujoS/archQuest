@@ -1,7 +1,12 @@
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import { useEffect, useRef, useState } from 'react'
 
-import { db } from '@/lib/db'
+import { findDiagram } from '@/lib/diagrams/find-diagram'
+import {
+  renameDiagram,
+  saveDiagramContent,
+  saveDiagramThumbnail,
+} from '@/lib/diagrams/local-diagram-changes'
 import { downloadBlob, exportPng, exportSvg } from '@/lib/export'
 
 import groupedPaletteModule from './palette'
@@ -17,6 +22,7 @@ export function useBpmnEditor(id: string | undefined) {
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [name, setName] = useState('')
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
+  const [loadRevision, setLoadRevision] = useState(0)
 
   useEffect(() => {
     if (!id || !containerRef.current) return
@@ -38,7 +44,7 @@ export function useBpmnEditor(id: string | undefined) {
     let cancelled = false
 
     async function load() {
-      const record = await db.diagrams.get(id!)
+      const record = await findDiagram(id!)
       if (!record || cancelled) return
       setName(record.name)
       await modeler.importXML(record.bpmnXml)
@@ -50,7 +56,7 @@ export function useBpmnEditor(id: string | undefined) {
 
     async function saveMissingThumbnail() {
       const { svg } = await modeler.saveSVG()
-      if (!cancelled) await db.diagrams.update(id!, { thumbnail: svg })
+      if (!cancelled) await saveDiagramThumbnail(id!, svg)
     }
 
     load().catch((error) => {
@@ -74,11 +80,7 @@ export function useBpmnEditor(id: string | undefined) {
         const { xml } = await modeler.saveXML({ format: true })
         const { svg } = await modeler.saveSVG()
         if (!xml) return
-        await db.diagrams.update(id, {
-          bpmnXml: xml,
-          thumbnail: svg,
-          updatedAt: Date.now(),
-        })
+        await saveDiagramContent(id, { bpmnXml: xml, thumbnail: svg })
       } catch (error) {
         console.error('Autosave failed', error)
       }
@@ -90,12 +92,17 @@ export function useBpmnEditor(id: string | undefined) {
       modeler.destroy()
       modelerRef.current = null
     }
-  }, [id])
+  }, [id, loadRevision])
+
+  function reloadDiagram() {
+    setStatus('loading')
+    setLoadRevision((revision) => revision + 1)
+  }
 
   async function persistName(nextName: string) {
     setName(nextName)
     if (!id) return
-    await db.diagrams.update(id, { name: nextName, updatedAt: Date.now() })
+    await renameDiagram(id, nextName)
   }
 
   async function handleExportBpmn() {
@@ -134,6 +141,7 @@ export function useBpmnEditor(id: string | undefined) {
     name,
     status,
     persistName,
+    reloadDiagram,
     handleExportBpmn,
     handleExportSvg,
     handleExportPng,

@@ -1,5 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react'
-import { beforeEach, describe, expect, it, vi } from 'vitest'
+import { act } from 'react'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { INITIAL_SYNC_STATE, useSyncStore } from '@/lib/sync/sync-store'
 
 const {
   mockNavigate,
@@ -39,6 +42,7 @@ function setHookReturn(overrides: Record<string, unknown> = {}) {
     handleExportSvg: mockExportSvg,
     handleExportPng: mockExportPng,
     handleImport: vi.fn(),
+    reloadDiagram: vi.fn(),
     ...overrides,
   })
 }
@@ -51,6 +55,10 @@ describe('BpmnEditor', () => {
     mockExportSvg.mockClear()
     mockExportPng.mockClear()
     setHookReturn()
+  })
+
+  afterEach(() => {
+    act(() => useSyncStore.setState(INITIAL_SYNC_STATE))
   })
 
   it('renders the diagram name and navigates back on click', () => {
@@ -96,6 +104,18 @@ describe('BpmnEditor', () => {
       screen.getByText(
         'Não foi possível carregar este diagrama. Ele pode ter sido removido.',
       ),
+    ).toBeInTheDocument()
+  })
+
+  it('asks how to resolve a conflict only for the open diagram', () => {
+    act(() => useSyncStore.setState({ conflictedDiagramIds: ['another-diagram'] }))
+    render(<BpmnEditor />)
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+
+    act(() => useSyncStore.setState({ conflictedDiagramIds: ['diagram-1'] }))
+
+    expect(
+      screen.getByRole('dialog', { name: 'Este diagrama mudou em outro lugar' }),
     ).toBeInTheDocument()
   })
 })
