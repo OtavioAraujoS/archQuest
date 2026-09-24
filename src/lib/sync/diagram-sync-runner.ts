@@ -28,16 +28,22 @@ export function startDiagramSync(ownerId: string): () => void {
     )
     const tooLargeDiagramIds: string[] = []
     const newlyConflictedIds: string[] = []
+    let hasFailedUpload = false
     for (const diagram of pendingDiagrams) {
       if (isStopped) return
-      const outcome = await uploadDiagram(diagram)
-      if (outcome === 'too-large') tooLargeDiagramIds.push(diagram.id)
-      if (outcome === 'conflict') newlyConflictedIds.push(diagram.id)
+      try {
+        const outcome = await uploadDiagram(diagram)
+        if (outcome === 'too-large') tooLargeDiagramIds.push(diagram.id)
+        if (outcome === 'conflict') newlyConflictedIds.push(diagram.id)
+      } catch {
+        hasFailedUpload = true
+      }
     }
     useSyncStore.setState((state) => ({
       tooLargeDiagramIds,
       conflictedDiagramIds: [...state.conflictedDiagramIds, ...newlyConflictedIds],
     }))
+    if (hasFailedUpload) throw new Error('Some pending diagrams could not be uploaded')
   }
 
   async function runUploadRound() {

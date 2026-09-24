@@ -3,9 +3,11 @@ import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
 import { AccountMenu } from '@/components/auth/AccountMenu'
+import { MigrateGuestDiagramsDialog } from '@/components/auth/MigrateGuestDiagramsDialog'
 import { DiagramGrid } from '@/components/library/DiagramGrid'
 import { SignedInDiagramSections } from '@/components/library/SignedInDiagramSections'
 import { TemplatePicker } from '@/components/library/TemplatePicker'
+import { useGuestMigrationPrompt } from '@/components/library/useGuestMigrationPrompt'
 import { useLibraryDiagrams } from '@/components/library/useLibraryDiagrams'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
@@ -25,6 +27,8 @@ async function confirmAndDeleteDiagram(id: string) {
 export function DiagramLibrary() {
   const navigate = useNavigate()
   const { ownerId, accountDiagrams, guestDiagrams, cloudPullStatus } = useLibraryDiagrams()
+  const { isGuestMigrationOpen, openGuestMigration, closeGuestMigration } =
+    useGuestMigrationPrompt(ownerId, guestDiagrams)
   const [isTemplatePickerOpen, setIsTemplatePickerOpen] = useState(false)
   const closeTemplatePicker = useCallback(() => setIsTemplatePickerOpen(false), [])
   const openDiagram = (id: string) => navigate(`/editor/${id}`)
@@ -67,6 +71,14 @@ export function DiagramLibrary() {
         />
       )}
 
+      {isGuestMigrationOpen && ownerId && guestDiagrams && (
+        <MigrateGuestDiagramsDialog
+          ownerId={ownerId}
+          guestDiagrams={guestDiagrams}
+          onClose={closeGuestMigration}
+        />
+      )}
+
       {ownerId ? (
         <SignedInDiagramSections
           accountDiagrams={accountDiagrams}
@@ -74,6 +86,7 @@ export function DiagramLibrary() {
           cloudPullStatus={cloudPullStatus}
           onOpen={openDiagram}
           onDelete={confirmAndDeleteDiagram}
+          onMoveGuestDiagrams={openGuestMigration}
         />
       ) : (
         <DiagramGrid
