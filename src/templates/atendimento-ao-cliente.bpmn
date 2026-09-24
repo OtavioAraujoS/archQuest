@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_atendimento" targetNamespace="http://archquest.dev/templates">
+  <bpmn:message id="Message_chamado" name="Chamado do cliente" />
+  <bpmn:message id="Message_pedido_informacoes" name="Pedido de informações" />
+  <bpmn:message id="Message_informacoes" name="Informações do cliente" />
+  <bpmn:message id="Message_resposta" name="Resposta ao cliente" />
+  <bpmn:process id="Process_atendimento" name="Atendimento ao cliente" isExecutable="false">
+    <bpmn:startEvent id="Start_chamado" name="Chamado recebido">
+      <bpmn:outgoing>Flow_inicio_analise</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="Definition_chamado" messageRef="Message_chamado" />
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_analisar" name="Analisar chamado">
+      <bpmn:incoming>Flow_inicio_analise</bpmn:incoming>
+      <bpmn:outgoing>Flow_analise_decisao</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_mais_informacoes" name="Precisa de mais informações?">
+      <bpmn:incoming>Flow_analise_decisao</bpmn:incoming>
+      <bpmn:outgoing>Flow_decisao_pedido</bpmn:outgoing>
+      <bpmn:outgoing>Flow_decisao_juncao</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:intermediateThrowEvent id="Event_pedir_informacoes" name="Pedir informações ao cliente">
+      <bpmn:incoming>Flow_decisao_pedido</bpmn:incoming>
+      <bpmn:outgoing>Flow_pedido_espera</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="Definition_pedido" messageRef="Message_pedido_informacoes" />
+    </bpmn:intermediateThrowEvent>
+    <bpmn:intermediateCatchEvent id="Event_informacoes_recebidas" name="Informações recebidas">
+      <bpmn:incoming>Flow_pedido_espera</bpmn:incoming>
+      <bpmn:outgoing>Flow_espera_juncao</bpmn:outgoing>
+      <bpmn:messageEventDefinition id="Definition_informacoes" messageRef="Message_informacoes" />
+    </bpmn:intermediateCatchEvent>
+    <bpmn:exclusiveGateway id="Gateway_juncao">
+      <bpmn:incoming>Flow_espera_juncao</bpmn:incoming>
+      <bpmn:incoming>Flow_decisao_juncao</bpmn:incoming>
+      <bpmn:outgoing>Flow_juncao_resolver</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_resolver" name="Resolver chamado">
+      <bpmn:incoming>Flow_juncao_resolver</bpmn:incoming>
+      <bpmn:outgoing>Flow_resolver_fim</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="End_resposta" name="Resposta enviada">
+      <bpmn:incoming>Flow_resolver_fim</bpmn:incoming>
+      <bpmn:messageEventDefinition id="Definition_resposta" messageRef="Message_resposta" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_inicio_analise" sourceRef="Start_chamado" targetRef="Task_analisar" />
+    <bpmn:sequenceFlow id="Flow_analise_decisao" sourceRef="Task_analisar" targetRef="Gateway_mais_informacoes" />
+    <bpmn:sequenceFlow id="Flow_decisao_pedido" name="Sim" sourceRef="Gateway_mais_informacoes" targetRef="Event_pedir_informacoes" />
+    <bpmn:sequenceFlow id="Flow_decisao_juncao" name="Não" sourceRef="Gateway_mais_informacoes" targetRef="Gateway_juncao" />
+    <bpmn:sequenceFlow id="Flow_pedido_espera" sourceRef="Event_pedir_informacoes" targetRef="Event_informacoes_recebidas" />
+    <bpmn:sequenceFlow id="Flow_espera_juncao" sourceRef="Event_informacoes_recebidas" targetRef="Gateway_juncao" />
+    <bpmn:sequenceFlow id="Flow_juncao_resolver" sourceRef="Gateway_juncao" targetRef="Task_resolver" />
+    <bpmn:sequenceFlow id="Flow_resolver_fim" sourceRef="Task_resolver" targetRef="End_resposta" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_atendimento">
+    <bpmndi:BPMNPlane id="Plane_atendimento" bpmnElement="Process_atendimento">
+      <bpmndi:BPMNShape id="Start_chamado_di" bpmnElement="Start_chamado"><dc:Bounds x="152" y="182" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_analisar_di" bpmnElement="Task_analisar"><dc:Bounds x="240" y="160" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_mais_informacoes_di" bpmnElement="Gateway_mais_informacoes" isMarkerVisible="true"><dc:Bounds x="395" y="175" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_pedir_informacoes_di" bpmnElement="Event_pedir_informacoes"><dc:Bounds x="502" y="82" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Event_informacoes_recebidas_di" bpmnElement="Event_informacoes_recebidas"><dc:Bounds x="602" y="82" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_juncao_di" bpmnElement="Gateway_juncao" isMarkerVisible="true"><dc:Bounds x="695" y="175" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_resolver_di" bpmnElement="Task_resolver"><dc:Bounds x="780" y="160" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_resposta_di" bpmnElement="End_resposta"><dc:Bounds x="952" y="182" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_inicio_analise_di" bpmnElement="Flow_inicio_analise"><di:waypoint x="188" y="200" /><di:waypoint x="240" y="200" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_analise_decisao_di" bpmnElement="Flow_analise_decisao"><di:waypoint x="340" y="200" /><di:waypoint x="395" y="200" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_decisao_pedido_di" bpmnElement="Flow_decisao_pedido"><di:waypoint x="420" y="175" /><di:waypoint x="420" y="100" /><di:waypoint x="502" y="100" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_decisao_juncao_di" bpmnElement="Flow_decisao_juncao"><di:waypoint x="445" y="200" /><di:waypoint x="695" y="200" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_pedido_espera_di" bpmnElement="Flow_pedido_espera"><di:waypoint x="538" y="100" /><di:waypoint x="602" y="100" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_espera_juncao_di" bpmnElement="Flow_espera_juncao"><di:waypoint x="638" y="100" /><di:waypoint x="720" y="100" /><di:waypoint x="720" y="175" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_juncao_resolver_di" bpmnElement="Flow_juncao_resolver"><di:waypoint x="745" y="200" /><di:waypoint x="780" y="200" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_resolver_fim_di" bpmnElement="Flow_resolver_fim"><di:waypoint x="880" y="200" /><di:waypoint x="952" y="200" /></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

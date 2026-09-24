@@ -1,11 +1,15 @@
 import { useLiveQuery } from 'dexie-react-hooks'
-import { FilePlus2, Trash2 } from 'lucide-react'
+import { FilePlus2, LayoutTemplate, Trash2 } from 'lucide-react'
+import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { Button } from '@/components/ui/button'
+import { AccountMenu } from '@/components/auth/AccountMenu'
+import { TemplatePicker } from '@/components/library/TemplatePicker'
 import { ThemeToggle } from '@/components/theme-toggle'
-import { BLANK_DIAGRAM_XML } from '@/lib/blank-diagram'
-import { db, type DiagramRecord } from '@/lib/db'
+import { Button } from '@/components/ui/button'
+import { createDiagram } from '@/lib/create-diagram'
+import { db } from '@/lib/db'
+import type { DiagramTemplate } from '@/templates'
 
 async function deleteDiagram(event: React.MouseEvent, id: string) {
   event.stopPropagation()
@@ -16,19 +20,15 @@ async function deleteDiagram(event: React.MouseEvent, id: string) {
 export function DiagramLibrary() {
   const navigate = useNavigate()
   const diagrams = useLiveQuery(() => db.diagrams.orderBy('updatedAt').reverse().toArray())
+  const [isTemplatePickerOpen, setIsTemplatePickerOpen] = useState(false)
+  const closeTemplatePicker = useCallback(() => setIsTemplatePickerOpen(false), [])
 
-  async function createDiagram() {
-    const id = crypto.randomUUID()
-    const now = Date.now()
-    const record: DiagramRecord = {
-      id,
-      name: 'Novo diagrama',
-      bpmnXml: BLANK_DIAGRAM_XML,
-      createdAt: now,
-      updatedAt: now,
-    }
-    await db.diagrams.add(record)
-    navigate(`/editor/${id}`)
+  async function createBlankDiagram() {
+    navigate(`/editor/${await createDiagram()}`)
+  }
+
+  async function createDiagramFromTemplate(template: DiagramTemplate) {
+    navigate(`/editor/${await createDiagram(template.name, template.xml)}`)
   }
 
   return (
@@ -41,12 +41,23 @@ export function DiagramLibrary() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <AccountMenu />
           <ThemeToggle />
-          <Button onClick={createDiagram}>
+          <Button variant="outline" onClick={() => setIsTemplatePickerOpen(true)}>
+            <LayoutTemplate /> A partir de template
+          </Button>
+          <Button onClick={createBlankDiagram}>
             <FilePlus2 /> Novo diagrama
           </Button>
         </div>
       </div>
+
+      {isTemplatePickerOpen && (
+        <TemplatePicker
+          onTemplateChosen={createDiagramFromTemplate}
+          onClose={closeTemplatePicker}
+        />
+      )}
 
       {diagrams?.length === 0 && (
         <div className="rounded-lg border border-dashed p-12 text-center text-muted-foreground">

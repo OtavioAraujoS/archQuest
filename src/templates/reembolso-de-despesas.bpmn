@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" id="Definitions_reembolso" targetNamespace="http://archquest.dev/templates">
+  <bpmn:process id="Process_reembolso" name="Reembolso de despesas" isExecutable="false">
+    <bpmn:startEvent id="Start_despesa" name="Despesa realizada">
+      <bpmn:outgoing>Flow_inicio_comprovantes</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_comprovantes" name="Enviar comprovantes">
+      <bpmn:incoming>Flow_inicio_comprovantes</bpmn:incoming>
+      <bpmn:outgoing>Flow_comprovantes_aprovacao</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_aprovar" name="Aprovar reembolso">
+      <bpmn:incoming>Flow_comprovantes_aprovacao</bpmn:incoming>
+      <bpmn:outgoing>Flow_aprovacao_decisao</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:boundaryEvent id="Timer_prazo" name="3 dias sem resposta" attachedToRef="Task_aprovar">
+      <bpmn:outgoing>Flow_prazo_escalar</bpmn:outgoing>
+      <bpmn:timerEventDefinition id="Definition_prazo">
+        <bpmn:timeDuration xsi:type="bpmn:tFormalExpression">P3D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+    <bpmn:exclusiveGateway id="Gateway_aprovado" name="Aprovado?">
+      <bpmn:incoming>Flow_aprovacao_decisao</bpmn:incoming>
+      <bpmn:outgoing>Flow_decisao_pagar</bpmn:outgoing>
+      <bpmn:outgoing>Flow_decisao_negado</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:serviceTask id="Task_pagar" name="Pagar reembolso">
+      <bpmn:incoming>Flow_decisao_pagar</bpmn:incoming>
+      <bpmn:outgoing>Flow_pagar_fim</bpmn:outgoing>
+    </bpmn:serviceTask>
+    <bpmn:endEvent id="End_pago" name="Reembolso pago">
+      <bpmn:incoming>Flow_pagar_fim</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="End_negado" name="Reembolso negado">
+      <bpmn:incoming>Flow_decisao_negado</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:userTask id="Task_escalar" name="Escalar para o financeiro">
+      <bpmn:incoming>Flow_prazo_escalar</bpmn:incoming>
+      <bpmn:outgoing>Flow_escalar_fim</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="End_escalado" name="Encaminhado ao financeiro">
+      <bpmn:incoming>Flow_escalar_fim</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_inicio_comprovantes" sourceRef="Start_despesa" targetRef="Task_comprovantes" />
+    <bpmn:sequenceFlow id="Flow_comprovantes_aprovacao" sourceRef="Task_comprovantes" targetRef="Task_aprovar" />
+    <bpmn:sequenceFlow id="Flow_aprovacao_decisao" sourceRef="Task_aprovar" targetRef="Gateway_aprovado" />
+    <bpmn:sequenceFlow id="Flow_decisao_pagar" name="Sim" sourceRef="Gateway_aprovado" targetRef="Task_pagar" />
+    <bpmn:sequenceFlow id="Flow_decisao_negado" name="Não" sourceRef="Gateway_aprovado" targetRef="End_negado" />
+    <bpmn:sequenceFlow id="Flow_pagar_fim" sourceRef="Task_pagar" targetRef="End_pago" />
+    <bpmn:sequenceFlow id="Flow_prazo_escalar" sourceRef="Timer_prazo" targetRef="Task_escalar" />
+    <bpmn:sequenceFlow id="Flow_escalar_fim" sourceRef="Task_escalar" targetRef="End_escalado" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_reembolso">
+    <bpmndi:BPMNPlane id="Plane_reembolso" bpmnElement="Process_reembolso">
+      <bpmndi:BPMNShape id="Start_despesa_di" bpmnElement="Start_despesa"><dc:Bounds x="152" y="182" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_comprovantes_di" bpmnElement="Task_comprovantes"><dc:Bounds x="240" y="160" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_aprovar_di" bpmnElement="Task_aprovar"><dc:Bounds x="400" y="160" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Timer_prazo_di" bpmnElement="Timer_prazo"><dc:Bounds x="432" y="222" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="470" y="262" width="100" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_aprovado_di" bpmnElement="Gateway_aprovado" isMarkerVisible="true"><dc:Bounds x="565" y="175" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_pagar_di" bpmnElement="Task_pagar"><dc:Bounds x="670" y="160" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_pago_di" bpmnElement="End_pago"><dc:Bounds x="842" y="182" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_negado_di" bpmnElement="End_negado"><dc:Bounds x="572" y="64" width="36" height="36" /><bpmndi:BPMNLabel><dc:Bounds x="614" y="75" width="100" height="14" /></bpmndi:BPMNLabel></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_escalar_di" bpmnElement="Task_escalar"><dc:Bounds x="400" y="300" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_escalado_di" bpmnElement="End_escalado"><dc:Bounds x="572" y="322" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_inicio_comprovantes_di" bpmnElement="Flow_inicio_comprovantes"><di:waypoint x="188" y="200" /><di:waypoint x="240" y="200" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_comprovantes_aprovacao_di" bpmnElement="Flow_comprovantes_aprovacao"><di:waypoint x="340" y="200" /><di:waypoint x="400" y="200" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_aprovacao_decisao_di" bpmnElement="Flow_aprovacao_decisao"><di:waypoint x="500" y="200" /><di:waypoint x="565" y="200" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_decisao_pagar_di" bpmnElement="Flow_decisao_pagar"><di:waypoint x="615" y="200" /><di:waypoint x="670" y="200" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_decisao_negado_di" bpmnElement="Flow_decisao_negado"><di:waypoint x="590" y="175" /><di:waypoint x="590" y="100" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_pagar_fim_di" bpmnElement="Flow_pagar_fim"><di:waypoint x="770" y="200" /><di:waypoint x="842" y="200" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_prazo_escalar_di" bpmnElement="Flow_prazo_escalar"><di:waypoint x="450" y="258" /><di:waypoint x="450" y="300" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_escalar_fim_di" bpmnElement="Flow_escalar_fim"><di:waypoint x="500" y="340" /><di:waypoint x="572" y="340" /></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

@@ -11,9 +11,8 @@ node_modules
 dist
 dist-ssr
 *.local
-task
-plan.md
-todo.md
+tasks/*
+.env
 
 
 # Editor directories and files
@@ -26,3 +25,7 @@ todo.md
 *.njsproj
 *.sln
 *.sw?
+
+.env
+.env.*
+!.env.example

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_aprovacao_compra" targetNamespace="http://archquest.dev/templates">
+  <bpmn:process id="Process_aprovacao_compra" name="Aprovação de compra" isExecutable="false">
+    <bpmn:startEvent id="Start_necessidade" name="Necessidade de compra">
+      <bpmn:outgoing>Flow_inicio_registro</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_registrar" name="Registrar solicitação de compra">
+      <bpmn:incoming>Flow_inicio_registro</bpmn:incoming>
+      <bpmn:outgoing>Flow_registro_valor</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_valor" name="Valor acima de R$ 5.000?">
+      <bpmn:incoming>Flow_registro_valor</bpmn:incoming>
+      <bpmn:outgoing>Flow_valor_diretoria</bpmn:outgoing>
+      <bpmn:outgoing>Flow_valor_gestor</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_diretoria" name="Aprovação da diretoria">
+      <bpmn:incoming>Flow_valor_diretoria</bpmn:incoming>
+      <bpmn:outgoing>Flow_diretoria_juncao</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_gestor" name="Aprovação do gestor">
+      <bpmn:incoming>Flow_valor_gestor</bpmn:incoming>
+      <bpmn:outgoing>Flow_gestor_juncao</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_juncao">
+      <bpmn:incoming>Flow_diretoria_juncao</bpmn:incoming>
+      <bpmn:incoming>Flow_gestor_juncao</bpmn:incoming>
+      <bpmn:outgoing>Flow_juncao_pedido</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_emitir_pedido" name="Emitir pedido de compra">
+      <bpmn:incoming>Flow_juncao_pedido</bpmn:incoming>
+      <bpmn:outgoing>Flow_pedido_fim</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="End_compra_realizada" name="Compra realizada">
+      <bpmn:incoming>Flow_pedido_fim</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_inicio_registro" sourceRef="Start_necessidade" targetRef="Task_registrar" />
+    <bpmn:sequenceFlow id="Flow_registro_valor" sourceRef="Task_registrar" targetRef="Gateway_valor" />
+    <bpmn:sequenceFlow id="Flow_valor_diretoria" name="Sim" sourceRef="Gateway_valor" targetRef="Task_diretoria" />
+    <bpmn:sequenceFlow id="Flow_valor_gestor" name="Não" sourceRef="Gateway_valor" targetRef="Task_gestor" />
+    <bpmn:sequenceFlow id="Flow_diretoria_juncao" sourceRef="Task_diretoria" targetRef="Gateway_juncao" />
+    <bpmn:sequenceFlow id="Flow_gestor_juncao" sourceRef="Task_gestor" targetRef="Gateway_juncao" />
+    <bpmn:sequenceFlow id="Flow_juncao_pedido" sourceRef="Gateway_juncao" targetRef="Task_emitir_pedido" />
+    <bpmn:sequenceFlow id="Flow_pedido_fim" sourceRef="Task_emitir_pedido" targetRef="End_compra_realizada" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="Diagram_aprovacao_compra">
+    <bpmndi:BPMNPlane id="Plane_aprovacao_compra" bpmnElement="Process_aprovacao_compra">
+      <bpmndi:BPMNShape id="Start_necessidade_di" bpmnElement="Start_necessidade"><dc:Bounds x="152" y="182" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_registrar_di" bpmnElement="Task_registrar"><dc:Bounds x="240" y="160" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_valor_di" bpmnElement="Gateway_valor" isMarkerVisible="true"><dc:Bounds x="395" y="175" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_diretoria_di" bpmnElement="Task_diretoria"><dc:Bounds x="500" y="60" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_gestor_di" bpmnElement="Task_gestor"><dc:Bounds x="500" y="260" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_juncao_di" bpmnElement="Gateway_juncao" isMarkerVisible="true"><dc:Bounds x="655" y="175" width="50" height="50" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_emitir_pedido_di" bpmnElement="Task_emitir_pedido"><dc:Bounds x="760" y="160" width="100" height="80" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="End_compra_realizada_di" bpmnElement="End_compra_realizada"><dc:Bounds x="912" y="182" width="36" height="36" /></bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_inicio_registro_di" bpmnElement="Flow_inicio_registro"><di:waypoint x="188" y="200" /><di:waypoint x="240" y="200" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_registro_valor_di" bpmnElement="Flow_registro_valor"><di:waypoint x="340" y="200" /><di:waypoint x="395" y="200" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_valor_diretoria_di" bpmnElement="Flow_valor_diretoria"><di:waypoint x="420" y="175" /><di:waypoint x="420" y="100" /><di:waypoint x="500" y="100" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_valor_gestor_di" bpmnElement="Flow_valor_gestor"><di:waypoint x="420" y="225" /><di:waypoint x="420" y="300" /><di:waypoint x="500" y="300" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_diretoria_juncao_di" bpmnElement="Flow_diretoria_juncao"><di:waypoint x="600" y="100" /><di:waypoint x="680" y="100" /><di:waypoint x="680" y="175" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_gestor_juncao_di" bpmnElement="Flow_gestor_juncao"><di:waypoint x="600" y="300" /><di:waypoint x="680" y="300" /><di:waypoint x="680" y="225" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_juncao_pedido_di" bpmnElement="Flow_juncao_pedido"><di:waypoint x="705" y="200" /><di:waypoint x="760" y="200" /></bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_pedido_fim_di" bpmnElement="Flow_pedido_fim"><di:waypoint x="860" y="200" /><di:waypoint x="912" y="200" /></bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>
