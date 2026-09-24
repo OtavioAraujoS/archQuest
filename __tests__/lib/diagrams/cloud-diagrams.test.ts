@@ -6,22 +6,14 @@ import {
   fetchCloudDiagramRow,
 } from '@/lib/diagrams/cloud-diagrams'
 import { makeDiagramRow } from './diagram-fixtures'
+import { createFakeDiagramsQuery as createFakeQueryFor, type FakeQueryResult } from './fake-diagrams-query'
 
 const { getSupabaseClient } = vi.hoisted(() => ({ getSupabaseClient: vi.fn() }))
 
 vi.mock('@/lib/supabase/supabase-client', () => ({ getSupabaseClient }))
 
-function createFakeDiagramsQuery(result: { data?: unknown; error: unknown }) {
-  const query = {
-    select: vi.fn(() => query),
-    order: vi.fn(async () => result),
-    eq: vi.fn(() => query),
-    maybeSingle: vi.fn(async () => result),
-    delete: vi.fn(() => query),
-    then: (resolve: (value: unknown) => void) => resolve(result),
-  }
-  getSupabaseClient.mockResolvedValue({ from: vi.fn(() => query) })
-  return query
+function createFakeDiagramsQuery(result: FakeQueryResult) {
+  return createFakeQueryFor(getSupabaseClient, result)
 }
 
 describe('cloud diagrams', () => {
