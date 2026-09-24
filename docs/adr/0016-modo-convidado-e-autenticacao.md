@@ -1,6 +1,6 @@
 # ADR-0016: Manter modo convidado e autenticar com magic link + Google
 
-- **Status**: Accepted
+- **Status**: Superseded por [ADR-0023](0023-autenticacao-com-magic-link-e-github.md)
 - **Data**: 2026-09-23
 
 ## Contexto
