@@ -1,7 +1,7 @@
 import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { db, type DiagramRecord } from '@/lib/db'
+import { db, GUEST_SYNC_FIELDS, type DiagramRecord } from '@/lib/db'
 import { DIAGRAM_TEMPLATES } from '@/templates'
 
 const { mockNavigate } = vi.hoisted(() => ({ mockNavigate: vi.fn() }))
@@ -19,6 +19,7 @@ function makeRecord(overrides: Partial<DiagramRecord> = {}): DiagramRecord {
     bpmnXml: '<xml />',
     createdAt: 1,
     updatedAt: 1,
+    ...GUEST_SYNC_FIELDS,
     ...overrides,
   }
 }
