@@ -3,6 +3,7 @@ import { liveQuery } from 'dexie'
 import { listPendingUploads } from '@/lib/diagrams/diagram-lists'
 import { INITIAL_SYNC_STATE, useSyncStore } from '@/lib/sync/sync-store'
 import { uploadDiagram } from '@/lib/sync/upload-diagram'
+import { withUploadLock } from '@/lib/sync/with-upload-lock'
 
 export const UPLOAD_DEBOUNCE_MS = 1000
 export const FIRST_RETRY_DELAY_MS = 2000
@@ -50,7 +51,7 @@ export function startDiagramSync(ownerId: string): () => void {
     try {
       do {
         isAnotherRoundRequested = false
-        await uploadPendingDiagrams()
+        await withUploadLock(uploadPendingDiagrams)
       } while (isAnotherRoundRequested && !isStopped)
       retryDelayMs = FIRST_RETRY_DELAY_MS
       if (!isStopped) useSyncStore.setState({ lastUploadFailed: false })

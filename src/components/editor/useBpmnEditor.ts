@@ -22,6 +22,7 @@ export function useBpmnEditor(id: string | undefined) {
   const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null)
   const [name, setName] = useState('')
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
+  const [loadRevision, setLoadRevision] = useState(0)
 
   useEffect(() => {
     if (!id || !containerRef.current) return
@@ -91,7 +92,12 @@ export function useBpmnEditor(id: string | undefined) {
       modeler.destroy()
       modelerRef.current = null
     }
-  }, [id])
+  }, [id, loadRevision])
+
+  function reloadDiagram() {
+    setStatus('loading')
+    setLoadRevision((revision) => revision + 1)
+  }
 
   async function persistName(nextName: string) {
     setName(nextName)
@@ -135,6 +141,7 @@ export function useBpmnEditor(id: string | undefined) {
     name,
     status,
     persistName,
+    reloadDiagram,
     handleExportBpmn,
     handleExportSvg,
     handleExportPng,
