@@ -5,10 +5,15 @@ import { setTimerExpression } from '@/components/editor/properties/timer/timer-c
 import type { TimerEventDefinition } from '@/components/editor/properties/timer/timer-event-definition'
 import { TimerField } from '@/components/editor/properties/timer/TimerField'
 
-vi.mock('@/components/editor/properties/timer/timer-commands', async (importOriginal) => ({
-  ...(await importOriginal<typeof import('@/components/editor/properties/timer/timer-commands')>()),
-  setTimerExpression: vi.fn(),
-}))
+vi.mock(
+  '@/components/editor/properties/timer/timer-commands',
+  async (importOriginal) => ({
+    ...(await importOriginal<
+      typeof import('@/components/editor/properties/timer/timer-commands')
+    >()),
+    setTimerExpression: vi.fn(),
+  }),
+)
 
 const timerEventShape = { id: 'Event_timer' }
 const services = {} as never
@@ -30,7 +35,9 @@ describe('TimerField', () => {
     renderTimerField({ $type: 'bpmn:TimerEventDefinition' })
 
     expect(screen.getByLabelText('Tipo de timer')).toHaveValue('')
-    expect(screen.getByRole('option', { name: 'Não definido' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('option', { name: 'Não definido' }),
+    ).toBeInTheDocument()
   })
 
   it('starts a newly chosen kind with a sensible default', () => {

@@ -20,7 +20,8 @@ export function TimerExpressionInputs({
   timerExpression: { kind, isoExpression },
   onIsoExpressionChange,
 }: Readonly<TimerExpressionInputsProps>) {
-  const localDateTime = kind === 'timeDate' && parseIsoLocalDateTime(isoExpression)
+  const localDateTime =
+    kind === 'timeDate' && parseIsoLocalDateTime(isoExpression)
   if (localDateTime) {
     return (
       <input

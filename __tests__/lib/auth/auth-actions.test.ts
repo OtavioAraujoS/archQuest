@@ -35,10 +35,10 @@ describe('auth actions', () => {
     })
   })
 
-  it('signs out', async () => {
+  it('signs out of this device only, keeping other devices signed in', async () => {
     await signOut()
 
-    expect(fakeSupabase.auth.signOut).toHaveBeenCalledOnce()
+    expect(fakeSupabase.auth.signOut).toHaveBeenCalledWith({ scope: 'local' })
   })
 
   it('rethrows the error reported by Supabase', async () => {

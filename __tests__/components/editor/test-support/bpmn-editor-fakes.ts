@@ -1,6 +1,6 @@
 import { vi } from 'vitest'
 
-import type { DiagramRecord } from '@/lib/db'
+import { GUEST_SYNC_FIELDS, type DiagramRecord } from '@/lib/db'
 
 export const fakeModeler = {
   importXML: vi.fn(),
@@ -62,6 +62,7 @@ export function makeDiagramRecord(
     bpmnXml: '<xml>original</xml>',
     createdAt: 1,
     updatedAt: 1,
+    ...GUEST_SYNC_FIELDS,
     ...overrides,
   }
 }

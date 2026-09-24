@@ -1,27 +1,21 @@
-import { fireEvent, render, screen, waitFor } from '@testing-library/react'
+import { fireEvent, screen, waitFor, within } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { db, type DiagramRecord } from '@/lib/db'
+import { db } from '@/lib/db'
 import { DIAGRAM_TEMPLATES } from '@/templates'
+import { makeLibraryDiagram } from './library-diagram-fixture'
 
 const { mockNavigate } = vi.hoisted(() => ({ mockNavigate: vi.fn() }))
 
-vi.mock('react-router-dom', () => ({
+vi.mock('react-router-dom', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('react-router-dom')>()),
   useNavigate: () => mockNavigate,
 }))
+vi.mock('@/components/templates/TemplatePreviewCanvas', () => ({
+  default: () => <div data-testid="template-preview" />,
+}))
 
-import { DiagramLibrary } from '@/components/library/DiagramLibrary'
-
-function makeRecord(overrides: Partial<DiagramRecord> = {}): DiagramRecord {
-  return {
-    id: 'diagram-1',
-    name: 'Processo de vendas',
-    bpmnXml: '<xml />',
-    createdAt: 1,
-    updatedAt: 1,
-    ...overrides,
-  }
-}
+import { renderDiagramLibrary } from './render-diagram-library'
 
 describe('DiagramLibrary', () => {
   beforeEach(async () => {
@@ -30,15 +24,28 @@ describe('DiagramLibrary', () => {
   })
 
   it('renders existing diagrams from the database', async () => {
-    await db.diagrams.add(makeRecord())
+    await db.diagrams.add(makeLibraryDiagram())
 
-    render(<DiagramLibrary />)
+    renderDiagramLibrary()
 
     expect(await screen.findByText('Processo de vendas')).toBeInTheDocument()
   })
 
+  it('invites to start the first diagram when the library is empty', async () => {
+    renderDiagramLibrary()
+
+    expect(
+      await screen.findByRole('heading', {
+        name: 'Seu primeiro processo começa aqui',
+      }),
+    ).toBeInTheDocument()
+    expect(
+      screen.queryByRole('searchbox', { name: 'Buscar diagramas' }),
+    ).not.toBeInTheDocument()
+  })
+
   it('creates a new diagram and navigates to its editor', async () => {
-    render(<DiagramLibrary />)
+    renderDiagramLibrary()
 
     fireEvent.click(screen.getByRole('button', { name: 'Novo diagrama' }))
 
@@ -48,47 +55,71 @@ describe('DiagramLibrary', () => {
   })
 
   it('creates a diagram from a template and navigates to its editor', async () => {
-    const [purchaseApproval] = DIAGRAM_TEMPLATES
-    render(<DiagramLibrary />)
+    const [, onboarding] = DIAGRAM_TEMPLATES
+    renderDiagramLibrary()
 
-    fireEvent.click(screen.getByRole('button', { name: 'A partir de template' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Usar modelo' }))
+    const picker = screen.getByRole('dialog')
     fireEvent.click(
-      screen.getByRole('button', { name: new RegExp(purchaseApproval.name) }),
+      within(picker).getByRole('tab', { name: new RegExp(onboarding.name) }),
+    )
+    fireEvent.click(
+      within(picker).getByRole('button', { name: 'Usar este modelo' }),
     )
 
     await waitFor(() => expect(mockNavigate).toHaveBeenCalledTimes(1))
     const [createdDiagram] = await db.diagrams.toArray()
     expect(createdDiagram).toMatchObject({
-      name: purchaseApproval.name,
-      bpmnXml: purchaseApproval.xml,
+      name: onboarding.name,
+      bpmnXml: onboarding.xml,
     })
     expect(mockNavigate).toHaveBeenCalledWith(`/editor/${createdDiagram.id}`)
   })
 
   it('closes the template picker without creating anything', () => {
-    render(<DiagramLibrary />)
+    renderDiagramLibrary()
 
-    fireEvent.click(screen.getByRole('button', { name: 'A partir de template' }))
+    fireEvent.click(screen.getByRole('button', { name: 'Usar modelo' }))
     fireEvent.click(screen.getByRole('button', { name: 'Fechar' }))
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
     expect(mockNavigate).not.toHaveBeenCalled()
   })
 
-  it('deletes a diagram after confirmation', async () => {
-    await db.diagrams.add(makeRecord())
-    const confirmSpy = vi.spyOn(window, 'confirm').mockReturnValue(true)
+  it('deletes a diagram after confirming in the dialog', async () => {
+    await db.diagrams.add(makeLibraryDiagram())
+    renderDiagramLibrary()
 
-    render(<DiagramLibrary />)
-    await screen.findByText('Processo de vendas')
-
-    fireEvent.click(screen.getByRole('button', { name: 'Excluir diagrama' }))
+    fireEvent.click(
+      await screen.findByRole('button', {
+        name: 'Excluir diagrama Processo de vendas',
+      }),
+    )
+    const dialog = screen.getByRole('dialog', {
+      name: 'Excluir “Processo de vendas”?',
+    })
+    fireEvent.click(
+      within(dialog).getByRole('button', { name: 'Excluir diagrama' }),
+    )
 
     await waitFor(async () => {
       await expect(db.diagrams.toArray()).resolves.toHaveLength(0)
     })
-    expect(screen.queryByText('Processo de vendas')).not.toBeInTheDocument()
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+  })
 
-    confirmSpy.mockRestore()
+  it('keeps the diagram when the deletion is cancelled', async () => {
+    await db.diagrams.add(makeLibraryDiagram())
+    renderDiagramLibrary()
+
+    fireEvent.click(
+      await screen.findByRole('button', {
+        name: 'Excluir diagrama Processo de vendas',
+      }),
+    )
+    fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }))
+
+    expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
+    await expect(db.diagrams.toArray()).resolves.toHaveLength(1)
   })
 })

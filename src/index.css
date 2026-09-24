@@ -1,5 +1,6 @@
 @import 'tailwindcss';
 @import 'tw-animate-css';
+@import '@fontsource-variable/archivo/wdth.css';
 
 @custom-variant dark (&:is(.dark *));
 
@@ -23,6 +24,8 @@
   --border: oklch(0.922 0 0);
   --input: oklch(0.922 0 0);
   --ring: oklch(0.623 0.214 259.815);
+  --bpmn-shape-fill: var(--card);
+  --bpmn-shape-stroke: var(--foreground);
 }
 
 .dark {
@@ -69,6 +72,7 @@
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+  --font-display: 'Archivo Variable', ui-sans-serif, system-ui, sans-serif;
 }
 
 @layer base {
@@ -77,5 +81,8 @@
   }
   body {
     @apply bg-background text-foreground;
+  }
+  ::selection {
+    background-color: color-mix(in oklch, var(--primary) 28%, transparent);
   }
 }

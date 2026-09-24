@@ -25,7 +25,11 @@ export const SUBPROCESS_GROUP: PaletteGroup = {
       id: 'event',
       label: 'Sub-processo de evento',
       className: 'bpmn-icon-event-subprocess-expanded',
-      attrs: { type: 'bpmn:SubProcess', isExpanded: true, triggeredByEvent: true },
+      attrs: {
+        type: 'bpmn:SubProcess',
+        isExpanded: true,
+        triggeredByEvent: true,
+      },
     },
     {
       id: 'transaction',

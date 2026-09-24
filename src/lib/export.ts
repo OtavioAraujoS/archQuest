@@ -1,4 +1,13 @@
-import type BpmnModeler from 'bpmn-js/lib/Modeler'
+import { resolveThemedColorsForExport } from '@/lib/diagram-colors'
+
+export interface DiagramSvgSource {
+  saveSVG: () => Promise<{ svg: string }>
+}
+
+export async function saveExportableSvg(diagramSource: DiagramSvgSource) {
+  const { svg } = await diagramSource.saveSVG()
+  return resolveThemedColorsForExport(svg)
+}
 
 export function downloadBlob(blob: Blob, filename: string) {
   const url = URL.createObjectURL(blob)
@@ -9,15 +18,19 @@ export function downloadBlob(blob: Blob, filename: string) {
   URL.revokeObjectURL(url)
 }
 
-export async function exportSvg(modeler: BpmnModeler, name: string) {
-  const { svg } = await modeler.saveSVG()
+export function downloadBpmnXml(xml: string, name: string) {
+  downloadBlob(new Blob([xml], { type: 'application/xml' }), `${name}.bpmn`)
+}
+
+export async function exportSvg(diagramSource: DiagramSvgSource, name: string) {
+  const svg = await saveExportableSvg(diagramSource)
   downloadBlob(new Blob([svg], { type: 'image/svg+xml' }), `${name}.svg`)
 }
 
 const PNG_EXPORT_SCALE = 2
 
-export async function exportPng(modeler: BpmnModeler, name: string) {
-  const { svg } = await modeler.saveSVG()
+export async function exportPng(diagramSource: DiagramSvgSource, name: string) {
+  const svg = await saveExportableSvg(diagramSource)
   const blob = await svgStringToPngBlob(svg)
   downloadBlob(blob, `${name}.png`)
 }

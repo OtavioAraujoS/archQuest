@@ -6,10 +6,16 @@ interface CycleInputsProps {
   onCycleChange: (cycle: TimerCycle) => void
 }
 
-export function CycleInputs({ cycle, onCycleChange }: Readonly<CycleInputsProps>) {
+export function CycleInputs({
+  cycle,
+  onCycleChange,
+}: Readonly<CycleInputsProps>) {
   function changeRepetitions(rawRepetitions: string) {
     const repetitions = Math.floor(Number(rawRepetitions))
-    onCycleChange({ ...cycle, repetitions: repetitions > 0 ? repetitions : undefined })
+    onCycleChange({
+      ...cycle,
+      repetitions: repetitions > 0 ? repetitions : undefined,
+    })
   }
 
   return (

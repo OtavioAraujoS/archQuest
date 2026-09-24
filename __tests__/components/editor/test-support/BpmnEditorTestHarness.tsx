@@ -1,4 +1,4 @@
-import { useBpmnEditor } from '@/components/editor/useBpmnEditor'
+import { useBpmnEditor } from '@/hooks/editor/useBpmnEditor'
 
 export function BpmnEditorTestHarness({ id }: Readonly<{ id?: string }>) {
   const {
@@ -6,6 +6,7 @@ export function BpmnEditorTestHarness({ id }: Readonly<{ id?: string }>) {
     name,
     status,
     persistName,
+    reloadDiagram,
     handleExportBpmn,
     handleExportSvg,
     handleExportPng,
@@ -23,6 +24,7 @@ export function BpmnEditorTestHarness({ id }: Readonly<{ id?: string }>) {
       <button onClick={handleExportBpmn}>export-bpmn</button>
       <button onClick={handleExportSvg}>export-svg</button>
       <button onClick={handleExportPng}>export-png</button>
+      <button onClick={reloadDiagram}>reload</button>
     </div>
   )
 }

@@ -1,7 +1,7 @@
 import type BpmnModeler from 'bpmn-js/lib/Modeler'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
-import { downloadBlob, exportPng, exportSvg } from '@/lib/export'
+import { downloadBlob, downloadBpmnXml, exportPng, exportSvg } from '@/lib/export'
 
 afterEach(() => {
   vi.restoreAllMocks()
@@ -24,6 +24,25 @@ describe('downloadBlob', () => {
     expect(createObjectURL).toHaveBeenCalledTimes(1)
     expect(click).toHaveBeenCalledTimes(1)
     expect(revokeObjectURL).toHaveBeenCalledWith('blob:mock-url')
+  })
+})
+
+describe('downloadBpmnXml', () => {
+  it('downloads the XML as a .bpmn file named after the diagram', async () => {
+    const { createObjectURL } = mockDownloadInternals()
+    const downloadNames: string[] = []
+    vi.spyOn(HTMLAnchorElement.prototype, 'click').mockImplementation(function (
+      this: HTMLAnchorElement,
+    ) {
+      downloadNames.push(this.download)
+    })
+
+    downloadBpmnXml('<bpmn:definitions />', 'Reembolso')
+
+    const [downloadedBlob] = createObjectURL.mock.calls[0] as [Blob]
+    expect(downloadNames).toEqual(['Reembolso.bpmn'])
+    expect(downloadedBlob.type).toBe('application/xml')
+    await expect(downloadedBlob.text()).resolves.toBe('<bpmn:definitions />')
   })
 })
 

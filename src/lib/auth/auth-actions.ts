@@ -1,15 +1,9 @@
-import { getSupabaseClient } from '@/lib/supabase/supabase-client'
+import { requireSupabaseClient } from '@/lib/supabase/require-supabase-client'
 
 export const AUTH_CALLBACK_PATH = '/auth/callback'
 
 function authCallbackUrl() {
   return `${window.location.origin}${AUTH_CALLBACK_PATH}`
-}
-
-async function requireSupabaseClient() {
-  const supabase = await getSupabaseClient()
-  if (!supabase) throw new Error('A nuvem não está configurada neste ambiente.')
-  return supabase
 }
 
 export async function signInWithGitHub() {
@@ -32,6 +26,6 @@ export async function sendMagicLink(email: string) {
 
 export async function signOut() {
   const supabase = await requireSupabaseClient()
-  const { error } = await supabase.auth.signOut()
+  const { error } = await supabase.auth.signOut({ scope: 'local' })
   if (error) throw error
 }

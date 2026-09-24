@@ -2,14 +2,18 @@ import { LogIn, LogOut } from 'lucide-react'
 import { useState } from 'react'
 
 import { LoginDialog } from '@/components/auth/LoginDialog'
+import { SignOutDialog } from '@/components/auth/SignOutDialog'
+import { useSignOutRequest } from '@/hooks/auth/useSignOutRequest'
 import { Button } from '@/components/ui/button'
-import { signOut } from '@/lib/auth/auth-actions'
 import { useAuthStore } from '@/lib/auth/auth-store'
+import { useCurrentDiagramOwnerId } from '@/lib/diagrams/diagram-owner'
 
 export function AccountMenu() {
   const status = useAuthStore((state) => state.status)
   const user = useAuthStore((state) => state.user)
+  const ownerId = useCurrentDiagramOwnerId()
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false)
+  const { pendingDiagramCount, requestSignOut, closeSignOutDialog } = useSignOutRequest(ownerId)
 
   if (status === 'signed-out') {
     return (
@@ -22,7 +26,7 @@ export function AccountMenu() {
     )
   }
 
-  if (status !== 'signed-in' || !user) return null
+  if (status !== 'signed-in' || !user || !ownerId) return null
 
   return (
     <div className="flex shrink-0 items-center gap-2" title={user.email ?? undefined}>
@@ -34,10 +38,17 @@ export function AccountMenu() {
         variant="ghost"
         size="icon"
         aria-label="Sair"
-        onClick={() => void signOut().catch(() => {})}
+        onClick={() => void requestSignOut()}
       >
         <LogOut />
       </Button>
+      {pendingDiagramCount !== null && (
+        <SignOutDialog
+          ownerId={ownerId}
+          pendingDiagramCount={pendingDiagramCount}
+          onClose={closeSignOutDialog}
+        />
+      )}
     </div>
   )
 }

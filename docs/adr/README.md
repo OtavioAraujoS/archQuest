@@ -30,6 +30,7 @@ Decisões de arquitetura do archQuest. Formato e regras em
 | [0021](0021-templates-estaticos.md) | Distribuir templates como arquivos `.bpmn` estáticos | Accepted |
 | [0022](0022-grupos-de-gateways-tarefas-e-sub-processos.md) | Transformar os botões de gateway, tarefa e sub-processo em grupos | Accepted |
 | [0023](0023-autenticacao-com-magic-link-e-github.md) | Autenticar com magic link + GitHub em vez de Google | Accepted |
+| [0024](0024-canvas-escuro-no-tema-escuro.md) | Manter o canvas do editor escuro no tema escuro | Accepted |
 
 ## Criando um ADR
 
