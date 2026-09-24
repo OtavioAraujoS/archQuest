@@ -1,11 +1,11 @@
-import { ChevronDown, FileCode2, FileUp, Image } from 'lucide-react'
+import { ChevronDown, FileUp } from 'lucide-react'
 import { useRef, type ChangeEvent } from 'react'
 
 import { SaveToFileMenuItem } from '@/components/editor/file-link/SaveToFileMenuItem'
+import { ExportMenuItems } from '@/components/export/ExportMenuItems'
 import { DropdownMenu } from '@/components/ui/dropdown-menu'
 import {
   DropdownMenuItem,
-  DropdownMenuLabel,
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu-item'
 
@@ -53,16 +53,11 @@ export function DiagramFileMenu({
           />
         )}
         <DropdownMenuSeparator />
-        <DropdownMenuLabel>Exportar como</DropdownMenuLabel>
-        <DropdownMenuItem onSelect={onExportBpmn}>
-          <FileCode2 /> Arquivo .bpmn
-        </DropdownMenuItem>
-        <DropdownMenuItem onSelect={onExportSvg}>
-          <Image /> Imagem SVG
-        </DropdownMenuItem>
-        <DropdownMenuItem onSelect={onExportPng}>
-          <Image /> Imagem PNG
-        </DropdownMenuItem>
+        <ExportMenuItems
+          onExportBpmn={onExportBpmn}
+          onExportSvg={onExportSvg}
+          onExportPng={onExportPng}
+        />
       </DropdownMenu>
       <input
         ref={importInputRef}

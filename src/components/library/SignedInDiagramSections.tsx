@@ -2,6 +2,8 @@ import { UploadCloud } from 'lucide-react'
 import type { ReactNode } from 'react'
 
 import { DiagramGrid } from '@/components/library/DiagramGrid'
+import { DisplayHeading } from '@/components/ui/display-heading'
+import { ErrorMessage } from '@/components/ui/error-message'
 import type { CloudPullStatus } from '@/hooks/library/useLibraryDiagrams'
 import { Button } from '@/components/ui/button'
 import type { DiagramRecord } from '@/lib/db'
@@ -36,10 +38,10 @@ export function SignedInDiagramSections({
           </output>
         )}
         {cloudPullStatus === 'failed' && (
-          <p role="alert" className="text-destructive text-sm">
+          <ErrorMessage>
             Não foi possível buscar seus diagramas na nuvem. Mostrando a cópia
             salva neste navegador.
-          </p>
+          </ErrorMessage>
         )}
         <DiagramGrid
           diagrams={accountDiagrams}
@@ -53,9 +55,9 @@ export function SignedInDiagramSections({
         <section className="flex flex-col gap-4 border-t pt-8">
           <div className="flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
             <div>
-              <h2 className="font-display text-xl font-semibold tracking-[-0.02em]">
+              <DisplayHeading size="subtitle">
                 Só neste navegador
-              </h2>
+              </DisplayHeading>
               <p className="text-muted-foreground text-sm">
                 Estes diagramas foram criados sem login e não estão na sua
                 conta.

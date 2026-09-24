@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 
-import { formatEditedAt } from '@/components/library/format-edited-at'
+import { formatEditedAt } from '@/lib/dates/format-edited-at'
 
 const NOW = new Date('2026-09-24T15:00:00-03:00').getTime()
 const MINUTE_MS = 60_000

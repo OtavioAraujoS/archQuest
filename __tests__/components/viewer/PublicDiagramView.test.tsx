@@ -44,31 +44,46 @@ describe('PublicDiagramView', () => {
   it('draws the published XML read-only and fits it on screen', async () => {
     render(<PublicDiagramView diagram={PUBLIC_DIAGRAM} />)
 
-    await waitFor(() => expect(fakeViewer.zoom).toHaveBeenCalledWith('fit-viewport'))
-    expect(fakeViewer.importXML).toHaveBeenCalledWith('<bpmn:definitions id="published" />')
+    await waitFor(() =>
+      expect(fakeViewer.zoom).toHaveBeenCalledWith('fit-viewport', 'auto'),
+    )
+    expect(fakeViewer.importXML).toHaveBeenCalledWith(
+      '<bpmn:definitions id="published" />',
+    )
   })
 
   it('shows the name and the last update, without any author', () => {
     render(<PublicDiagramView diagram={PUBLIC_DIAGRAM} />)
 
-    expect(screen.getByRole('heading', { name: 'Reembolso de despesas' })).toBeInTheDocument()
-    expect(screen.getByText(/Atualizado em .* · somente leitura/)).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Reembolso de despesas' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/Atualizado em .* · somente leitura/),
+    ).toBeInTheDocument()
     expect(document.body.textContent).not.toMatch(/@|autor/i)
   })
 
   it('downloads the .bpmn, SVG and PNG named after the diagram', () => {
     render(<PublicDiagramView diagram={PUBLIC_DIAGRAM} />)
 
-    fireEvent.click(screen.getByRole('button', { name: '.bpmn' }))
-    fireEvent.click(screen.getByRole('button', { name: 'SVG' }))
-    fireEvent.click(screen.getByRole('button', { name: 'PNG' }))
+    for (const exportLabel of ['Arquivo .bpmn', 'Imagem SVG', 'Imagem PNG']) {
+      fireEvent.click(screen.getByRole('button', { name: /Baixar/ }))
+      fireEvent.click(screen.getByRole('menuitem', { name: exportLabel }))
+    }
 
     expect(fakeExport.downloadBpmnXml).toHaveBeenCalledWith(
       '<bpmn:definitions id="published" />',
       'Reembolso de despesas',
     )
-    expect(fakeExport.exportSvg).toHaveBeenCalledWith(expect.anything(), 'Reembolso de despesas')
-    expect(fakeExport.exportPng).toHaveBeenCalledWith(expect.anything(), 'Reembolso de despesas')
+    expect(fakeExport.exportSvg).toHaveBeenCalledWith(
+      expect.anything(),
+      'Reembolso de despesas',
+    )
+    expect(fakeExport.exportPng).toHaveBeenCalledWith(
+      expect.anything(),
+      'Reembolso de despesas',
+    )
   })
 
   it('still offers the .bpmn download when the XML cannot be drawn', async () => {
@@ -76,7 +91,9 @@ describe('PublicDiagramView', () => {
 
     render(<PublicDiagramView diagram={PUBLIC_DIAGRAM} />)
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('Ainda dá para baixar o arquivo .bpmn')
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Ainda dá para baixar o arquivo .bpmn',
+    )
   })
 
   it('releases the viewer when leaving the page', () => {

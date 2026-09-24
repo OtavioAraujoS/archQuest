@@ -3,14 +3,14 @@ import { useEffect, useRef, useState } from 'react'
 
 import groupedPaletteModule from '@/components/editor/palette'
 import propertyCommandsModule from '@/components/editor/properties'
-import TextStyleRenderer from '@/components/editor/TextStyleRenderer'
-import textStyleModdle from '@/components/editor/text-style-moddle.json'
 import portugueseTranslationModule from '@/components/editor/translations'
 import { useDiagramExports } from '@/hooks/editor/useDiagramExports'
 import {
-  resolveThemedColorsForExport,
-  THEMED_DIAGRAM_RENDERER_COLORS,
-} from '@/lib/diagram-colors'
+  ARCHQUEST_RENDERING_OPTIONS,
+  textStyleRendererModule,
+} from '@/lib/bpmn/archquest-rendering-options'
+import { fitDiagramToViewport } from '@/lib/bpmn/fit-diagram-to-viewport'
+import { resolveThemedColorsForExport } from '@/lib/diagram-colors'
 import {
   createDiagramAutosave,
   type AutosaveState,
@@ -35,16 +35,12 @@ export function useBpmnEditor(id: string | undefined) {
 
     const modeler = new BpmnModeler({
       container: containerRef.current,
-      bpmnRenderer: THEMED_DIAGRAM_RENDERER_COLORS,
-      moddleExtensions: { archquest: textStyleModdle },
+      ...ARCHQUEST_RENDERING_OPTIONS,
       additionalModules: [
         groupedPaletteModule,
         propertyCommandsModule,
         portugueseTranslationModule,
-        {
-          __init__: ['textStyleRenderer'],
-          textStyleRenderer: ['type', TextStyleRenderer],
-        },
+        textStyleRendererModule,
       ],
     })
     modelerRef.current = modeler
@@ -60,9 +56,7 @@ export function useBpmnEditor(id: string | undefined) {
       setName(record.name)
       await modeler.importXML(record.bpmnXml)
       if (cancelled) return
-      modeler
-        .get<{ zoom: (level: string) => void }>('canvas')
-        .zoom('fit-viewport')
+      fitDiagramToViewport(modeler)
       setStatus('ready')
       if (!record.thumbnail) await saveMissingThumbnail()
     }

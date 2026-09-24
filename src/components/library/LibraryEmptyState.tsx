@@ -2,6 +2,7 @@ import { FilePlus2, LayoutTemplate } from 'lucide-react'
 
 import { ArchQuestMark } from '@/components/brand/ArchQuestMark'
 import { Button } from '@/components/ui/button'
+import { DisplayHeading } from '@/components/ui/display-heading'
 
 interface LibraryEmptyStateProps {
   message: string
@@ -18,9 +19,9 @@ export function LibraryEmptyState({
     <div className="flex flex-col items-center gap-4 rounded-xl border px-6 py-14 text-center">
       <ArchQuestMark className="size-12" />
       <div className="flex max-w-md flex-col gap-1">
-        <h2 className="font-display text-xl font-semibold tracking-[-0.02em]">
+        <DisplayHeading size="subtitle">
           Seu primeiro processo começa aqui
-        </h2>
+        </DisplayHeading>
         <p className="text-muted-foreground text-sm text-pretty">{message}</p>
       </div>
       <div className="flex flex-wrap justify-center gap-2">

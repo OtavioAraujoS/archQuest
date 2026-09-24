@@ -1,9 +1,8 @@
-import { useLiveQuery } from 'dexie-react-hooks'
 import { Check, LoaderCircle, TriangleAlert } from 'lucide-react'
 
 import { CloudSyncIndicator } from '@/components/editor/CloudSyncIndicator'
+import { useCachedDiagram } from '@/hooks/diagrams/useCachedDiagram'
 import type { AutosaveState } from '@/lib/diagrams/diagram-autosave'
-import { getCachedDiagram } from '@/lib/diagrams/diagram-lists'
 import { cn } from '@/lib/utils'
 
 const LOCAL_SAVE_DESCRIPTIONS: Record<
@@ -36,11 +35,7 @@ export function DiagramSaveStatus({
   diagramId,
   autosaveState,
 }: Readonly<DiagramSaveStatusProps>) {
-  const diagram = useLiveQuery(
-    () =>
-      diagramId ? getCachedDiagram(diagramId) : Promise.resolve(undefined),
-    [diagramId],
-  )
+  const diagram = useCachedDiagram(diagramId)
 
   if (diagram?.ownerId) return <CloudSyncIndicator diagramId={diagramId} />
   if (autosaveState === 'idle') return null

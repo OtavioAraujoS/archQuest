@@ -1,3 +1,6 @@
+import { Input } from '@/components/ui/input'
+import { NativeSelect } from '@/components/ui/native-select'
+
 import {
   DURATION_UNIT_LABELS,
   type DurationUnit,
@@ -25,15 +28,17 @@ export function DurationInputs({
   return (
     <div className="flex items-center gap-1">
       <span className="text-xs">{label}</span>
-      <input
+      <Input
         type="number"
         min={MINIMUM_AMOUNT}
+        size="sm"
         aria-label={`${label} (quantidade)`}
         value={duration.amount}
         onChange={(event) => changeAmount(event.target.value)}
-        className="bg-background h-8 w-16 rounded-md border px-2 text-sm"
+        className="w-16"
       />
-      <select
+      <NativeSelect
+        size="sm"
         aria-label={`${label} (unidade)`}
         value={duration.unit}
         onChange={(event) =>
@@ -42,14 +47,14 @@ export function DurationInputs({
             unit: event.target.value as DurationUnit,
           })
         }
-        className="bg-background h-8 flex-1 rounded-md border px-2 text-sm"
+        className="flex-1"
       >
         {Object.entries(DURATION_UNIT_LABELS).map(([unit, unitLabel]) => (
           <option key={unit} value={unit}>
             {unitLabel}
           </option>
         ))}
-      </select>
+      </NativeSelect>
     </div>
   )
 }

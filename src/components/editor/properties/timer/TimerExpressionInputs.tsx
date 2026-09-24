@@ -1,3 +1,5 @@
+import { Input } from '@/components/ui/input'
+
 import { CycleInputs } from './CycleInputs'
 import { DurationInputs } from './DurationInputs'
 import {
@@ -8,8 +10,6 @@ import {
 } from './timer-cycle-and-date'
 import { durationToIso, parseIsoDuration } from './timer-duration'
 import type { TimerExpression } from './timer-event-definition'
-
-const INPUT_CLASS = 'bg-background h-8 rounded-md border px-2 text-sm'
 
 interface TimerExpressionInputsProps {
   timerExpression: TimerExpression
@@ -24,15 +24,15 @@ export function TimerExpressionInputs({
     kind === 'timeDate' && parseIsoLocalDateTime(isoExpression)
   if (localDateTime) {
     return (
-      <input
+      <Input
         type="datetime-local"
+        size="sm"
         aria-label="Data e hora"
         value={localDateTime}
         onChange={(event) =>
           event.target.value &&
           onIsoExpressionChange(localDateTimeToIso(event.target.value))
         }
-        className={INPUT_CLASS}
       />
     )
   }
@@ -59,15 +59,16 @@ export function TimerExpressionInputs({
   }
 
   return (
-    <input
+    <Input
       key={isoExpression}
+      size="sm"
       aria-label="Expressão ISO 8601"
       defaultValue={isoExpression}
       onBlur={(event) =>
         event.target.value !== isoExpression &&
         onIsoExpressionChange(event.target.value.trim())
       }
-      className={`${INPUT_CLASS} font-mono`}
+      className="font-mono"
     />
   )
 }

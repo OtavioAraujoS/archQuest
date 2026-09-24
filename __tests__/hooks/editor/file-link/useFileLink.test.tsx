@@ -11,9 +11,13 @@ const { saveDiagramToFile, isFileSystemAccessSupported } = vi.hoisted(() => ({
 }))
 
 vi.mock('@/lib/file-system/save-diagram-to-file', () => ({ saveDiagramToFile }))
-vi.mock('@/lib/file-system/file-system-support', () => ({ isFileSystemAccessSupported }))
+vi.mock('@/lib/file-system/file-system-support', () => ({
+  isFileSystemAccessSupported,
+}))
 
-const fakeModeler = { saveXML: vi.fn(async () => ({ xml: '<xml>atual</xml>' })) }
+const fakeModeler = {
+  saveXML: vi.fn(async () => ({ xml: '<xml>atual</xml>' })),
+}
 const downloadBpmnInstead = vi.fn()
 
 function FileLinkHarness() {
@@ -27,7 +31,11 @@ function FileLinkHarness() {
 }
 
 function pressKey(init: KeyboardEventInit) {
-  const keydown = new KeyboardEvent('keydown', { bubbles: true, cancelable: true, ...init })
+  const keydown = new KeyboardEvent('keydown', {
+    bubbles: true,
+    cancelable: true,
+    ...init,
+  })
   window.dispatchEvent(keydown)
   return keydown
 }
@@ -50,7 +58,11 @@ describe('useFileLink save shortcut', () => {
 
     expect(keydown.defaultPrevented).toBe(true)
     await waitFor(() =>
-      expect(saveDiagramToFile).toHaveBeenCalledWith('purchase', '<xml>atual</xml>', 'Compras'),
+      expect(saveDiagramToFile).toHaveBeenCalledWith(
+        'purchase',
+        '<xml>atual</xml>',
+        'Compras',
+      ),
     )
   })
 
@@ -91,7 +103,11 @@ describe('useFileLink save shortcut', () => {
 
     pressKey({ key: 's', ctrlKey: true })
 
-    await waitFor(() => expect(alertSpy).toHaveBeenCalledWith(expect.stringContaining('permissão')))
+    await waitFor(() =>
+      expect(alertSpy).toHaveBeenCalledWith(
+        expect.stringContaining('permissão'),
+      ),
+    )
   })
 
   it('stops listening when the editor closes', () => {
