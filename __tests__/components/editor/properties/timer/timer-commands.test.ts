@@ -1,6 +1,9 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import { defaultIsoExpressionFor, setTimerExpression } from '@/components/editor/properties/timer/timer-commands'
+import {
+  defaultIsoExpressionFor,
+  setTimerExpression,
+} from '@/components/editor/properties/timer/timer-commands'
 import type { TimerEventDefinition } from '@/components/editor/properties/timer/timer-event-definition'
 
 const timerEventShape = { id: 'Event_timer' }

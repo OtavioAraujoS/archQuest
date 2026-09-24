@@ -10,7 +10,10 @@ const { publishDiagram, unpublishDiagram } = vi.hoisted(() => ({
   unpublishDiagram: vi.fn(),
 }))
 
-vi.mock('@/lib/sharing/publish-diagram', () => ({ publishDiagram, unpublishDiagram }))
+vi.mock('@/lib/sharing/publish-diagram', () => ({
+  publishDiagram,
+  unpublishDiagram,
+}))
 
 const PUBLISHED_SLUG = 'slugPublicoComEntropia01'
 
@@ -33,14 +36,18 @@ describe('ShareDialog', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Publicar link' }))
 
-    await waitFor(() => expect(publishDiagram).toHaveBeenCalledWith('account-1'))
+    await waitFor(() =>
+      expect(publishDiagram).toHaveBeenCalledWith('account-1'),
+    )
   })
 
   it('asks to wait while the diagram has never reached the cloud', () => {
     renderShareDialog(makeAccountDiagram({ version: 0, dirty: true }))
 
     expect(screen.getByText(/ainda está indo para a nuvem/)).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Publicar link' })).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: 'Publicar link' }),
+    ).not.toBeInTheDocument()
   })
 
   it('shows the /view link of a published diagram', () => {
@@ -58,8 +65,12 @@ describe('ShareDialog', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Copiar' }))
 
-    expect(await screen.findByRole('button', { name: 'Copiado' })).toBeInTheDocument()
-    expect(writeText).toHaveBeenCalledWith(`${window.location.origin}/view/${PUBLISHED_SLUG}`)
+    expect(
+      await screen.findByRole('button', { name: 'Copiado' }),
+    ).toBeInTheDocument()
+    expect(writeText).toHaveBeenCalledWith(
+      `${window.location.origin}/view/${PUBLISHED_SLUG}`,
+    )
   })
 
   it('unpublishes the diagram', async () => {
@@ -67,7 +78,9 @@ describe('ShareDialog', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Despublicar' }))
 
-    await waitFor(() => expect(unpublishDiagram).toHaveBeenCalledWith('account-1'))
+    await waitFor(() =>
+      expect(unpublishDiagram).toHaveBeenCalledWith('account-1'),
+    )
   })
 
   it('reports when the cloud cannot be reached', async () => {
@@ -76,7 +89,9 @@ describe('ShareDialog', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Publicar link' }))
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('Não foi possível falar com a nuvem')
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Não foi possível falar com a nuvem',
+    )
     expect(screen.getByRole('button', { name: 'Publicar link' })).toBeEnabled()
   })
 })

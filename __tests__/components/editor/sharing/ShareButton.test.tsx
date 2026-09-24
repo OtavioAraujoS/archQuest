@@ -3,7 +3,10 @@ import { beforeEach, describe, expect, it } from 'vitest'
 
 import { ShareButton } from '@/components/editor/sharing/ShareButton'
 import { db } from '@/lib/db'
-import { makeAccountDiagram, makeGuestDiagram } from '../../../lib/diagrams/diagram-fixtures'
+import {
+  makeAccountDiagram,
+  makeGuestDiagram,
+} from '../../../lib/diagrams/diagram-fixtures'
 
 describe('ShareButton', () => {
   beforeEach(async () => {
@@ -16,7 +19,9 @@ describe('ShareButton', () => {
 
     fireEvent.click(await screen.findByRole('button', { name: 'Compartilhar' }))
 
-    expect(screen.getByRole('dialog', { name: 'Compartilhar diagrama' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('dialog', { name: 'Compartilhar diagrama' }),
+    ).toBeInTheDocument()
   })
 
   it('is hidden for a guest diagram, which is not in the cloud', async () => {
@@ -33,7 +38,11 @@ describe('ShareButton', () => {
     render(<ShareButton diagramId="account-1" />)
     fireEvent.click(await screen.findByRole('button', { name: 'Compartilhar' }))
 
-    await act(() => db.diagrams.update('account-1', { publicSlug: 'slugPublicoComEntropia01' }))
+    await act(() =>
+      db.diagrams.update('account-1', {
+        publicSlug: 'slugPublicoComEntropia01',
+      }),
+    )
 
     expect(await screen.findByLabelText('Link público')).toHaveValue(
       `${window.location.origin}/view/slugPublicoComEntropia01`,

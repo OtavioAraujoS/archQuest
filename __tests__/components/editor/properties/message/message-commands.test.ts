@@ -3,14 +3,20 @@ import { describe, expect, it, vi } from 'vitest'
 import CreateAndAssignMessageHandler, {
   CREATE_AND_ASSIGN_MESSAGE,
 } from '@/components/editor/properties/message/CreateAndAssignMessageHandler'
-import { assignMessageToEvent, createMessageForEvent } from '@/components/editor/properties/message/message-commands'
+import {
+  assignMessageToEvent,
+  createMessageForEvent,
+} from '@/components/editor/properties/message/message-commands'
 import type {
   BpmnMessage,
   MessageEventDefinition,
 } from '@/components/editor/properties/message/message-event-definition'
 
 const eventShape = { id: 'Event_1' }
-const existingMessage = { $type: 'bpmn:Message', id: 'Message_1' } as BpmnMessage
+const existingMessage = {
+  $type: 'bpmn:Message',
+  id: 'Message_1',
+} as BpmnMessage
 
 function createFakeMessageServices() {
   return {
@@ -58,7 +64,10 @@ describe('createMessageForEvent', () => {
       '  Pedido recebido ',
     )
 
-    expect(message).toMatchObject({ $type: 'bpmn:Message', name: 'Pedido recebido' })
+    expect(message).toMatchObject({
+      $type: 'bpmn:Message',
+      name: 'Pedido recebido',
+    })
     expect(services.commandStack.execute).toHaveBeenCalledOnce()
     expect(services.commandStack.execute).toHaveBeenCalledWith(
       CREATE_AND_ASSIGN_MESSAGE,
@@ -77,7 +86,10 @@ describe('CreateAndAssignMessageHandler', () => {
     const modeling = { updateModdleProperties: vi.fn() }
     const definitions = { rootElements: [existingMessage] }
     const eventDefinition = emptyMessageDefinition()
-    const newMessage = { $type: 'bpmn:Message', id: 'Message_new' } as BpmnMessage
+    const newMessage = {
+      $type: 'bpmn:Message',
+      id: 'Message_new',
+    } as BpmnMessage
 
     new CreateAndAssignMessageHandler(modeling).preExecute({
       element: eventShape,

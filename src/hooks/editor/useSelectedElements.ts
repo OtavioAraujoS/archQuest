@@ -17,8 +17,9 @@ export function useSelectedElements(
   status: EditorStatus,
 ) {
   const [modeler, setModeler] = useState<BpmnModeler | null>(null)
-  const [selectedElements, setSelectedElements] = useState<unknown[]>(NO_ELEMENTS)
-  const [, setModelRevision] = useState(0)
+  const [selectedElements, setSelectedElements] =
+    useState<unknown[]>(NO_ELEMENTS)
+  const [modelRevision, setModelRevision] = useState(0)
 
   useEffect(() => {
     const currentModeler = modelerRef.current
@@ -48,5 +49,5 @@ export function useSelectedElements(
       )
   }, [status, modelerRef])
 
-  return { modeler, selectedElements }
+  return { modeler, selectedElements, modelRevision }
 }

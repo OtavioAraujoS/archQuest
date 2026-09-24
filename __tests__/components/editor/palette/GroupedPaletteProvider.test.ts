@@ -32,7 +32,9 @@ describe('GroupedPaletteProvider', () => {
       expect(paletteEntries[key].className).toContain(PALETTE_GROUP_CLASS)
     }
     expect(paletteEntries['archquest.events'].group).toBe('event')
-    expect(paletteEntries['create.data-object']).toEqual({ group: 'data-object' })
+    expect(paletteEntries['create.data-object']).toEqual({
+      group: 'data-object',
+    })
   })
 
   it('opens the group menu when a group button is clicked', () => {

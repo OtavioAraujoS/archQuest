@@ -32,7 +32,9 @@ export function durationToIso({ amount, unit }: TimerDuration) {
   return ISO_DURATION_BY_UNIT[unit](amount)
 }
 
-export function parseIsoDuration(isoDuration: string): TimerDuration | undefined {
+export function parseIsoDuration(
+  isoDuration: string,
+): TimerDuration | undefined {
   const match = SINGLE_UNIT_ISO_DURATION.exec(isoDuration.trim())
   if (!match) return undefined
 

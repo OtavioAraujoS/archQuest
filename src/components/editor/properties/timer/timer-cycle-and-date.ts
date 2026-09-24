@@ -24,7 +24,10 @@ export function parseIsoCycle(isoCycle: string): TimerCycle | undefined {
   const interval = parseIsoDuration(isoInterval)
   if (!interval) return undefined
 
-  return { repetitions: repetitions ? Number(repetitions) : undefined, interval }
+  return {
+    repetitions: repetitions ? Number(repetitions) : undefined,
+    interval,
+  }
 }
 
 export function localDateTimeToIso(localDateTime: string) {

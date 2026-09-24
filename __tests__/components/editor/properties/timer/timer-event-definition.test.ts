@@ -33,7 +33,9 @@ describe('findTimerEventDefinition', () => {
       eventDefinitions: [moddle.create('bpmn:MessageEventDefinition')],
     })
 
-    expect(findTimerEventDefinition({ businessObject: messageStart })).toBeUndefined()
+    expect(
+      findTimerEventDefinition({ businessObject: messageStart }),
+    ).toBeUndefined()
   })
 })
 
@@ -43,7 +45,9 @@ describe('readTimerExpression', () => {
   })
 
   it('reads the kind and ISO body of the configured expression', () => {
-    const timeCycle = moddle.create('bpmn:FormalExpression', { body: 'R3/PT10M' })
+    const timeCycle = moddle.create('bpmn:FormalExpression', {
+      body: 'R3/PT10M',
+    })
 
     expect(readTimerExpression(timerDefinitionWith({ timeCycle }))).toEqual({
       kind: 'timeCycle',

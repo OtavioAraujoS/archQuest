@@ -29,8 +29,12 @@ function tomorrowAtNineAsIso(now: Date) {
 
 export function defaultIsoExpressionFor(kind: TimerKind, now = new Date()) {
   if (kind === 'timeDate') return tomorrowAtNineAsIso(now)
-  if (kind === 'timeDuration') return durationToIso({ amount: 1, unit: 'hours' })
-  return cycleToIso({ repetitions: 3, interval: { amount: 10, unit: 'minutes' } })
+  if (kind === 'timeDuration')
+    return durationToIso({ amount: 1, unit: 'hours' })
+  return cycleToIso({
+    repetitions: 3,
+    interval: { amount: 10, unit: 'minutes' },
+  })
 }
 
 export function setTimerExpression(

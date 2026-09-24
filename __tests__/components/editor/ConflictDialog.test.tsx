@@ -8,7 +8,10 @@ const { keepLocalVersion, loadCloudVersion } = vi.hoisted(() => ({
   loadCloudVersion: vi.fn(),
 }))
 
-vi.mock('@/lib/sync/resolve-conflict', () => ({ keepLocalVersion, loadCloudVersion }))
+vi.mock('@/lib/sync/resolve-conflict', () => ({
+  keepLocalVersion,
+  loadCloudVersion,
+}))
 
 function renderConflictDialog() {
   const onCloudVersionLoaded = vi.fn()
@@ -32,9 +35,13 @@ describe('ConflictDialog', () => {
   it('asks for a choice and cannot be dismissed', () => {
     renderConflictDialog()
 
-    const dialog = screen.getByRole('dialog', { name: 'Este diagrama mudou em outro lugar' })
+    const dialog = screen.getByRole('dialog', {
+      name: 'Este diagrama mudou em outro lugar',
+    })
     expect(dialog).toHaveAttribute('closedby', 'none')
-    expect(screen.queryByRole('button', { name: 'Fechar' })).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: 'Fechar' }),
+    ).not.toBeInTheDocument()
   })
 
   it('keeps the local version', async () => {
@@ -43,7 +50,9 @@ describe('ConflictDialog', () => {
     fireEvent.click(screen.getByRole('button', { name: 'Manter a minha' }))
 
     expect(keepLocalVersion).toHaveBeenCalledWith('account-1')
-    expect(await screen.findByRole('button', { name: 'Mantendo…' })).toBeDisabled()
+    expect(
+      await screen.findByRole('button', { name: 'Mantendo…' }),
+    ).toBeDisabled()
   })
 
   it('loads the cloud version and asks the editor to reload', async () => {
@@ -57,7 +66,8 @@ describe('ConflictDialog', () => {
 
   it('leaves the editor when the diagram no longer exists in the cloud', async () => {
     loadCloudVersion.mockResolvedValue('deleted-in-cloud')
-    const { onCloudVersionLoaded, onDiagramDeletedInCloud } = renderConflictDialog()
+    const { onCloudVersionLoaded, onDiagramDeletedInCloud } =
+      renderConflictDialog()
 
     fireEvent.click(screen.getByRole('button', { name: 'Carregar a da nuvem' }))
 
@@ -71,7 +81,9 @@ describe('ConflictDialog', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Manter a minha' }))
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('Não foi possível falar com a nuvem')
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Não foi possível falar com a nuvem',
+    )
     expect(screen.getByRole('button', { name: 'Manter a minha' })).toBeEnabled()
   })
 })

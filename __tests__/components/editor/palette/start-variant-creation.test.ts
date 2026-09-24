@@ -29,7 +29,10 @@ describe('startVariantCreation', () => {
     const subProcess = { type: 'bpmn:SubProcess', isExpanded: true }
     expect(services.create.start).toHaveBeenCalledWith(
       clickEvent,
-      [subProcess, { type: 'bpmn:StartEvent', x: 40, y: 82, parent: subProcess }],
+      [
+        subProcess,
+        { type: 'bpmn:StartEvent', x: 40, y: 82, parent: subProcess },
+      ],
       { hints: { autoSelect: [subProcess] } },
     )
   })
