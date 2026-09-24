@@ -3,6 +3,7 @@ import { FilePlus2, LayoutTemplate, Trash2 } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
+import { AccountMenu } from '@/components/auth/AccountMenu'
 import { TemplatePicker } from '@/components/library/TemplatePicker'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
@@ -40,6 +41,7 @@ export function DiagramLibrary() {
           </p>
         </div>
         <div className="flex items-center gap-2">
+          <AccountMenu />
           <ThemeToggle />
           <Button variant="outline" onClick={() => setIsTemplatePickerOpen(true)}>
             <LayoutTemplate /> A partir de template
