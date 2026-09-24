@@ -1,4 +1,4 @@
-import { render, screen, within } from '@testing-library/react'
+import { screen, within } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { db } from '@/lib/db'
@@ -12,12 +12,17 @@ import {
   signOutDiagramOwner,
 } from '../../lib/diagrams/sign-in-as-owner'
 
-const { pullAccountDiagrams } = vi.hoisted(() => ({ pullAccountDiagrams: vi.fn() }))
+const { pullAccountDiagrams } = vi.hoisted(() => ({
+  pullAccountDiagrams: vi.fn(),
+}))
 
 vi.mock('@/lib/diagrams/pull-account-diagrams', () => ({ pullAccountDiagrams }))
-vi.mock('react-router-dom', () => ({ useNavigate: () => vi.fn() }))
+vi.mock('react-router-dom', async (importOriginal) => ({
+  ...(await importOriginal<typeof import('react-router-dom')>()),
+  useNavigate: () => vi.fn(),
+}))
 
-import { DiagramLibrary } from '@/components/library/DiagramLibrary'
+import { renderDiagramLibrary } from './render-diagram-library'
 
 describe('DiagramLibrary signed in', () => {
   beforeEach(async () => {
@@ -29,7 +34,7 @@ describe('DiagramLibrary signed in', () => {
   afterEach(signOutDiagramOwner)
 
   it('pulls the account diagrams from the cloud when opened', async () => {
-    render(<DiagramLibrary />)
+    renderDiagramLibrary()
 
     expect(pullAccountDiagrams).toHaveBeenCalledWith(OWNER_ID)
     expect(await screen.findByText(/salvos na sua conta/)).toBeInTheDocument()
@@ -38,7 +43,7 @@ describe('DiagramLibrary signed in', () => {
   it('lists the account diagrams from the cache', async () => {
     await db.diagrams.add(makeAccountDiagram())
 
-    render(<DiagramLibrary />)
+    renderDiagramLibrary()
 
     expect(await screen.findByText('Processo na conta')).toBeInTheDocument()
   })
@@ -46,36 +51,45 @@ describe('DiagramLibrary signed in', () => {
   it('shows guest diagrams apart, as only in this browser', async () => {
     await db.diagrams.bulkAdd([makeAccountDiagram(), makeGuestDiagram()])
 
-    render(<DiagramLibrary />)
+    renderDiagramLibrary()
 
-    const guestSection = (await screen.findByRole('heading', { name: 'Só neste navegador' }))
-      .closest('section') as HTMLElement
+    const guestSection = (
+      await screen.findByRole('heading', { name: 'Só neste navegador' })
+    ).closest('section') as HTMLElement
     expect(within(guestSection).getByText('Rascunho local')).toBeInTheDocument()
-    expect(within(guestSection).queryByText('Processo na conta')).not.toBeInTheDocument()
+    expect(
+      within(guestSection).queryByText('Processo na conta'),
+    ).not.toBeInTheDocument()
   })
 
   it('hides the guest section when there are no guest diagrams', async () => {
     await db.diagrams.add(makeAccountDiagram())
 
-    render(<DiagramLibrary />)
+    renderDiagramLibrary()
 
     await screen.findByText('Processo na conta')
-    expect(screen.queryByRole('heading', { name: 'Só neste navegador' })).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('heading', { name: 'Só neste navegador' }),
+    ).not.toBeInTheDocument()
   })
 
   it('warns and keeps the cached copy when the cloud cannot be reached', async () => {
     await db.diagrams.add(makeAccountDiagram())
     pullAccountDiagrams.mockRejectedValue(new Error('offline'))
 
-    render(<DiagramLibrary />)
+    renderDiagramLibrary()
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('Não foi possível buscar')
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Não foi possível buscar',
+    )
     expect(screen.getByText('Processo na conta')).toBeInTheDocument()
   })
 
   it('shows the account empty state once the cloud has nothing', async () => {
-    render(<DiagramLibrary />)
+    renderDiagramLibrary()
 
-    expect(await screen.findByText(/Nenhum diagrama na sua conta ainda/)).toBeInTheDocument()
+    expect(
+      await screen.findByText(/Nenhum diagrama na sua conta ainda/),
+    ).toBeInTheDocument()
   })
 })

@@ -2,7 +2,7 @@ import { Download, Image as ImageIcon } from 'lucide-react'
 
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
-import { usePublicViewer } from '@/components/viewer/usePublicViewer'
+import { usePublicViewer } from '@/hooks/viewer/usePublicViewer'
 import type { PublicDiagram } from '@/lib/supabase/database-types'
 
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'

@@ -13,7 +13,8 @@ interface ShareButtonProps {
 export function ShareButton({ diagramId }: Readonly<ShareButtonProps>) {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
   const diagram = useLiveQuery(
-    () => (diagramId ? getCachedDiagram(diagramId) : Promise.resolve(undefined)),
+    () =>
+      diagramId ? getCachedDiagram(diagramId) : Promise.resolve(undefined),
     [diagramId],
   )
 
@@ -21,11 +22,18 @@ export function ShareButton({ diagramId }: Readonly<ShareButtonProps>) {
 
   return (
     <>
-      <Button variant="outline" size="sm" onClick={() => setIsShareDialogOpen(true)}>
+      <Button
+        variant="outline"
+        size="sm"
+        onClick={() => setIsShareDialogOpen(true)}
+      >
         <Share2 /> Compartilhar
       </Button>
       {isShareDialogOpen && (
-        <ShareDialog diagram={diagram} onClose={() => setIsShareDialogOpen(false)} />
+        <ShareDialog
+          diagram={diagram}
+          onClose={() => setIsShareDialogOpen(false)}
+        />
       )}
     </>
   )

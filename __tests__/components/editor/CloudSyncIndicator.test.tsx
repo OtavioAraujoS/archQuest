@@ -4,7 +4,10 @@ import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { CloudSyncIndicator } from '@/components/editor/CloudSyncIndicator'
 import { db } from '@/lib/db'
 import { INITIAL_SYNC_STATE, useSyncStore } from '@/lib/sync/sync-store'
-import { makeAccountDiagram, makeGuestDiagram } from '../../lib/diagrams/diagram-fixtures'
+import {
+  makeAccountDiagram,
+  makeGuestDiagram,
+} from '../../lib/diagrams/diagram-fixtures'
 
 describe('CloudSyncIndicator', () => {
   beforeEach(async () => {
@@ -20,7 +23,9 @@ describe('CloudSyncIndicator', () => {
 
     render(<CloudSyncIndicator diagramId="account-1" />)
 
-    expect(await screen.findByRole('status')).toHaveTextContent('Salvo na nuvem')
+    expect(await screen.findByRole('status')).toHaveTextContent(
+      'Salvo na nuvem',
+    )
   })
 
   it('follows the pending flag stored in the browser', async () => {
@@ -39,7 +44,9 @@ describe('CloudSyncIndicator', () => {
 
     render(<CloudSyncIndicator diagramId="account-1" />)
 
-    expect(await screen.findByRole('status')).toHaveTextContent('Offline — alterações pendentes')
+    expect(await screen.findByRole('status')).toHaveTextContent(
+      'Offline — alterações pendentes',
+    )
   })
 
   it('explains the 2 MB limit on hover', async () => {

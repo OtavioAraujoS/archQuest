@@ -22,9 +22,9 @@ describe('findMessageEventDefinition', () => {
       eventDefinitions: [messageDefinition],
     })
 
-    expect(findMessageEventDefinition(shapeWithBusinessObject(startEvent))).toBe(
-      messageDefinition,
-    )
+    expect(
+      findMessageEventDefinition(shapeWithBusinessObject(startEvent)),
+    ).toBe(messageDefinition)
   })
 
   it('ignores events without a message definition', () => {
@@ -33,9 +33,9 @@ describe('findMessageEventDefinition', () => {
     })
     const task = moddle.create('bpmn:Task')
 
-    expect(findMessageEventDefinition(shapeWithBusinessObject(timerStart))).toBe(
-      undefined,
-    )
+    expect(
+      findMessageEventDefinition(shapeWithBusinessObject(timerStart)),
+    ).toBe(undefined)
     expect(findMessageEventDefinition(shapeWithBusinessObject(task))).toBe(
       undefined,
     )

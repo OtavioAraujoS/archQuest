@@ -1,76 +1,128 @@
-import { FilePlus2, LayoutTemplate } from 'lucide-react'
 import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { AccountMenu } from '@/components/auth/AccountMenu'
 import { MigrateGuestDiagramsDialog } from '@/components/auth/MigrateGuestDiagramsDialog'
+import { AppHeader } from '@/components/layout/AppHeader'
+import { DeleteDiagramDialog } from '@/components/library/DeleteDiagramDialog'
 import { DiagramGrid } from '@/components/library/DiagramGrid'
+import { LibraryEmptyState } from '@/components/library/LibraryEmptyState'
+import { LibraryHeading } from '@/components/library/LibraryHeading'
+import { LibraryToolbar } from '@/components/library/LibraryToolbar'
+import { NoSearchResults } from '@/components/library/NoSearchResults'
 import { SignedInDiagramSections } from '@/components/library/SignedInDiagramSections'
 import { TemplatePicker } from '@/components/library/TemplatePicker'
-import { useGuestMigrationPrompt } from '@/components/library/useGuestMigrationPrompt'
-import { useLibraryDiagrams } from '@/components/library/useLibraryDiagrams'
-import { ThemeToggle } from '@/components/theme-toggle'
-import { Button } from '@/components/ui/button'
-import { createDiagram } from '@/lib/create-diagram'
-import { deleteDiagram } from '@/lib/diagrams/delete-diagram'
-import type { DiagramTemplate } from '@/templates'
-
-async function confirmAndDeleteDiagram(id: string) {
-  if (!confirm('Excluir este diagrama? Essa ação não pode ser desfeita.')) return
-  try {
-    await deleteDiagram(id)
-  } catch {
-    alert('Não foi possível excluir o diagrama da nuvem. Confira a conexão e tente de novo.')
-  }
-}
+import { useDiagramDeletion } from '@/hooks/library/useDiagramDeletion'
+import { useDiagramFilters } from '@/hooks/library/useDiagramFilters'
+import { useGuestMigrationPrompt } from '@/hooks/library/useGuestMigrationPrompt'
+import { useLibraryDiagrams } from '@/hooks/library/useLibraryDiagrams'
+import { useOpenDiagramFile } from '@/hooks/library/useOpenDiagramFile'
+import { useStartDiagram } from '@/hooks/useStartDiagram'
+import { isFileSystemAccessSupported } from '@/lib/file-system/file-system-support'
+import { editorPath } from '@/lib/routes'
 
 export function DiagramLibrary() {
   const navigate = useNavigate()
-  const { ownerId, accountDiagrams, guestDiagrams, cloudPullStatus } = useLibraryDiagrams()
+  const { ownerId, accountDiagrams, guestDiagrams, cloudPullStatus } =
+    useLibraryDiagrams()
   const { isGuestMigrationOpen, openGuestMigration, closeGuestMigration } =
     useGuestMigrationPrompt(ownerId, guestDiagrams)
   const [isTemplatePickerOpen, setIsTemplatePickerOpen] = useState(false)
-  const closeTemplatePicker = useCallback(() => setIsTemplatePickerOpen(false), [])
-  const openDiagram = (id: string) => navigate(`/editor/${id}`)
+  const closeTemplatePicker = useCallback(
+    () => setIsTemplatePickerOpen(false),
+    [],
+  )
+  const openDiagram = (id: string) => navigate(editorPath(id))
+  const { startBlankDiagram, startDiagramFromTemplate } = useStartDiagram()
+  const { openFileAsDiagram, fileOpenError } = useOpenDiagramFile(openDiagram)
+  const filters = useDiagramFilters()
+  const deletion = useDiagramDeletion()
 
-  async function createBlankDiagram() {
-    openDiagram(await createDiagram())
-  }
+  const visibleAccountDiagrams = filters.applyFilters(accountDiagrams)
+  const visibleGuestDiagrams = filters.applyFilters(guestDiagrams)
+  const savedDiagramCount =
+    (ownerId ? (accountDiagrams?.length ?? 0) : 0) +
+    (guestDiagrams?.length ?? 0)
+  const visibleDiagramCount =
+    (ownerId ? (visibleAccountDiagrams?.length ?? 0) : 0) +
+    (visibleGuestDiagrams?.length ?? 0)
+  const openTemplatePicker = () => setIsTemplatePickerOpen(true)
 
-  async function createDiagramFromTemplate(template: DiagramTemplate) {
-    openDiagram(await createDiagram(template.name, template.xml))
+  function emptyStateWith(message: string) {
+    if (filters.isSearching) {
+      return (
+        <NoSearchResults
+          searchQuery={filters.searchQuery}
+          onClearSearch={filters.clearSearch}
+        />
+      )
+    }
+    return (
+      <LibraryEmptyState
+        message={message}
+        onStartBlankDiagram={() => void startBlankDiagram()}
+        onBrowseTemplates={openTemplatePicker}
+      />
+    )
   }
 
   return (
-    <div className="mx-auto max-w-5xl px-6 py-10">
-      <div className="mb-8 flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-semibold">archQuest</h1>
-          <p className="text-muted-foreground text-sm">
-            {ownerId
-              ? 'Seus diagramas de processo de negócio, salvos na sua conta.'
-              : 'Seus diagramas de processo de negócio, salvos localmente neste navegador.'}
+    <div className="flex min-h-svh flex-col">
+      <AppHeader />
+      <main className="mx-auto flex w-full max-w-6xl flex-col gap-8 px-4 py-10 sm:px-6 sm:py-14">
+        <LibraryHeading
+          isSignedIn={ownerId !== null}
+          canOpenFiles={isFileSystemAccessSupported()}
+          onStartBlankDiagram={() => void startBlankDiagram()}
+          onBrowseTemplates={openTemplatePicker}
+          onOpenFile={() => void openFileAsDiagram()}
+        />
+        {fileOpenError && (
+          <p role="alert" className="text-destructive text-sm">
+            {fileOpenError}
           </p>
-        </div>
-        <div className="flex items-center gap-2">
-          <AccountMenu />
-          <ThemeToggle />
-          <Button variant="outline" onClick={() => setIsTemplatePickerOpen(true)}>
-            <LayoutTemplate /> A partir de template
-          </Button>
-          <Button onClick={createBlankDiagram}>
-            <FilePlus2 /> Novo diagrama
-          </Button>
-        </div>
-      </div>
+        )}
+        {savedDiagramCount > 0 && (
+          <LibraryToolbar
+            searchQuery={filters.searchQuery}
+            onSearchQueryChange={filters.setSearchQuery}
+            sortOrder={filters.sortOrder}
+            onSortOrderChange={filters.setSortOrder}
+            visibleDiagramCount={visibleDiagramCount}
+          />
+        )}
+        {ownerId ? (
+          <SignedInDiagramSections
+            accountDiagrams={visibleAccountDiagrams}
+            guestDiagrams={visibleGuestDiagrams}
+            hasGuestDiagrams={(visibleGuestDiagrams?.length ?? 0) > 0}
+            cloudPullStatus={cloudPullStatus}
+            accountEmptyState={emptyStateWith(
+              'Nenhum diagrama na sua conta ainda. Crie o primeiro para começar.',
+            )}
+            onOpen={openDiagram}
+            onDelete={deletion.requestDeletion}
+            onMoveGuestDiagrams={openGuestMigration}
+          />
+        ) : (
+          <DiagramGrid
+            diagrams={visibleGuestDiagrams}
+            emptyState={emptyStateWith(
+              'Nenhum diagrama ainda. Crie o primeiro para começar a modelar um processo.',
+            )}
+            onOpen={openDiagram}
+            onDelete={deletion.requestDeletion}
+          />
+        )}
+      </main>
 
       {isTemplatePickerOpen && (
         <TemplatePicker
-          onTemplateChosen={createDiagramFromTemplate}
+          onTemplateChosen={(template) =>
+            void startDiagramFromTemplate(template)
+          }
           onClose={closeTemplatePicker}
         />
       )}
-
       {isGuestMigrationOpen && ownerId && guestDiagrams && (
         <MigrateGuestDiagramsDialog
           ownerId={ownerId}
@@ -78,22 +130,13 @@ export function DiagramLibrary() {
           onClose={closeGuestMigration}
         />
       )}
-
-      {ownerId ? (
-        <SignedInDiagramSections
-          accountDiagrams={accountDiagrams}
-          guestDiagrams={guestDiagrams}
-          cloudPullStatus={cloudPullStatus}
-          onOpen={openDiagram}
-          onDelete={confirmAndDeleteDiagram}
-          onMoveGuestDiagrams={openGuestMigration}
-        />
-      ) : (
-        <DiagramGrid
-          diagrams={guestDiagrams}
-          emptyMessage="Nenhum diagrama ainda. Crie o primeiro para começar a modelar um processo."
-          onOpen={openDiagram}
-          onDelete={confirmAndDeleteDiagram}
+      {deletion.diagramPendingDeletion && (
+        <DeleteDiagramDialog
+          diagram={deletion.diagramPendingDeletion}
+          isDeleting={deletion.isDeleting}
+          deletionError={deletion.deletionError}
+          onCancel={deletion.cancelDeletion}
+          onConfirm={() => void deletion.confirmDeletion()}
         />
       )}
     </div>

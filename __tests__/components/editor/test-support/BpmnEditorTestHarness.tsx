@@ -1,4 +1,4 @@
-import { useBpmnEditor } from '@/components/editor/useBpmnEditor'
+import { useBpmnEditor } from '@/hooks/editor/useBpmnEditor'
 
 export function BpmnEditorTestHarness({ id }: Readonly<{ id?: string }>) {
   const {

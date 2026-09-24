@@ -1,6 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
-import { durationToIso, parseIsoDuration, type TimerDuration } from '@/components/editor/properties/timer/timer-duration'
+import {
+  durationToIso,
+  parseIsoDuration,
+  type TimerDuration,
+} from '@/components/editor/properties/timer/timer-duration'
 
 const ROUND_TRIP_CASES: [TimerDuration, string][] = [
   [{ amount: 15, unit: 'minutes' }, 'PT15M'],
@@ -16,7 +20,10 @@ describe('durationToIso and parseIsoDuration', () => {
   })
 
   it('ignores surrounding whitespace', () => {
-    expect(parseIsoDuration('  PT30M ')).toEqual({ amount: 30, unit: 'minutes' })
+    expect(parseIsoDuration('  PT30M ')).toEqual({
+      amount: 30,
+      unit: 'minutes',
+    })
   })
 
   it.each(['PT1H30M', 'P1DT2H', 'P1M', 'PT', 'P', '2 horas', '', 'PT1.5H'])(

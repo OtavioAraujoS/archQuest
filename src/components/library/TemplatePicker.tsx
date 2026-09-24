@@ -1,7 +1,6 @@
-import { LayoutTemplate } from 'lucide-react'
-
+import { TemplateBrowser } from '@/components/templates/TemplateBrowser'
 import { ModalDialog } from '@/components/ui/modal-dialog'
-import { DIAGRAM_TEMPLATES, type DiagramTemplate } from '@/templates'
+import type { DiagramTemplate } from '@/templates'
 
 interface TemplatePickerProps {
   onTemplateChosen: (template: DiagramTemplate) => void
@@ -14,29 +13,14 @@ export function TemplatePicker({
 }: Readonly<TemplatePickerProps>) {
   return (
     <ModalDialog
-      title="Começar a partir de um template"
+      title="Começar a partir de um modelo"
       onClose={onClose}
-      className="max-w-2xl"
+      className="max-w-5xl"
     >
-      <ul className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-        {DIAGRAM_TEMPLATES.map((template) => (
-          <li key={template.id}>
-            <button
-              type="button"
-              onClick={() => onTemplateChosen(template)}
-              className="hover:border-ring focus-visible:ring-ring flex h-full w-full gap-3 rounded-lg border p-4 text-left transition-colors outline-none focus-visible:ring-2"
-            >
-              <LayoutTemplate className="text-muted-foreground mt-0.5 size-5 shrink-0" />
-              <span className="flex flex-col gap-1">
-                <span className="text-sm font-medium">{template.name}</span>
-                <span className="text-muted-foreground text-xs">
-                  {template.description}
-                </span>
-              </span>
-            </button>
-          </li>
-        ))}
-      </ul>
+      <TemplateBrowser
+        onTemplateChosen={onTemplateChosen}
+        previewHeightClassName="h-60 sm:h-80"
+      />
     </ModalDialog>
   )
 }

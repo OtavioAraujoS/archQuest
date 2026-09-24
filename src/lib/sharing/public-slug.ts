@@ -5,5 +5,5 @@ export function createPublicSlug() {
     new Uint8Array(PUBLIC_SLUG_RANDOM_BYTES),
   )
   const base64 = btoa(String.fromCodePoint(...randomBytes))
-  return base64.replaceAll('+', '-').replaceAll('/', '_').replace(/=+$/, '')
+  return base64.replaceAll('+', '-').replaceAll('/', '_').replaceAll('=', '')
 }

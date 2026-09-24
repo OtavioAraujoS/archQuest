@@ -1,6 +1,6 @@
 # ADR-0011: Oferecer tema claro/escuro derivado dos tokens do Tailwind
 
-- **Status**: Accepted
+- **Status**: Accepted (preenchimento das formas substituído pelo [ADR-0024](0024-canvas-escuro-no-tema-escuro.md))
 - **Data**: 2026-09-23
 
 ## Decisão

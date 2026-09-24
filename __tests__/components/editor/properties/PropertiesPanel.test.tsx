@@ -47,7 +47,8 @@ function createFakeModeler(initiallySelected: unknown[]) {
   let selectedElements = initiallySelected
   const services: Record<string, unknown> = {
     eventBus: {
-      on: (event: string, callback: () => void) => listeners.set(event, callback),
+      on: (event: string, callback: () => void) =>
+        listeners.set(event, callback),
       off: (event: string) => listeners.delete(event),
     },
     selection: { get: () => selectedElements },

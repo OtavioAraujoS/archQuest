@@ -17,7 +17,9 @@ export function ConflictDialog({
   onCloudVersionLoaded,
   onDiagramDeletedInCloud,
 }: Readonly<ConflictDialogProps>) {
-  const [pendingChoice, setPendingChoice] = useState<ConflictChoice | null>(null)
+  const [pendingChoice, setPendingChoice] = useState<ConflictChoice | null>(
+    null,
+  )
   const [hasFailed, setHasFailed] = useState(false)
 
   async function resolveWith(choice: ConflictChoice) {
@@ -44,11 +46,14 @@ export function ConflictDialog({
       className="max-w-md"
     >
       <p className="text-muted-foreground mb-5 text-sm">
-        Outra aba ou dispositivo salvou uma versão diferente na nuvem enquanto você
-        editava. Escolha qual versão continua valendo.
+        Outra aba ou dispositivo salvou uma versão diferente na nuvem enquanto
+        você editava. Escolha qual versão continua valendo.
       </p>
       <div className="flex flex-col gap-2">
-        <Button onClick={() => resolveWith('keep-local')} disabled={pendingChoice !== null}>
+        <Button
+          onClick={() => resolveWith('keep-local')}
+          disabled={pendingChoice !== null}
+        >
           {pendingChoice === 'keep-local' ? 'Mantendo…' : 'Manter a minha'}
         </Button>
         <p className="text-muted-foreground mb-2 text-xs">
@@ -59,7 +64,9 @@ export function ConflictDialog({
           onClick={() => resolveWith('load-cloud')}
           disabled={pendingChoice !== null}
         >
-          {pendingChoice === 'load-cloud' ? 'Carregando…' : 'Carregar a da nuvem'}
+          {pendingChoice === 'load-cloud'
+            ? 'Carregando…'
+            : 'Carregar a da nuvem'}
         </Button>
         <p className="text-muted-foreground text-xs">
           Descarta as alterações deste navegador e abre a versão salva na nuvem.

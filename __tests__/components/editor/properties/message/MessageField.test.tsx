@@ -1,7 +1,10 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { assignMessageToEvent, createMessageForEvent } from '@/components/editor/properties/message/message-commands'
+import {
+  assignMessageToEvent,
+  createMessageForEvent,
+} from '@/components/editor/properties/message/message-commands'
 import type {
   BpmnMessage,
   MessageEventDefinition,
@@ -24,7 +27,10 @@ function fakeBpmnMessage(id: string, name: string) {
 
 const eventShape = { id: 'Event_1' }
 const orderReceived = fakeBpmnMessage('Message_order', 'Pedido recebido')
-const paymentConfirmed = fakeBpmnMessage('Message_payment', 'Pagamento confirmado')
+const paymentConfirmed = fakeBpmnMessage(
+  'Message_payment',
+  'Pagamento confirmado',
+)
 
 const services = {
   definitions: { rootElements: [orderReceived, paymentConfirmed] },
@@ -105,6 +111,8 @@ describe('MessageField', () => {
   it('does not allow creating a message without a name', () => {
     renderMessageField()
 
-    expect(screen.getByRole('button', { name: 'Criar mensagem' })).toBeDisabled()
+    expect(
+      screen.getByRole('button', { name: 'Criar mensagem' }),
+    ).toBeDisabled()
   })
 })

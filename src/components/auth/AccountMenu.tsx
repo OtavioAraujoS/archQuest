@@ -3,7 +3,7 @@ import { useState } from 'react'
 
 import { LoginDialog } from '@/components/auth/LoginDialog'
 import { SignOutDialog } from '@/components/auth/SignOutDialog'
-import { useSignOutRequest } from '@/components/auth/useSignOutRequest'
+import { useSignOutRequest } from '@/hooks/auth/useSignOutRequest'
 import { Button } from '@/components/ui/button'
 import { useAuthStore } from '@/lib/auth/auth-store'
 import { useCurrentDiagramOwnerId } from '@/lib/diagrams/diagram-owner'

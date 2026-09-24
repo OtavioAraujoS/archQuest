@@ -2,6 +2,7 @@ import { useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 
 import { useAuthStore } from '@/lib/auth/auth-store'
+import { LIBRARY_PATH } from '@/lib/routes'
 
 function readProviderErrorFromUrl() {
   const searchParams = new URLSearchParams(window.location.search)
@@ -22,7 +23,7 @@ export function AuthCallback() {
     !providerError && (status === 'signed-in' || status === 'cloud-disabled')
 
   useEffect(() => {
-    if (shouldReturnToLibrary) navigate('/', { replace: true })
+    if (shouldReturnToLibrary) navigate(LIBRARY_PATH, { replace: true })
   }, [shouldReturnToLibrary, navigate])
 
   if (!providerError && status === 'loading') {
@@ -38,7 +39,7 @@ export function AuthCallback() {
         {providerError ??
           'O link de acesso expirou ou foi aberto em outro navegador. Peça um novo link.'}
       </p>
-      <Link to="/" replace className="text-sm font-medium underline underline-offset-4">
+      <Link to={LIBRARY_PATH} replace className="text-sm font-medium underline underline-offset-4">
         Voltar para os diagramas
       </Link>
     </div>

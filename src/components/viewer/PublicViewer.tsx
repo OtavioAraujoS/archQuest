@@ -1,7 +1,7 @@
 import { Link, useParams } from 'react-router-dom'
 
 import { PublicDiagramView } from '@/components/viewer/PublicDiagramView'
-import { usePublicDiagram } from '@/components/viewer/usePublicDiagram'
+import { usePublicDiagram } from '@/hooks/viewer/usePublicDiagram'
 
 function PublicViewerMessage({ title, detail }: Readonly<{ title: string; detail: string }>) {
   return (

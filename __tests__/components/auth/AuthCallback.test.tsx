@@ -15,7 +15,7 @@ function renderAuthCallback(authState: AuthState) {
   render(
     <MemoryRouter initialEntries={['/auth/callback']}>
       <Routes>
-        <Route path="/" element={<p>Biblioteca</p>} />
+        <Route path="/diagramas" element={<p>Biblioteca</p>} />
         <Route path="/auth/callback" element={<AuthCallback />} />
       </Routes>
     </MemoryRouter>,

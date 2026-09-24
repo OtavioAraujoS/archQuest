@@ -7,7 +7,9 @@ interface PublishedLinkFieldProps {
   publicUrl: string
 }
 
-export function PublishedLinkField({ publicUrl }: Readonly<PublishedLinkFieldProps>) {
+export function PublishedLinkField({
+  publicUrl,
+}: Readonly<PublishedLinkFieldProps>) {
   const inputId = useId()
   const inputRef = useRef<HTMLInputElement>(null)
   const [wasCopied, setWasCopied] = useState(false)
