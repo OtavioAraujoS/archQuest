@@ -11,6 +11,7 @@ import { LibraryToolbar } from '@/components/library/LibraryToolbar'
 import { NoSearchResults } from '@/components/library/NoSearchResults'
 import { SignedInDiagramSections } from '@/components/library/SignedInDiagramSections'
 import { TemplatePicker } from '@/components/library/TemplatePicker'
+import { ErrorMessage } from '@/components/ui/error-message'
 import { useDiagramDeletion } from '@/hooks/library/useDiagramDeletion'
 import { useDiagramFilters } from '@/hooks/library/useDiagramFilters'
 import { useGuestMigrationPrompt } from '@/hooks/library/useGuestMigrationPrompt'
@@ -76,11 +77,7 @@ export function DiagramLibrary() {
           onBrowseTemplates={openTemplatePicker}
           onOpenFile={() => void openFileAsDiagram()}
         />
-        {fileOpenError && (
-          <p role="alert" className="text-destructive text-sm">
-            {fileOpenError}
-          </p>
-        )}
+        {fileOpenError && <ErrorMessage>{fileOpenError}</ErrorMessage>}
         {savedDiagramCount > 0 && (
           <LibraryToolbar
             searchQuery={filters.searchQuery}

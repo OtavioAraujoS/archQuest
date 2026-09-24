@@ -1,3 +1,4 @@
+import { DisplayHeading } from '@/components/ui/display-heading'
 const PRINCIPLES = [
   {
     title: 'BPMN 2.0 de verdade',
@@ -25,12 +26,9 @@ export function PrinciplesSection() {
   return (
     <section aria-labelledby="principles-title" className="border-t">
       <div className="mx-auto grid max-w-6xl gap-10 px-4 py-16 sm:px-6 sm:py-24 lg:grid-cols-[18rem_1fr]">
-        <h2
-          id="principles-title"
-          className="font-display text-3xl font-semibold tracking-[-0.02em] text-balance sm:text-4xl"
-        >
+        <DisplayHeading id="principles-title">
           Feito para quem mapeia processos
-        </h2>
+        </DisplayHeading>
         <dl className="grid gap-x-10 sm:grid-cols-2">
           {PRINCIPLES.map((principle) => (
             <div

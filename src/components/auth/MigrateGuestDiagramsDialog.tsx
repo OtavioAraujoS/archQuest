@@ -2,6 +2,8 @@ import { useState } from 'react'
 
 import { GuestDiagramChecklist } from '@/components/auth/GuestDiagramChecklist'
 import { Button } from '@/components/ui/button'
+import { DialogActions } from '@/components/ui/dialog-actions'
+import { ErrorMessage } from '@/components/ui/error-message'
 import { ModalDialog } from '@/components/ui/modal-dialog'
 import type { DiagramRecord } from '@/lib/db'
 import { moveGuestDiagramsToAccount } from '@/lib/diagrams/move-guest-diagrams-to-account'
@@ -21,9 +23,9 @@ export function MigrateGuestDiagramsDialog({
   guestDiagrams,
   onClose,
 }: Readonly<MigrateGuestDiagramsDialogProps>) {
-  const [selectedDiagramIds, setSelectedDiagramIds] = useState<ReadonlySet<string>>(
-    () => new Set(guestDiagrams.map((diagram) => diagram.id)),
-  )
+  const [selectedDiagramIds, setSelectedDiagramIds] = useState<
+    ReadonlySet<string>
+  >(() => new Set(guestDiagrams.map((diagram) => diagram.id)))
   const [isMoving, setIsMoving] = useState(false)
   const [hasFailed, setHasFailed] = useState(false)
 
@@ -49,11 +51,16 @@ export function MigrateGuestDiagramsDialog({
   }
 
   return (
-    <ModalDialog title="Levar diagramas para a sua conta" onClose={onClose} className="max-w-md">
+    <ModalDialog
+      title="Levar diagramas para a sua conta"
+      onClose={onClose}
+      className="max-w-md"
+    >
       <p className="text-muted-foreground mb-4 text-sm">
-        Encontramos {diagramCountLabel(guestDiagrams.length)} criados neste navegador sem
-        login. Os escolhidos vão para a sua conta e ficam disponíveis em outros
-        dispositivos; os outros continuam só neste navegador.
+        Encontramos {diagramCountLabel(guestDiagrams.length)} criados neste
+        navegador sem login. Os escolhidos vão para a sua conta e ficam
+        disponíveis em outros dispositivos; os outros continuam só neste
+        navegador.
       </p>
       <GuestDiagramChecklist
         guestDiagrams={guestDiagrams}
@@ -61,11 +68,11 @@ export function MigrateGuestDiagramsDialog({
         onToggle={toggleDiagram}
       />
       {hasFailed && (
-        <p role="alert" className="text-destructive mt-3 text-sm">
+        <ErrorMessage className="mt-3">
           Não foi possível mover os diagramas. Tente de novo.
-        </p>
+        </ErrorMessage>
       )}
-      <div className="mt-5 flex justify-end gap-2">
+      <DialogActions className="mt-5">
         <Button variant="ghost" onClick={onClose} disabled={isMoving}>
           Agora não
         </Button>
@@ -77,7 +84,7 @@ export function MigrateGuestDiagramsDialog({
             ? 'Enviando…'
             : `Enviar ${diagramCountLabel(selectedDiagramIds.size)} para a conta`}
         </Button>
-      </div>
+      </DialogActions>
     </ModalDialog>
   )
 }

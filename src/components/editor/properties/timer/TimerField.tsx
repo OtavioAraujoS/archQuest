@@ -1,3 +1,5 @@
+import { NativeSelect } from '@/components/ui/native-select'
+
 import {
   defaultIsoExpressionFor,
   setTimerExpression,
@@ -41,11 +43,11 @@ export function TimerField({
   return (
     <fieldset className="flex flex-col gap-2">
       <legend className="mb-1 text-xs font-medium">Timer</legend>
-      <select
+      <NativeSelect
+        size="sm"
         aria-label="Tipo de timer"
         value={timerExpression?.kind ?? NOT_DEFINED}
         onChange={(event) => changeKind(event.target.value as TimerKind)}
-        className="bg-background h-8 rounded-md border px-2 text-sm"
       >
         {!timerExpression && <option value={NOT_DEFINED}>Não definido</option>}
         {Object.entries(TIMER_KIND_LABELS).map(([kind, label]) => (
@@ -53,7 +55,7 @@ export function TimerField({
             {label}
           </option>
         ))}
-      </select>
+      </NativeSelect>
       {timerExpression && (
         <TimerExpressionInputs
           timerExpression={timerExpression}

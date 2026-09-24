@@ -1,3 +1,4 @@
+import { formatEditedAt } from '@/lib/dates/format-edited-at'
 import type { DiagramRecord } from '@/lib/db'
 
 interface GuestDiagramChecklistProps {
@@ -24,7 +25,7 @@ export function GuestDiagramChecklist({
             />
             <span className="truncate text-sm font-medium">{diagram.name}</span>
             <span className="text-muted-foreground text-xs">
-              Editado em {new Date(diagram.updatedAt).toLocaleString()}
+              {formatEditedAt(diagram.updatedAt)}
             </span>
           </label>
         </li>

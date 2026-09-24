@@ -3,7 +3,7 @@ import { Trash2 } from 'lucide-react'
 import {
   formatEditedAt,
   formatFullDateTime,
-} from '@/components/library/format-edited-at'
+} from '@/lib/dates/format-edited-at'
 import { Button } from '@/components/ui/button'
 import type { DiagramRecord } from '@/lib/db'
 

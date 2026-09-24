@@ -3,12 +3,17 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { db } from '@/lib/db'
 
-import { fakeModeler, resetBpmnEditorFakes } from '../../components/editor/test-support/bpmn-editor-fakes'
+import {
+  fakeModeler,
+  resetBpmnEditorFakes,
+} from '../../components/editor/test-support/bpmn-editor-fakes'
 import { renderLoadedBpmnEditor } from '../../components/editor/test-support/render-bpmn-editor'
 
 vi.mock(
   'bpmn-js/lib/Modeler',
-  async () => (await import('../../components/editor/test-support/bpmn-editor-fakes')).fakeBpmnModelerModule,
+  async () =>
+    (await import('../../components/editor/test-support/bpmn-editor-fakes'))
+      .fakeBpmnModelerModule,
 )
 
 const AUTOSAVE_DEBOUNCE_MS = 800

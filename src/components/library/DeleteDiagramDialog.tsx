@@ -1,4 +1,6 @@
 import { Button } from '@/components/ui/button'
+import { DialogActions } from '@/components/ui/dialog-actions'
+import { ErrorMessage } from '@/components/ui/error-message'
 import { ModalDialog } from '@/components/ui/modal-dialog'
 import type { DiagramRecord } from '@/lib/db'
 
@@ -28,18 +30,16 @@ export function DeleteDiagramDialog({
         O diagrama sai da sua lista e essa ação não pode ser desfeita.
       </p>
       {deletionError && (
-        <p role="alert" className="text-destructive mt-3 text-sm">
-          {deletionError}
-        </p>
+        <ErrorMessage className="mt-3">{deletionError}</ErrorMessage>
       )}
-      <div className="mt-6 flex justify-end gap-2">
+      <DialogActions>
         <Button variant="outline" onClick={onCancel} disabled={isDeleting}>
           Cancelar
         </Button>
         <Button variant="destructive" onClick={onConfirm} disabled={isDeleting}>
           {isDeleting ? 'Excluindo…' : 'Excluir diagrama'}
         </Button>
-      </div>
+      </DialogActions>
     </ModalDialog>
   )
 }

@@ -1,7 +1,6 @@
-import { useLiveQuery } from 'dexie-react-hooks'
 import { CloudCheck, CloudOff, CloudUpload, TriangleAlert } from 'lucide-react'
 
-import { getCachedDiagram } from '@/lib/diagrams/diagram-lists'
+import { useCachedDiagram } from '@/hooks/diagrams/useCachedDiagram'
 import {
   describeCloudSyncStatus,
   type CloudSyncTone,
@@ -30,11 +29,7 @@ interface CloudSyncIndicatorProps {
 export function CloudSyncIndicator({
   diagramId,
 }: Readonly<CloudSyncIndicatorProps>) {
-  const diagram = useLiveQuery(
-    () =>
-      diagramId ? getCachedDiagram(diagramId) : Promise.resolve(undefined),
-    [diagramId],
-  )
+  const diagram = useCachedDiagram(diagramId)
   const syncState = useSyncStore()
   const cloudSyncStatus = describeCloudSyncStatus(diagram, syncState)
   if (!cloudSyncStatus) return null

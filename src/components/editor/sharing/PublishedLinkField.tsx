@@ -2,6 +2,7 @@ import { Check, Copy } from 'lucide-react'
 import { useId, useRef, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 interface PublishedLinkFieldProps {
   publicUrl: string
@@ -29,13 +30,13 @@ export function PublishedLinkField({
         Link público
       </label>
       <div className="flex gap-2">
-        <input
+        <Input
           id={inputId}
           ref={inputRef}
           readOnly
           value={publicUrl}
           onFocus={(event) => event.target.select()}
-          className="border-input bg-background min-w-0 flex-1 rounded-md border px-3 text-sm"
+          className="min-w-0 flex-1"
         />
         <Button variant="outline" onClick={copyPublicUrl}>
           {wasCopied ? <Check /> : <Copy />}

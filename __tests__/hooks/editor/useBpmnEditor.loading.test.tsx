@@ -16,7 +16,9 @@ import {
 
 vi.mock(
   'bpmn-js/lib/Modeler',
-  async () => (await import('../../components/editor/test-support/bpmn-editor-fakes')).fakeBpmnModelerModule,
+  async () =>
+    (await import('../../components/editor/test-support/bpmn-editor-fakes'))
+      .fakeBpmnModelerModule,
 )
 
 describe('useBpmnEditor loading', () => {
@@ -30,7 +32,7 @@ describe('useBpmnEditor loading', () => {
 
     expect(screen.getByTestId('name')).toHaveValue('Processo original')
     expect(fakeModeler.importXML).toHaveBeenCalledWith('<xml>original</xml>')
-    expect(fakeModeler.zoom).toHaveBeenCalledWith('fit-viewport')
+    expect(fakeModeler.zoom).toHaveBeenCalledWith('fit-viewport', 'auto')
   })
 
   it('generates the missing thumbnail on first open without touching updatedAt', async () => {

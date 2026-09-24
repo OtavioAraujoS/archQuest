@@ -1,6 +1,7 @@
 import { FilePlus2, FileUp, LayoutTemplate } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
+import { DisplayHeading } from '@/components/ui/display-heading'
 
 interface LibraryHeadingProps {
   isSignedIn: boolean
@@ -20,9 +21,7 @@ export function LibraryHeading({
   return (
     <div className="flex flex-col gap-6 md:flex-row md:items-end md:justify-between">
       <div className="flex flex-col gap-2">
-        <h1 className="font-display text-3xl font-semibold tracking-[-0.02em] sm:text-4xl">
-          Meus diagramas
-        </h1>
+        <DisplayHeading as="h1">Meus diagramas</DisplayHeading>
         <p className="text-muted-foreground text-sm">
           {isSignedIn
             ? 'Seus diagramas de processo de negócio, salvos na sua conta.'
