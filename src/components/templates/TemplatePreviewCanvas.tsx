@@ -1,4 +1,4 @@
-import { useTemplatePreviewViewer } from '@/components/landing/useTemplatePreviewViewer'
+import { useTemplatePreviewViewer } from '@/components/templates/useTemplatePreviewViewer'
 
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
 import 'bpmn-js/dist/assets/bpmn-js.css'

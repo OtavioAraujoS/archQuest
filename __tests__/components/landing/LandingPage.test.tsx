@@ -14,7 +14,7 @@ vi.mock('react-router-dom', async (importOriginal) => ({
   useNavigate: () => mockNavigate,
 }))
 vi.mock('@/lib/create-diagram', () => ({ createDiagram: mockCreateDiagram }))
-vi.mock('@/components/landing/TemplatePreviewCanvas', () => ({
+vi.mock('@/components/templates/TemplatePreviewCanvas', () => ({
   default: ({ bpmnXml }: { bpmnXml: string }) => (
     <div data-testid="preview" data-bpmn-xml={bpmnXml} />
   ),

@@ -3,7 +3,7 @@ import { LandingFooter } from '@/components/landing/LandingFooter'
 import { LandingHeader } from '@/components/landing/LandingHeader'
 import { PrinciplesSection } from '@/components/landing/PrinciplesSection'
 import { TemplateShowcase } from '@/components/landing/TemplateShowcase'
-import { useStartDiagram } from '@/components/landing/useStartDiagram'
+import { useStartDiagram } from '@/hooks/useStartDiagram'
 
 export function LandingPage() {
   const { startBlankDiagram, startDiagramFromTemplate } = useStartDiagram()

@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from 'react'
 import TextStyleRenderer from '@/components/editor/TextStyleRenderer'
 import { useIsDarkTheme } from '@/components/editor/style/useIsDarkTheme'
 import textStyleModdle from '@/components/editor/text-style-moddle.json'
-import { readDiagramThemeColors } from '@/components/landing/read-diagram-theme-colors'
+import { readDiagramThemeColors } from '@/components/templates/read-diagram-theme-colors'
 
 export function useTemplatePreviewViewer(bpmnXml: string) {
   const containerRef = useRef<HTMLDivElement>(null)

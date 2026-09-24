@@ -1,18 +1,6 @@
-import { ArrowRight } from 'lucide-react'
-import { Suspense, lazy, useState } from 'react'
-
 import { TEMPLATE_SHOWCASE_ID } from '@/components/landing/landing-links'
-import {
-  TEMPLATE_PREVIEW_PANEL_ID,
-  templateTabId,
-} from '@/components/landing/template-tab-ids'
-import { TemplateTabs } from '@/components/landing/TemplateTabs'
-import { Button } from '@/components/ui/button'
-import { DIAGRAM_TEMPLATES, type DiagramTemplate } from '@/templates'
-
-const TemplatePreviewCanvas = lazy(
-  () => import('@/components/landing/TemplatePreviewCanvas'),
-)
+import { TemplateBrowser } from '@/components/templates/TemplateBrowser'
+import type { DiagramTemplate } from '@/templates'
 
 interface TemplateShowcaseProps {
   onTemplateChosen: (template: DiagramTemplate) => void
@@ -21,8 +9,6 @@ interface TemplateShowcaseProps {
 export function TemplateShowcase({
   onTemplateChosen,
 }: Readonly<TemplateShowcaseProps>) {
-  const [selectedTemplate, setSelectedTemplate] = useState(DIAGRAM_TEMPLATES[0])
-
   return (
     <section
       id={TEMPLATE_SHOWCASE_ID}
@@ -41,33 +27,7 @@ export function TemplateShowcase({
           veja o fluxo completo e abra no editor para adaptar à sua realidade.
         </p>
       </div>
-      <div className="grid gap-6 lg:grid-cols-[18rem_1fr]">
-        <TemplateTabs
-          templates={DIAGRAM_TEMPLATES}
-          selectedTemplate={selectedTemplate}
-          onTemplateSelected={setSelectedTemplate}
-        />
-        <div
-          id={TEMPLATE_PREVIEW_PANEL_ID}
-          role="tabpanel"
-          aria-labelledby={templateTabId(selectedTemplate)}
-          className="bg-card flex flex-col overflow-hidden rounded-xl border"
-        >
-          <div className="h-72 sm:h-96 lg:h-104">
-            <Suspense
-              fallback={<div className="bg-muted/40 h-full animate-pulse" />}
-            >
-              <TemplatePreviewCanvas bpmnXml={selectedTemplate.xml} />
-            </Suspense>
-          </div>
-          <div className="flex flex-wrap items-center justify-between gap-3 border-t px-4 py-3">
-            <p className="text-sm font-medium">{selectedTemplate.name}</p>
-            <Button onClick={() => onTemplateChosen(selectedTemplate)}>
-              Usar este modelo <ArrowRight />
-            </Button>
-          </div>
-        </div>
-      </div>
+      <TemplateBrowser onTemplateChosen={onTemplateChosen} />
     </section>
   )
 }

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest'
 
-import { readDiagramThemeColors } from '@/components/landing/read-diagram-theme-colors'
+import { readDiagramThemeColors } from '@/components/templates/read-diagram-theme-colors'
 
 describe('readDiagramThemeColors', () => {
   afterEach(() => {

@@ -1,7 +1,7 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
-import { TemplateTabs } from '@/components/landing/TemplateTabs'
+import { TemplateTabs } from '@/components/templates/TemplateTabs'
 import { DIAGRAM_TEMPLATES } from '@/templates'
 
 function renderTemplateTabs(selectedIndex = 0) {

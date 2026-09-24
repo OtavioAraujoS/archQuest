@@ -1,32 +1,50 @@
+import type { ReactNode } from 'react'
+
 import { DiagramCard } from '@/components/library/DiagramCard'
 import type { DiagramRecord } from '@/lib/db'
 
 interface DiagramGridProps {
   diagrams: DiagramRecord[] | undefined
-  emptyMessage: string
+  emptyState: ReactNode
   onOpen: (id: string) => void
-  onDelete: (id: string) => void
+  onDelete: (diagram: DiagramRecord) => void
 }
+
+const GRID_CLASS = 'grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3'
+const LOADING_PLACEHOLDER_COUNT = 3
 
 export function DiagramGrid({
   diagrams,
-  emptyMessage,
+  emptyState,
   onOpen,
   onDelete,
 }: Readonly<DiagramGridProps>) {
-  if (diagrams?.length === 0) {
+  if (!diagrams) {
     return (
-      <div className="rounded-lg border border-dashed p-12 text-center text-muted-foreground">
-        {emptyMessage}
+      <div
+        aria-busy="true"
+        aria-label="Carregando diagramas"
+        className={GRID_CLASS}
+      >
+        {Array.from({ length: LOADING_PLACEHOLDER_COUNT }, (_, index) => (
+          <div
+            key={index}
+            className="bg-muted/60 aspect-16/11 animate-pulse rounded-xl"
+          />
+        ))}
       </div>
     )
   }
 
+  if (diagrams.length === 0) return emptyState
+
   return (
-    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
-      {diagrams?.map((diagram) => (
-        <DiagramCard key={diagram.id} diagram={diagram} onOpen={onOpen} onDelete={onDelete} />
+    <ul className={GRID_CLASS}>
+      {diagrams.map((diagram) => (
+        <li key={diagram.id}>
+          <DiagramCard diagram={diagram} onOpen={onOpen} onDelete={onDelete} />
+        </li>
       ))}
-    </div>
+    </ul>
   )
 }

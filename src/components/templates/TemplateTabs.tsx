@@ -3,7 +3,7 @@ import type { KeyboardEvent } from 'react'
 import {
   TEMPLATE_PREVIEW_PANEL_ID,
   templateTabId,
-} from '@/components/landing/template-tab-ids'
+} from '@/components/templates/template-tab-ids'
 import { cn } from '@/lib/utils'
 import type { DiagramTemplate } from '@/templates'
 
