@@ -11,3 +11,15 @@ export function listGuestDiagrams(): Promise<DiagramRecord[]> {
     .filter((diagram) => diagram.ownerId === null)
     .toArray()
 }
+
+export function listPendingUploads(ownerId: string): Promise<DiagramRecord[]> {
+  return db.diagrams
+    .where('ownerId')
+    .equals(ownerId)
+    .filter((diagram) => diagram.dirty)
+    .toArray()
+}
+
+export function getCachedDiagram(id: string): Promise<DiagramRecord | undefined> {
+  return db.diagrams.get(id)
+}
