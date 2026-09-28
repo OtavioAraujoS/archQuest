@@ -16,12 +16,14 @@ export function createDiagramAutosave(
   onAutosaveStateChange: (state: AutosaveState) => void,
 ) {
   let pendingSaveTimeout: ReturnType<typeof setTimeout> | null = null
+  let saveInProgress: Promise<void> | null = null
 
   async function persist() {
     onAutosaveStateChange('saving')
     try {
+      const thumbnailSnapshot = modeler.saveSVG()
       const { xml } = await modeler.saveXML({ format: true })
-      const { svg } = await modeler.saveSVG()
+      const { svg } = await thumbnailSnapshot
       if (!xml) return onAutosaveStateChange('idle')
       await saveDiagramContent(diagramId, {
         bpmnXml: xml,
@@ -34,6 +36,13 @@ export function createDiagramAutosave(
     }
   }
 
+  function startSaving() {
+    saveInProgress = persist().finally(() => {
+      saveInProgress = null
+    })
+    return saveInProgress
+  }
+
   function cancelPendingSave() {
     if (pendingSaveTimeout) clearTimeout(pendingSaveTimeout)
     pendingSaveTimeout = null
@@ -44,7 +53,7 @@ export function createDiagramAutosave(
     onAutosaveStateChange('pending')
     pendingSaveTimeout = setTimeout(() => {
       pendingSaveTimeout = null
-      void persist()
+      void startSaving()
     }, AUTOSAVE_DEBOUNCE_MS)
   }
 
@@ -52,11 +61,21 @@ export function createDiagramAutosave(
     return pendingSaveTimeout !== null
   }
 
-  async function flushPendingSave() {
-    if (!hasPendingSave()) return
-    cancelPendingSave()
-    await persist()
+  function isSaving() {
+    return saveInProgress !== null
   }
 
-  return { scheduleSave, cancelPendingSave, hasPendingSave, flushPendingSave }
+  async function flushPendingSave() {
+    if (!hasPendingSave()) return saveInProgress ?? undefined
+    cancelPendingSave()
+    await startSaving()
+  }
+
+  return {
+    scheduleSave,
+    cancelPendingSave,
+    hasPendingSave,
+    isSaving,
+    flushPendingSave,
+  }
 }

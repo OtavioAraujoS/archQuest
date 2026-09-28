@@ -11,7 +11,8 @@ import { useFileLink } from '@/hooks/editor/file-link/useFileLink'
 import { useBpmnEditor } from '@/hooks/editor/useBpmnEditor'
 import { useCanvasResizeSync } from '@/hooks/editor/useCanvasResizeSync'
 import { useRefusedConnectionNotice } from '@/hooks/editor/useRefusedConnectionNotice'
-import { LIBRARY_PATH } from '@/lib/routes'
+import { useCachedDiagram } from '@/hooks/diagrams/useCachedDiagram'
+import { LIBRARY_PATH, libraryPathFor } from '@/lib/routes'
 import { useSyncStore } from '@/lib/sync/sync-store'
 
 import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
@@ -52,7 +53,8 @@ export function BpmnEditor() {
     containerRef,
     status,
   )
-  const backToLibrary = () => navigate(LIBRARY_PATH)
+  const folderId = useCachedDiagram(id)?.folderId
+  const backToLibrary = () => navigate(libraryPathFor(folderId))
 
   return (
     <div className="flex h-svh flex-col">

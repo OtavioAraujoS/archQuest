@@ -1,5 +1,5 @@
 import BpmnModeler from 'bpmn-js/lib/Modeler'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useLayoutEffect, useRef, useState } from 'react'
 
 import elementMenuModule from '@/components/editor/element-menu'
 import activityResizeModule from '@/components/editor/element-resize'
@@ -24,6 +24,9 @@ import {
   saveDiagramThumbnail,
 } from '@/lib/diagrams/local-diagram-changes'
 import { savePendingChangesWhenPageHides } from '@/lib/diagrams/save-pending-changes-when-page-hides'
+import { needsNewThumbnail } from '@/lib/diagrams/thumbnail-health'
+
+type DiagramAutosave = ReturnType<typeof createDiagramAutosave>
 
 export function useBpmnEditor(id: string | undefined) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -33,7 +36,17 @@ export function useBpmnEditor(id: string | undefined) {
   const [autosaveState, setAutosaveState] = useState<AutosaveState>('idle')
   const [loadRevision, setLoadRevision] = useState(0)
   const discardPendingSaveRef = useRef(false)
+  const autosaveRef = useRef<DiagramAutosave | null>(null)
   const diagramExports = useDiagramExports(modelerRef, name)
+
+  useLayoutEffect(
+    () => () => {
+      if (!discardPendingSaveRef.current) {
+        void autosaveRef.current?.flushPendingSave()
+      }
+    },
+    [id, loadRevision],
+  )
 
   useEffect(() => {
     if (!id || !containerRef.current) return
@@ -58,6 +71,7 @@ export function useBpmnEditor(id: string | undefined) {
     const autosave = createDiagramAutosave(modeler, id, (state) => {
       if (!cancelled) setAutosaveState(state)
     })
+    autosaveRef.current = autosave
 
     async function load() {
       const record = await findDiagram(id!)
@@ -67,13 +81,15 @@ export function useBpmnEditor(id: string | undefined) {
       if (cancelled) return
       fitDiagramToViewport(modeler)
       setStatus('ready')
-      if (!record.thumbnail) await saveMissingThumbnail()
+      if (needsNewThumbnail(record.thumbnail)) await refreshThumbnail()
     }
 
-    async function saveMissingThumbnail() {
-      const { svg } = await modeler.saveSVG()
-      if (!cancelled) {
-        await saveDiagramThumbnail(id!, resolveThemedColorsForExport(svg))
+    async function refreshThumbnail() {
+      const thumbnail = resolveThemedColorsForExport(
+        (await modeler.saveSVG()).svg,
+      )
+      if (!cancelled && !needsNewThumbnail(thumbnail)) {
+        await saveDiagramThumbnail(id!, thumbnail)
       }
     }
 
@@ -91,8 +107,11 @@ export function useBpmnEditor(id: string | undefined) {
       cancelled = true
       stopSavingOnPageHide()
       modelerRef.current = null
+      autosaveRef.current = null
       if (discardPendingSaveRef.current) autosave.cancelPendingSave()
-      if (!autosave.hasPendingSave()) return modeler.destroy()
+      if (!autosave.hasPendingSave() && !autosave.isSaving()) {
+        return modeler.destroy()
+      }
       void autosave.flushPendingSave().finally(() => modeler.destroy())
     }
   }, [id, loadRevision])

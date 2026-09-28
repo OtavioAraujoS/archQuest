@@ -93,6 +93,19 @@ describe('createDiagramAutosave', () => {
     expect(autosave.hasPendingSave()).toBe(false)
   })
 
+  it('captures the thumbnail right away, while the canvas is still on the page', async () => {
+    const modeler = createModeler()
+    const autosave = createDiagramAutosave(modeler, 'd1', vi.fn())
+
+    autosave.scheduleSave()
+    const flushing = autosave.flushPendingSave()
+
+    expect(modeler.saveSVG).toHaveBeenCalledOnce()
+    expect(autosave.isSaving()).toBe(true)
+    await flushing
+    expect(autosave.isSaving()).toBe(false)
+  })
+
   it('has nothing pending once the scheduled save ran', async () => {
     const autosave = createDiagramAutosave(createModeler(), 'd1', vi.fn())
 
