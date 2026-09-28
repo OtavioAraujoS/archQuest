@@ -71,13 +71,13 @@ describe('createDiagramAutosave', () => {
     expect(saveDiagramContent).not.toHaveBeenCalled()
   })
 
-  it('waits two minutes after the last change', async () => {
+  it('waits thirty seconds after the last change', async () => {
     const autosave = createDiagramAutosave(createModeler(), 'd1', vi.fn())
 
     autosave.scheduleSave()
     await vi.advanceTimersByTimeAsync(AUTOSAVE_DEBOUNCE_MS - 1)
 
-    expect(AUTOSAVE_DEBOUNCE_MS).toBe(120_000)
+    expect(AUTOSAVE_DEBOUNCE_MS).toBe(30_000)
     expect(saveDiagramContent).not.toHaveBeenCalled()
     expect(autosave.hasPendingSave()).toBe(true)
   })

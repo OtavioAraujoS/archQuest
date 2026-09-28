@@ -4,6 +4,7 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { db } from '@/lib/db'
+import { LIBRARY_FOLDER_PATH, libraryFolderPath } from '@/lib/routes'
 import { makeGuestDiagram } from '../../lib/diagrams/diagram-fixtures'
 import { makeGuestFolder } from '../../lib/folders/folder-fixtures'
 
@@ -25,7 +26,7 @@ function renderUseFolder(path = '/') {
     <MemoryRouter initialEntries={[path]}>
       <Routes>
         <Route path="/" element={children} />
-        <Route path="/folders/:folderId" element={children} />
+        <Route path={LIBRARY_FOLDER_PATH} element={children} />
       </Routes>
     </MemoryRouter>
   )
@@ -111,7 +112,7 @@ describe('useFolder', () => {
   it('opens the folder named in the route', async () => {
     await db.folders.add(makeGuestFolder())
 
-    const { result } = renderUseFolder('/folders/guest-folder')
+    const { result } = renderUseFolder(libraryFolderPath('guest-folder'))
 
     await waitFor(() =>
       expect(result.current.currentFolderId).toBe('guest-folder'),

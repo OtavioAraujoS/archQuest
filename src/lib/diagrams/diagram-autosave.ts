@@ -3,7 +3,7 @@ import { saveDiagramContent } from '@/lib/diagrams/local-diagram-changes'
 
 export type AutosaveState = 'idle' | 'pending' | 'saving' | 'saved' | 'failed'
 
-export const AUTOSAVE_DEBOUNCE_MS = 2 * 60 * 1000
+export const AUTOSAVE_DEBOUNCE_MS = 30 * 1000
 
 interface AutosavableModeler {
   saveXML(options: { format: boolean }): Promise<{ xml?: string }>

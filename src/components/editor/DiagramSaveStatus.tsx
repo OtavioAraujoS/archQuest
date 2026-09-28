@@ -53,7 +53,7 @@ export function DiagramSaveStatus({
     <output
       title={
         autosaveState === 'pending'
-          ? 'O diagrama é salvo automaticamente 2 minutos após a última alteração, ou quando você sai do editor.'
+          ? 'O diagrama é salvo automaticamente 30 segundos após a última alteração, ou quando você sai do editor.'
           : undefined
       }
       className={cn(
