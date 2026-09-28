@@ -1,6 +1,7 @@
 import { useEffect } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 
+import { MessagePage } from '@/components/layout/MessagePage'
 import { useAuthStore } from '@/lib/auth/auth-store'
 import { LIBRARY_PATH } from '@/lib/routes'
 
@@ -27,21 +28,25 @@ export function AuthCallback() {
   }, [shouldReturnToLibrary, navigate])
 
   if (!providerError && status === 'loading') {
-    return <p className="text-muted-foreground p-10 text-center text-sm">Entrando…</p>
+    return (
+      <p className="text-muted-foreground p-10 text-center text-sm">
+        Entrando…
+      </p>
+    )
   }
 
   if (!providerError && status !== 'signed-out') return null
 
   return (
-    <div className="mx-auto flex max-w-md flex-col gap-3 px-6 py-16 text-center">
-      <h1 className="text-lg font-semibold">Não foi possível entrar</h1>
-      <p className="text-muted-foreground text-sm">
-        {providerError ??
-          'O link de acesso expirou ou foi aberto em outro navegador. Peça um novo link.'}
-      </p>
-      <Link to={LIBRARY_PATH} replace className="text-sm font-medium underline underline-offset-4">
-        Voltar para os diagramas
-      </Link>
-    </div>
+    <MessagePage
+      title="Não foi possível entrar"
+      detail={
+        providerError ??
+        'O link de acesso expirou ou foi aberto em outro navegador. Peça um novo link.'
+      }
+      linkLabel="Voltar para os diagramas"
+      linkTo={LIBRARY_PATH}
+      replacesHistoryEntry
+    />
   )
 }

@@ -5,11 +5,15 @@ function hasSameContent(current: DiagramRecord, uploaded: DiagramRecord) {
   return (
     current.name === uploaded.name &&
     current.bpmnXml === uploaded.bpmnXml &&
-    current.thumbnail === uploaded.thumbnail
+    current.thumbnail === uploaded.thumbnail &&
+    (current.folderId ?? null) === (uploaded.folderId ?? null)
   )
 }
 
-export async function markDiagramUploaded(uploaded: DiagramRecord, cloudRow: DiagramRow) {
+export async function markDiagramUploaded(
+  uploaded: DiagramRecord,
+  cloudRow: DiagramRow,
+) {
   await db.transaction('rw', db.diagrams, async () => {
     const current = await db.diagrams.get(uploaded.id)
     if (!current) return

@@ -5,11 +5,15 @@ export interface FakeQueryResult {
   error: unknown
 }
 
-export function createFakeDiagramsQuery(getSupabaseClient: Mock, result: FakeQueryResult) {
+export function createFakeDiagramsQuery(
+  getSupabaseClient: Mock,
+  result: FakeQueryResult,
+) {
   const query = {
     select: vi.fn(() => query),
     insert: vi.fn(() => query),
     update: vi.fn(() => query),
+    upsert: vi.fn(() => query),
     delete: vi.fn(() => query),
     eq: vi.fn(() => query),
     order: vi.fn(async () => result),

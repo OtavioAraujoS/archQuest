@@ -5,6 +5,7 @@ import type { DiagramRecord } from '@/lib/db'
 export const syncRunnerFakes = {
   listPendingUploads: vi.fn(),
   uploadDiagram: vi.fn(),
+  uploadPendingFolders: vi.fn(),
   emitPendingUploadsChanged: () => {},
   stopWatchingPendingUploads: vi.fn(),
 }
@@ -45,5 +46,6 @@ export function resetSyncRunnerFakes() {
   vi.clearAllMocks()
   syncRunnerFakes.listPendingUploads.mockResolvedValue([])
   syncRunnerFakes.uploadDiagram.mockResolvedValue('uploaded')
+  syncRunnerFakes.uploadPendingFolders.mockResolvedValue(undefined)
   givenNetworkIsOnline(true)
 }

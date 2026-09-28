@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import { ErrorMessage } from '@/components/ui/error-message'
 import { ModalDialog } from '@/components/ui/modal-dialog'
 import { keepLocalVersion, loadCloudVersion } from '@/lib/sync/resolve-conflict'
 
@@ -73,9 +74,9 @@ export function ConflictDialog({
         </p>
       </div>
       {hasFailed && (
-        <p role="alert" className="text-destructive mt-4 text-sm">
+        <ErrorMessage className="mt-4">
           Não foi possível falar com a nuvem. Confira a conexão e tente de novo.
-        </p>
+        </ErrorMessage>
       )}
     </ModalDialog>
   )

@@ -15,7 +15,10 @@ vi.mock('@/components/templates/TemplatePreviewCanvas', () => ({
   default: () => <div data-testid="template-preview" />,
 }))
 
-import { renderDiagramLibrary } from './render-diagram-library'
+import {
+  chooseDiagramAction,
+  renderDiagramLibrary,
+} from './render-diagram-library'
 
 describe('DiagramLibrary', () => {
   beforeEach(async () => {
@@ -90,11 +93,7 @@ describe('DiagramLibrary', () => {
     await db.diagrams.add(makeLibraryDiagram())
     renderDiagramLibrary()
 
-    fireEvent.click(
-      await screen.findByRole('button', {
-        name: 'Excluir diagrama Processo de vendas',
-      }),
-    )
+    await chooseDiagramAction('Processo de vendas', 'Excluir')
     const dialog = screen.getByRole('dialog', {
       name: 'Excluir “Processo de vendas”?',
     })
@@ -112,11 +111,7 @@ describe('DiagramLibrary', () => {
     await db.diagrams.add(makeLibraryDiagram())
     renderDiagramLibrary()
 
-    fireEvent.click(
-      await screen.findByRole('button', {
-        name: 'Excluir diagrama Processo de vendas',
-      }),
-    )
+    await chooseDiagramAction('Processo de vendas', 'Excluir')
     fireEvent.click(screen.getByRole('button', { name: 'Cancelar' }))
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()

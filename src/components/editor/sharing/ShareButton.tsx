@@ -1,10 +1,9 @@
-import { useLiveQuery } from 'dexie-react-hooks'
 import { Share2 } from 'lucide-react'
 import { useState } from 'react'
 
 import { ShareDialog } from '@/components/editor/sharing/ShareDialog'
 import { Button } from '@/components/ui/button'
-import { getCachedDiagram } from '@/lib/diagrams/diagram-lists'
+import { useCachedDiagram } from '@/hooks/diagrams/useCachedDiagram'
 
 interface ShareButtonProps {
   diagramId: string | undefined
@@ -12,11 +11,7 @@ interface ShareButtonProps {
 
 export function ShareButton({ diagramId }: Readonly<ShareButtonProps>) {
   const [isShareDialogOpen, setIsShareDialogOpen] = useState(false)
-  const diagram = useLiveQuery(
-    () =>
-      diagramId ? getCachedDiagram(diagramId) : Promise.resolve(undefined),
-    [diagramId],
-  )
+  const diagram = useCachedDiagram(diagramId)
 
   if (!diagram || diagram.ownerId === null) return null
 

@@ -13,7 +13,8 @@ export function AccountMenu() {
   const user = useAuthStore((state) => state.user)
   const ownerId = useCurrentDiagramOwnerId()
   const [isLoginDialogOpen, setIsLoginDialogOpen] = useState(false)
-  const { pendingDiagramCount, requestSignOut, closeSignOutDialog } = useSignOutRequest(ownerId)
+  const { pendingDiagramCount, requestSignOut, closeSignOutDialog } =
+    useSignOutRequest(ownerId)
 
   if (status === 'signed-out') {
     return (
@@ -21,7 +22,9 @@ export function AccountMenu() {
         <Button variant="outline" onClick={() => setIsLoginDialogOpen(true)}>
           <LogIn /> Entrar
         </Button>
-        {isLoginDialogOpen && <LoginDialog onClose={() => setIsLoginDialogOpen(false)} />}
+        {isLoginDialogOpen && (
+          <LoginDialog onClose={() => setIsLoginDialogOpen(false)} />
+        )}
       </>
     )
   }
@@ -29,11 +32,16 @@ export function AccountMenu() {
   if (status !== 'signed-in' || !user || !ownerId) return null
 
   return (
-    <div className="flex shrink-0 items-center gap-2" title={user.email ?? undefined}>
+    <div
+      className="flex shrink-0 items-center gap-2"
+      title={user.email ?? undefined}
+    >
       {user.avatarUrl && (
         <img src={user.avatarUrl} alt="" className="size-7 rounded-full" />
       )}
-      <span className="max-w-40 truncate text-sm font-medium">{user.displayName}</span>
+      <span className="max-w-40 truncate text-sm font-medium">
+        {user.displayName}
+      </span>
       <Button
         variant="ghost"
         size="icon"

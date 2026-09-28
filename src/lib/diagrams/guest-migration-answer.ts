@@ -1,17 +1,14 @@
+import {
+  readStoredValue,
+  writeStoredValue,
+} from '@/lib/storage/safe-local-storage'
+
 const ANSWER_KEY_PREFIX = 'archquest:guest-migration-answered:'
 
 export function hasAnsweredGuestMigration(ownerId: string) {
-  try {
-    return localStorage.getItem(`${ANSWER_KEY_PREFIX}${ownerId}`) !== null
-  } catch {
-    return false
-  }
+  return readStoredValue(`${ANSWER_KEY_PREFIX}${ownerId}`) !== null
 }
 
 export function rememberGuestMigrationAnswer(ownerId: string) {
-  try {
-    localStorage.setItem(`${ANSWER_KEY_PREFIX}${ownerId}`, new Date().toISOString())
-  } catch {
-    return
-  }
+  writeStoredValue(`${ANSWER_KEY_PREFIX}${ownerId}`, new Date().toISOString())
 }

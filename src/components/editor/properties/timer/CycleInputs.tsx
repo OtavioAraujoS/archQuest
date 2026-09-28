@@ -1,3 +1,5 @@
+import { Input } from '@/components/ui/input'
+
 import { DurationInputs } from './DurationInputs'
 import type { TimerCycle } from './timer-cycle-and-date'
 
@@ -27,14 +29,15 @@ export function CycleInputs({
       />
       <label className="flex items-center gap-1 text-xs">
         <span>Repetir</span>
-        <input
+        <Input
           type="number"
           min={1}
+          size="sm"
           aria-label="Repetições"
           placeholder="sem limite"
           value={cycle.repetitions ?? ''}
           onChange={(event) => changeRepetitions(event.target.value)}
-          className="bg-background h-8 w-24 rounded-md border px-2 text-sm"
+          className="w-24"
         />
         <span>vezes</span>
       </label>

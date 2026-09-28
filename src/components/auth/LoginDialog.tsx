@@ -8,7 +8,11 @@ interface LoginDialogProps {
 
 export function LoginDialog({ onClose }: Readonly<LoginDialogProps>) {
   return (
-    <ModalDialog title="Entrar no archQuest" onClose={onClose} className="max-w-sm">
+    <ModalDialog
+      title="Entrar no archQuest"
+      onClose={onClose}
+      className="max-w-sm"
+    >
       <p className="text-muted-foreground mb-4 text-sm">
         Entre para salvar seus diagramas na nuvem e compartilhá-los por link.
       </p>

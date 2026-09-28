@@ -6,7 +6,11 @@ interface ArchQuestMarkProps {
 
 export function ArchQuestMark({ className }: Readonly<ArchQuestMarkProps>) {
   return (
-    <svg viewBox="0 0 64 64" aria-hidden="true" className={cn('size-8 shrink-0', className)}>
+    <svg
+      viewBox="0 0 64 64"
+      aria-hidden="true"
+      className={cn('size-8 shrink-0', className)}
+    >
       <rect width="64" height="64" rx="14" className="fill-primary" />
       <path
         d="M16 41V32a16 16 0 0 1 32 0v9"

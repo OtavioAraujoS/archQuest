@@ -1,17 +1,21 @@
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 
+import { MessagePage } from '@/components/layout/MessagePage'
 import { PublicDiagramView } from '@/components/viewer/PublicDiagramView'
 import { usePublicDiagram } from '@/hooks/viewer/usePublicDiagram'
+import { LANDING_PATH } from '@/lib/routes'
 
-function PublicViewerMessage({ title, detail }: Readonly<{ title: string; detail: string }>) {
+function PublicViewerMessage({
+  title,
+  detail,
+}: Readonly<{ title: string; detail: string }>) {
   return (
-    <main className="mx-auto flex max-w-md flex-col gap-3 px-6 py-16 text-center">
-      <h1 className="text-lg font-semibold">{title}</h1>
-      <p className="text-muted-foreground text-sm">{detail}</p>
-      <Link to="/" className="text-sm font-medium underline underline-offset-4">
-        Ir para o archQuest
-      </Link>
-    </main>
+    <MessagePage
+      title={title}
+      detail={detail}
+      linkLabel="Ir para o archQuest"
+      linkTo={LANDING_PATH}
+    />
   )
 }
 
@@ -21,7 +25,9 @@ export function PublicViewer() {
 
   if (publicDiagramLookup.status === 'loading') {
     return (
-      <p className="text-muted-foreground p-10 text-center text-sm">Carregando diagrama…</p>
+      <p className="text-muted-foreground p-10 text-center text-sm">
+        Carregando diagrama…
+      </p>
     )
   }
   if (publicDiagramLookup.status === 'not-found') {

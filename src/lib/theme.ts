@@ -1,15 +1,18 @@
+import {
+  readStoredValue,
+  writeStoredValue,
+} from '@/lib/storage/safe-local-storage'
+
 export type Theme = 'light' | 'dark'
 
 const STORAGE_KEY = 'archquest-theme'
 
 export function getPreferredTheme(): Theme {
-  try {
-    const stored = localStorage.getItem(STORAGE_KEY)
-    if (stored === 'light' || stored === 'dark') return stored
-  } catch (error) {
-    console.error('Failed to read stored theme', error)
-  }
-  return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'
+  const storedTheme = readStoredValue(STORAGE_KEY)
+  if (storedTheme === 'light' || storedTheme === 'dark') return storedTheme
+  return window.matchMedia('(prefers-color-scheme: dark)').matches
+    ? 'dark'
+    : 'light'
 }
 
 export function applyTheme(theme: Theme) {
@@ -18,11 +21,5 @@ export function applyTheme(theme: Theme) {
 
 export function setTheme(theme: Theme): boolean {
   applyTheme(theme)
-  try {
-    localStorage.setItem(STORAGE_KEY, theme)
-    return true
-  } catch (error) {
-    console.error('Failed to persist theme', error)
-    return false
-  }
+  return writeStoredValue(STORAGE_KEY, theme)
 }

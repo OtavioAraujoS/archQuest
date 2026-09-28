@@ -9,7 +9,9 @@ import {
   OWNER_ID,
 } from './diagram-fixtures'
 
-const { fetchAccountDiagramRows } = vi.hoisted(() => ({ fetchAccountDiagramRows: vi.fn() }))
+const { fetchAccountDiagramRows } = vi.hoisted(() => ({
+  fetchAccountDiagramRows: vi.fn(),
+}))
 
 vi.mock('@/lib/diagrams/cloud-diagrams', () => ({ fetchAccountDiagramRows }))
 
@@ -35,6 +37,7 @@ describe('pullAccountDiagrams', () => {
       version: 4,
       publicSlug: null,
       dirty: false,
+      folderId: null,
     })
   })
 
@@ -73,7 +76,9 @@ describe('pullAccountDiagrams', () => {
   })
 
   it('keeps a diagram created offline that was never uploaded', async () => {
-    await db.diagrams.add(makeAccountDiagram({ id: 'new-offline', version: 0, dirty: true }))
+    await db.diagrams.add(
+      makeAccountDiagram({ id: 'new-offline', version: 0, dirty: true }),
+    )
     fetchAccountDiagramRows.mockResolvedValue([])
 
     await pullAccountDiagrams(OWNER_ID)
@@ -87,7 +92,9 @@ describe('pullAccountDiagrams', () => {
 
     await pullAccountDiagrams(OWNER_ID)
 
-    await expect(db.diagrams.get('guest-1')).resolves.toEqual(makeGuestDiagram())
+    await expect(db.diagrams.get('guest-1')).resolves.toEqual(
+      makeGuestDiagram(),
+    )
   })
 
   it('leaves the cache untouched when the cloud cannot be reached', async () => {

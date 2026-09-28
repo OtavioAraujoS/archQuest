@@ -20,7 +20,11 @@ export interface PopupMenuService {
 }
 
 export interface CreateService {
-  start(event: Event, elements: unknown, context?: Record<string, unknown>): void
+  start(
+    event: Event,
+    elements: unknown,
+    context?: Record<string, unknown>,
+  ): void
 }
 
 export interface ElementFactoryService {

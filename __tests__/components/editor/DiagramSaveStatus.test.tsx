@@ -32,4 +32,14 @@ describe('DiagramSaveStatus', () => {
       'Não foi possível salvar',
     )
   })
+
+  it('shows changes waiting for the next automatic save', async () => {
+    await db.diagrams.update('diagram-1', { ownerId: 'user-1' })
+
+    render(<DiagramSaveStatus diagramId="diagram-1" autosaveState="pending" />)
+
+    expect(await screen.findByRole('status')).toHaveTextContent(
+      'Alterações pendentes',
+    )
+  })
 })

@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import { ErrorMessage } from '@/components/ui/error-message'
 import { ModalDialog } from '@/components/ui/modal-dialog'
 import { signOutOfThisDevice } from '@/lib/auth/sign-out-of-this-device'
 import { flushPendingUploads } from '@/lib/sync/flush-pending-uploads'
@@ -53,16 +54,17 @@ export function SignOutDialog({
 
   const isBusy = step !== 'choosing'
   return (
-    <ModalDialog title="Sair com alterações pendentes?" onClose={onClose} className="max-w-md">
+    <ModalDialog
+      title="Sair com alterações pendentes?"
+      onClose={onClose}
+      className="max-w-md"
+    >
       <p className="text-muted-foreground mb-4 text-sm">
-        Você tem {pendingDiagramsLabel(pendingDiagramCount)} com alterações que ainda não
-        foram para a nuvem. Ao sair, os diagramas da conta são apagados deste navegador.
+        Você tem {pendingDiagramsLabel(pendingDiagramCount)} com alterações que
+        ainda não foram para a nuvem. Ao sair, os diagramas da conta são
+        apagados deste navegador.
       </p>
-      {problem && (
-        <p role="alert" className="text-destructive mb-4 text-sm">
-          {problem}
-        </p>
-      )}
+      {problem && <ErrorMessage className="mb-4">{problem}</ErrorMessage>}
       <div className="flex flex-col gap-2">
         <Button onClick={syncThenSignOut} disabled={isBusy}>
           {step === 'syncing' ? 'Sincronizando…' : 'Sincronizar e sair'}

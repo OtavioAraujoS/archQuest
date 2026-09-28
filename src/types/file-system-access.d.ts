@@ -22,11 +22,19 @@ interface FileSystemHandlePermissionDescriptor {
 }
 
 interface FileSystemHandle {
-  queryPermission?(descriptor?: FileSystemHandlePermissionDescriptor): Promise<PermissionState>
-  requestPermission?(descriptor?: FileSystemHandlePermissionDescriptor): Promise<PermissionState>
+  queryPermission?(
+    descriptor?: FileSystemHandlePermissionDescriptor,
+  ): Promise<PermissionState>
+  requestPermission?(
+    descriptor?: FileSystemHandlePermissionDescriptor,
+  ): Promise<PermissionState>
 }
 
 interface Window {
-  showOpenFilePicker?(options?: OpenFilePickerOptions): Promise<FileSystemFileHandle[]>
-  showSaveFilePicker?(options?: SaveFilePickerOptions): Promise<FileSystemFileHandle>
+  showOpenFilePicker?(
+    options?: OpenFilePickerOptions,
+  ): Promise<FileSystemFileHandle[]>
+  showSaveFilePicker?(
+    options?: SaveFilePickerOptions,
+  ): Promise<FileSystemFileHandle>
 }

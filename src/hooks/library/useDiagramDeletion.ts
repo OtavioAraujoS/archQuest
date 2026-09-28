@@ -1,5 +1,6 @@
 import { useState } from 'react'
 
+import { useGuardedChange } from '@/hooks/ui/useGuardedChange'
 import type { DiagramRecord } from '@/lib/db'
 import { deleteDiagram } from '@/lib/diagrams/delete-diagram'
 
@@ -9,38 +10,33 @@ export const DELETION_FAILED_MESSAGE =
 export function useDiagramDeletion() {
   const [diagramPendingDeletion, setDiagramPendingDeletion] =
     useState<DiagramRecord | null>(null)
-  const [isDeleting, setIsDeleting] = useState(false)
-  const [deletionError, setDeletionError] = useState<string | null>(null)
+  const deletion = useGuardedChange(DELETION_FAILED_MESSAGE)
 
   function requestDeletion(diagram: DiagramRecord) {
-    setDeletionError(null)
+    deletion.dismissChangeError()
     setDiagramPendingDeletion(diagram)
   }
 
   function cancelDeletion() {
-    if (isDeleting) return
+    if (deletion.isChanging) return
     setDiagramPendingDeletion(null)
-    setDeletionError(null)
+    deletion.dismissChangeError()
   }
 
   async function confirmDeletion() {
     if (!diagramPendingDeletion) return
-    setIsDeleting(true)
-    setDeletionError(null)
-    try {
-      await deleteDiagram(diagramPendingDeletion.id)
-      setDiagramPendingDeletion(null)
-    } catch {
-      setDeletionError(DELETION_FAILED_MESSAGE)
-    } finally {
-      setIsDeleting(false)
-    }
+    const deletedDiagramId = diagramPendingDeletion.id
+    const result = await deletion.runGuardedChange(async () => {
+      await deleteDiagram(deletedDiagramId)
+      return deletedDiagramId
+    })
+    if (result !== null) setDiagramPendingDeletion(null)
   }
 
   return {
     diagramPendingDeletion,
-    isDeleting,
-    deletionError,
+    isDeleting: deletion.isChanging,
+    deletionError: deletion.changeError,
     requestDeletion,
     cancelDeletion,
     confirmDeletion,

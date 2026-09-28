@@ -5,7 +5,9 @@ import { findDiagram } from '@/lib/diagrams/find-diagram'
 import { makeDiagramRow, makeGuestDiagram } from './diagram-fixtures'
 import { signInAsDiagramOwner, signOutDiagramOwner } from './sign-in-as-owner'
 
-const { fetchCloudDiagramRow } = vi.hoisted(() => ({ fetchCloudDiagramRow: vi.fn() }))
+const { fetchCloudDiagramRow } = vi.hoisted(() => ({
+  fetchCloudDiagramRow: vi.fn(),
+}))
 
 vi.mock('@/lib/diagrams/cloud-diagrams', () => ({ fetchCloudDiagramRow }))
 
@@ -21,7 +23,9 @@ describe('findDiagram', () => {
     await db.diagrams.add(makeGuestDiagram())
     signInAsDiagramOwner()
 
-    await expect(findDiagram('guest-1')).resolves.toMatchObject({ id: 'guest-1' })
+    await expect(findDiagram('guest-1')).resolves.toMatchObject({
+      id: 'guest-1',
+    })
     expect(fetchCloudDiagramRow).not.toHaveBeenCalled()
   })
 
@@ -34,8 +38,12 @@ describe('findDiagram', () => {
     signInAsDiagramOwner()
     fetchCloudDiagramRow.mockResolvedValue(makeDiagramRow())
 
-    await expect(findDiagram('account-1')).resolves.toMatchObject({ name: 'Processo na nuvem' })
-    await expect(db.diagrams.get('account-1')).resolves.toMatchObject({ version: 4 })
+    await expect(findDiagram('account-1')).resolves.toMatchObject({
+      name: 'Processo na nuvem',
+    })
+    await expect(db.diagrams.get('account-1')).resolves.toMatchObject({
+      version: 4,
+    })
   })
 
   it('returns nothing when the diagram is in neither place', async () => {

@@ -1,15 +1,19 @@
-import { useLiveQuery } from 'dexie-react-hooks'
-import { Check, LoaderCircle, TriangleAlert } from 'lucide-react'
+import { Check, Clock, LoaderCircle, TriangleAlert } from 'lucide-react'
 
 import { CloudSyncIndicator } from '@/components/editor/CloudSyncIndicator'
+import { useCachedDiagram } from '@/hooks/diagrams/useCachedDiagram'
 import type { AutosaveState } from '@/lib/diagrams/diagram-autosave'
-import { getCachedDiagram } from '@/lib/diagrams/diagram-lists'
 import { cn } from '@/lib/utils'
 
 const LOCAL_SAVE_DESCRIPTIONS: Record<
   Exclude<AutosaveState, 'idle'>,
   { label: string; icon: typeof Check; className: string }
 > = {
+  pending: {
+    label: 'Alterações pendentes',
+    icon: Clock,
+    className: 'text-muted-foreground',
+  },
   saving: {
     label: 'Salvando…',
     icon: LoaderCircle,
@@ -36,19 +40,22 @@ export function DiagramSaveStatus({
   diagramId,
   autosaveState,
 }: Readonly<DiagramSaveStatusProps>) {
-  const diagram = useLiveQuery(
-    () =>
-      diagramId ? getCachedDiagram(diagramId) : Promise.resolve(undefined),
-    [diagramId],
-  )
+  const diagram = useCachedDiagram(diagramId)
 
-  if (diagram?.ownerId) return <CloudSyncIndicator diagramId={diagramId} />
+  if (diagram?.ownerId && autosaveState !== 'pending') {
+    return <CloudSyncIndicator diagramId={diagramId} />
+  }
   if (autosaveState === 'idle') return null
 
   const description = LOCAL_SAVE_DESCRIPTIONS[autosaveState]
   const StatusIcon = description.icon
   return (
     <output
+      title={
+        autosaveState === 'pending'
+          ? 'O diagrama é salvo automaticamente 30 segundos após a última alteração, ou quando você sai do editor.'
+          : undefined
+      }
       className={cn(
         'flex shrink-0 items-center gap-1.5 text-xs whitespace-nowrap',
         description.className,

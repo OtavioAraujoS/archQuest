@@ -2,7 +2,11 @@ import { beforeEach, describe, expect, it } from 'vitest'
 
 import { db } from '@/lib/db'
 import { moveGuestDiagramsToAccount } from '@/lib/diagrams/move-guest-diagrams-to-account'
-import { makeAccountDiagram, makeGuestDiagram, OWNER_ID } from './diagram-fixtures'
+import {
+  makeAccountDiagram,
+  makeGuestDiagram,
+  OWNER_ID,
+} from './diagram-fixtures'
 
 describe('moveGuestDiagramsToAccount', () => {
   beforeEach(async () => {
@@ -44,7 +48,9 @@ describe('moveGuestDiagramsToAccount', () => {
   })
 
   it('never takes over a diagram that already belongs to an account', async () => {
-    await db.diagrams.add(makeAccountDiagram({ ownerId: 'someone-else', version: 7 }))
+    await db.diagrams.add(
+      makeAccountDiagram({ ownerId: 'someone-else', version: 7 }),
+    )
 
     await moveGuestDiagramsToAccount(['account-1', 'missing'], OWNER_ID)
 

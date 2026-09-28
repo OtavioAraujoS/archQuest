@@ -11,6 +11,11 @@ export default defineConfig({
       "@": path.resolve(import.meta.dirname, "./src"),
     },
   },
+  server: {
+    watch: {
+      usePolling: process.env.DOCKER_DEV === "true",
+    },
+  },
   test: {
     environment: "jsdom",
     setupFiles: ["./__tests__/setup.ts"],

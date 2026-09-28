@@ -16,7 +16,10 @@ describe('local diagram changes', () => {
   it('saves guest content without marking it for upload', async () => {
     await db.diagrams.add(makeGuestDiagram())
 
-    await saveDiagramContent('guest-1', { bpmnXml: '<xml>new</xml>', thumbnail: '<svg>new</svg>' })
+    await saveDiagramContent('guest-1', {
+      bpmnXml: '<xml>new</xml>',
+      thumbnail: '<svg>new</svg>',
+    })
 
     const savedDiagram = await db.diagrams.get('guest-1')
     expect(savedDiagram).toMatchObject({
@@ -30,9 +33,15 @@ describe('local diagram changes', () => {
   it('marks an account diagram for upload when its content changes', async () => {
     await db.diagrams.add(makeAccountDiagram())
 
-    await saveDiagramContent('account-1', { bpmnXml: '<xml>new</xml>', thumbnail: '<svg />' })
+    await saveDiagramContent('account-1', {
+      bpmnXml: '<xml>new</xml>',
+      thumbnail: '<svg />',
+    })
 
-    await expect(db.diagrams.get('account-1')).resolves.toMatchObject({ dirty: true, version: 3 })
+    await expect(db.diagrams.get('account-1')).resolves.toMatchObject({
+      dirty: true,
+      version: 3,
+    })
   })
 
   it('marks an account diagram for upload when renamed', async () => {

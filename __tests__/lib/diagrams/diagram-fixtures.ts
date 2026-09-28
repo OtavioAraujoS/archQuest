@@ -3,7 +3,9 @@ import type { DiagramRow } from '@/lib/supabase/database-types'
 
 export const OWNER_ID = 'owner-1'
 
-export function makeGuestDiagram(overrides: Partial<DiagramRecord> = {}): DiagramRecord {
+export function makeGuestDiagram(
+  overrides: Partial<DiagramRecord> = {},
+): DiagramRecord {
   return {
     id: 'guest-1',
     name: 'Rascunho local',
@@ -15,7 +17,9 @@ export function makeGuestDiagram(overrides: Partial<DiagramRecord> = {}): Diagra
   }
 }
 
-export function makeAccountDiagram(overrides: Partial<DiagramRecord> = {}): DiagramRecord {
+export function makeAccountDiagram(
+  overrides: Partial<DiagramRecord> = {},
+): DiagramRecord {
   return makeGuestDiagram({
     id: 'account-1',
     name: 'Processo na conta',
@@ -26,7 +30,9 @@ export function makeAccountDiagram(overrides: Partial<DiagramRecord> = {}): Diag
   })
 }
 
-export function makeDiagramRow(overrides: Partial<DiagramRow> = {}): DiagramRow {
+export function makeDiagramRow(
+  overrides: Partial<DiagramRow> = {},
+): DiagramRow {
   return {
     id: 'account-1',
     owner_id: OWNER_ID,
@@ -35,6 +41,7 @@ export function makeDiagramRow(overrides: Partial<DiagramRow> = {}): DiagramRow 
     thumbnail: '<svg>cloud</svg>',
     version: 4,
     public_slug: null,
+    folder_id: null,
     created_at: '2026-09-20T10:00:00.000Z',
     updated_at: '2026-09-24T10:00:00.000Z',
     ...overrides,

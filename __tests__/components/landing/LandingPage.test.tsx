@@ -56,7 +56,7 @@ describe('LandingPage', () => {
     await waitFor(() =>
       expect(mockNavigate).toHaveBeenCalledWith('/editor/new-diagram'),
     )
-    expect(mockCreateDiagram).toHaveBeenCalledWith()
+    expect(mockCreateDiagram).toHaveBeenCalledWith(undefined, undefined, null)
   })
 
   it('opens the selected template as a new diagram', async () => {
@@ -74,6 +74,7 @@ describe('LandingPage', () => {
     expect(mockCreateDiagram).toHaveBeenCalledWith(
       onboardingTemplate.name,
       onboardingTemplate.xml,
+      null,
     )
   })
 

@@ -1,7 +1,8 @@
 import type BpmnModeler from 'bpmn-js/lib/Modeler'
 import type { ChangeEvent, RefObject } from 'react'
 
-import { downloadBlob, exportPng, exportSvg } from '@/lib/export'
+import { fitDiagramToViewport } from '@/lib/bpmn/fit-diagram-to-viewport'
+import { downloadBpmnXml, exportPng, exportSvg } from '@/lib/export'
 
 const FALLBACK_FILE_NAME = 'diagram'
 
@@ -16,10 +17,7 @@ export function useDiagramExports(
     if (!modeler) return
     const { xml } = await modeler.saveXML({ format: true })
     if (!xml) return
-    downloadBlob(
-      new Blob([xml], { type: 'application/xml' }),
-      `${fileName}.bpmn`,
-    )
+    downloadBpmnXml(xml, fileName)
   }
 
   async function handleExportSvg() {
@@ -36,9 +34,7 @@ export function useDiagramExports(
     const modeler = modelerRef.current
     if (!file || !modeler) return
     await modeler.importXML(await file.text())
-    modeler
-      .get<{ zoom: (level: string) => void }>('canvas')
-      .zoom('fit-viewport')
+    fitDiagramToViewport(modeler)
   }
 
   return { handleExportBpmn, handleExportSvg, handleExportPng, handleImport }

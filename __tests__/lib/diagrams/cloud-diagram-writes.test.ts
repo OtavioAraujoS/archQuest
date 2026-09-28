@@ -24,12 +24,17 @@ describe('cloud diagram writes', () => {
       error: null,
     })
 
-    await expect(insertCloudDiagram(NEW_DIAGRAM)).resolves.toMatchObject({ version: 1 })
+    await expect(insertCloudDiagram(NEW_DIAGRAM)).resolves.toMatchObject({
+      version: 1,
+    })
     expect(query.insert).toHaveBeenCalledWith(NEW_DIAGRAM)
   })
 
   it('treats an id that already exists in the cloud as a conflict', async () => {
-    createFakeDiagramsQuery(getSupabaseClient, { data: null, error: { code: '23505' } })
+    createFakeDiagramsQuery(getSupabaseClient, {
+      data: null,
+      error: { code: '23505' },
+    })
 
     await expect(insertCloudDiagram(NEW_DIAGRAM)).resolves.toBeNull()
   })
@@ -51,12 +56,20 @@ describe('cloud diagram writes', () => {
   it('returns nothing when no row matches the expected version', async () => {
     createFakeDiagramsQuery(getSupabaseClient, { data: null, error: null })
 
-    await expect(updateCloudDiagramAtVersion('account-1', 3, {})).resolves.toBeNull()
+    await expect(
+      updateCloudDiagramAtVersion('account-1', 3, {}),
+    ).resolves.toBeNull()
   })
 
   it('rethrows any other error for a retry', async () => {
-    const checkViolation = { code: '23514', message: 'violates check constraint' }
-    createFakeDiagramsQuery(getSupabaseClient, { data: null, error: checkViolation })
+    const checkViolation = {
+      code: '23514',
+      message: 'violates check constraint',
+    }
+    createFakeDiagramsQuery(getSupabaseClient, {
+      data: null,
+      error: checkViolation,
+    })
 
     await expect(insertCloudDiagram(NEW_DIAGRAM)).rejects.toBe(checkViolation)
   })

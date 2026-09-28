@@ -12,11 +12,13 @@ import {
   signOutDiagramOwner,
 } from '../../lib/diagrams/sign-in-as-owner'
 
-const { pullAccountDiagrams } = vi.hoisted(() => ({
+const { pullAccountDiagrams, fetchAccountFolders } = vi.hoisted(() => ({
   pullAccountDiagrams: vi.fn(),
+  fetchAccountFolders: vi.fn(),
 }))
 
 vi.mock('@/lib/diagrams/pull-account-diagrams', () => ({ pullAccountDiagrams }))
+vi.mock('@/lib/folders/cloud-folders', () => ({ fetchAccountFolders }))
 vi.mock('react-router-dom', async (importOriginal) => ({
   ...(await importOriginal<typeof import('react-router-dom')>()),
   useNavigate: () => vi.fn(),
@@ -28,6 +30,7 @@ describe('DiagramLibrary signed in', () => {
   beforeEach(async () => {
     await db.diagrams.clear()
     pullAccountDiagrams.mockReset().mockResolvedValue(undefined)
+    fetchAccountFolders.mockReset().mockResolvedValue([])
     signInAsDiagramOwner()
   })
 
@@ -82,7 +85,17 @@ describe('DiagramLibrary signed in', () => {
     expect(await screen.findByRole('alert')).toHaveTextContent(
       'Não foi possível buscar',
     )
-    expect(screen.getByText('Processo na conta')).toBeInTheDocument()
+    expect(await screen.findByText('Processo na conta')).toBeInTheDocument()
+  })
+
+  it('trusts the pulled diagrams even when the folders cannot be pulled', async () => {
+    await db.diagrams.add(makeAccountDiagram())
+    fetchAccountFolders.mockRejectedValue(new Error('missing table'))
+
+    renderDiagramLibrary()
+
+    expect(await screen.findByText('Processo na conta')).toBeInTheDocument()
+    expect(screen.queryByRole('alert')).not.toBeInTheDocument()
   })
 
   it('shows the account empty state once the cloud has nothing', async () => {

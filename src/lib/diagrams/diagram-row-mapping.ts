@@ -13,5 +13,6 @@ export function toCachedDiagramRecord(row: DiagramRow): DiagramRecord {
     version: row.version,
     publicSlug: row.public_slug,
     dirty: false,
+    folderId: row.folder_id,
   }
 }

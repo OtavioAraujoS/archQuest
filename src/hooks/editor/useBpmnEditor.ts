@@ -1,16 +1,19 @@
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import { useEffect, useRef, useState } from 'react'
 
+import elementMenuModule from '@/components/editor/element-menu'
+import activityResizeModule from '@/components/editor/element-resize'
+import multiResizeModule from '@/components/editor/multi-resize'
 import groupedPaletteModule from '@/components/editor/palette'
 import propertyCommandsModule from '@/components/editor/properties'
-import TextStyleRenderer from '@/components/editor/TextStyleRenderer'
-import textStyleModdle from '@/components/editor/text-style-moddle.json'
 import portugueseTranslationModule from '@/components/editor/translations'
 import { useDiagramExports } from '@/hooks/editor/useDiagramExports'
 import {
-  resolveThemedColorsForExport,
-  THEMED_DIAGRAM_RENDERER_COLORS,
-} from '@/lib/diagram-colors'
+  ARCHQUEST_RENDERING_OPTIONS,
+  textStyleRendererModule,
+} from '@/lib/bpmn/archquest-rendering-options'
+import { fitDiagramToViewport } from '@/lib/bpmn/fit-diagram-to-viewport'
+import { resolveThemedColorsForExport } from '@/lib/diagram-colors'
 import {
   createDiagramAutosave,
   type AutosaveState,
@@ -20,6 +23,7 @@ import {
   renameDiagram,
   saveDiagramThumbnail,
 } from '@/lib/diagrams/local-diagram-changes'
+import { savePendingChangesWhenPageHides } from '@/lib/diagrams/save-pending-changes-when-page-hides'
 
 export function useBpmnEditor(id: string | undefined) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -28,23 +32,24 @@ export function useBpmnEditor(id: string | undefined) {
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
   const [autosaveState, setAutosaveState] = useState<AutosaveState>('idle')
   const [loadRevision, setLoadRevision] = useState(0)
+  const discardPendingSaveRef = useRef(false)
   const diagramExports = useDiagramExports(modelerRef, name)
 
   useEffect(() => {
     if (!id || !containerRef.current) return
+    discardPendingSaveRef.current = false
 
     const modeler = new BpmnModeler({
       container: containerRef.current,
-      bpmnRenderer: THEMED_DIAGRAM_RENDERER_COLORS,
-      moddleExtensions: { archquest: textStyleModdle },
+      ...ARCHQUEST_RENDERING_OPTIONS,
       additionalModules: [
         groupedPaletteModule,
+        multiResizeModule,
+        activityResizeModule,
+        elementMenuModule,
         propertyCommandsModule,
         portugueseTranslationModule,
-        {
-          __init__: ['textStyleRenderer'],
-          textStyleRenderer: ['type', TextStyleRenderer],
-        },
+        textStyleRendererModule,
       ],
     })
     modelerRef.current = modeler
@@ -60,9 +65,7 @@ export function useBpmnEditor(id: string | undefined) {
       setName(record.name)
       await modeler.importXML(record.bpmnXml)
       if (cancelled) return
-      modeler
-        .get<{ zoom: (level: string) => void }>('canvas')
-        .zoom('fit-viewport')
+      fitDiagramToViewport(modeler)
       setStatus('ready')
       if (!record.thumbnail) await saveMissingThumbnail()
     }
@@ -82,16 +85,20 @@ export function useBpmnEditor(id: string | undefined) {
     modeler
       .get<{ on: (event: string, callback: () => void) => void }>('eventBus')
       .on('commandStack.changed', autosave.scheduleSave)
+    const stopSavingOnPageHide = savePendingChangesWhenPageHides(autosave)
 
     return () => {
       cancelled = true
-      autosave.cancelPendingSave()
-      modeler.destroy()
+      stopSavingOnPageHide()
       modelerRef.current = null
+      if (discardPendingSaveRef.current) autosave.cancelPendingSave()
+      if (!autosave.hasPendingSave()) return modeler.destroy()
+      void autosave.flushPendingSave().finally(() => modeler.destroy())
     }
   }, [id, loadRevision])
 
   function reloadDiagram() {
+    discardPendingSaveRef.current = true
     setStatus('loading')
     setLoadRevision((revision) => revision + 1)
   }

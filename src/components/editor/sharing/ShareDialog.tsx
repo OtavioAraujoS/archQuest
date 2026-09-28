@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { PublishedLinkField } from '@/components/editor/sharing/PublishedLinkField'
 import { Button } from '@/components/ui/button'
+import { ErrorMessage } from '@/components/ui/error-message'
 import { ModalDialog } from '@/components/ui/modal-dialog'
 import type { DiagramRecord } from '@/lib/db'
 import { publicDiagramUrl } from '@/lib/sharing/public-link'
@@ -84,9 +85,9 @@ export function ShareDialog({ diagram, onClose }: Readonly<ShareDialogProps>) {
       )}
 
       {hasFailed && (
-        <p role="alert" className="text-destructive mt-4 text-sm">
+        <ErrorMessage className="mt-4">
           Não foi possível falar com a nuvem. Confira a conexão e tente de novo.
-        </p>
+        </ErrorMessage>
       )}
     </ModalDialog>
   )

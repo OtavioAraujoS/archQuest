@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import { ErrorMessage } from '@/components/ui/error-message'
 import { signInWithGitHub } from '@/lib/auth/auth-actions'
 
 export function GitHubSignInButton() {
@@ -14,20 +15,22 @@ export function GitHubSignInButton() {
       await signInWithGitHub()
     } catch {
       setIsRedirecting(false)
-      setErrorMessage('Não foi possível abrir o login do GitHub. Tente de novo.')
+      setErrorMessage(
+        'Não foi possível abrir o login do GitHub. Tente de novo.',
+      )
     }
   }
 
   return (
     <div className="flex flex-col gap-2">
-      <Button className="w-full" onClick={startGitHubSignIn} disabled={isRedirecting}>
+      <Button
+        className="w-full"
+        onClick={startGitHubSignIn}
+        disabled={isRedirecting}
+      >
         {isRedirecting ? 'Abrindo o GitHub…' : 'Entrar com GitHub'}
       </Button>
-      {errorMessage && (
-        <p role="alert" className="text-destructive text-sm">
-          {errorMessage}
-        </p>
-      )}
+      {errorMessage && <ErrorMessage>{errorMessage}</ErrorMessage>}
     </div>
   )
 }

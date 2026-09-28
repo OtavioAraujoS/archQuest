@@ -1,6 +1,7 @@
 import { create } from 'zustand'
 
-export type AuthStatus = 'cloud-disabled' | 'loading' | 'signed-out' | 'signed-in'
+export type AuthStatus =
+  'cloud-disabled' | 'loading' | 'signed-out' | 'signed-in'
 
 export interface AuthUser {
   id: string

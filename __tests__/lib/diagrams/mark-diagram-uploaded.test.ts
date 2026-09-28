@@ -23,7 +23,10 @@ describe('markDiagramUploaded', () => {
 
   it('keeps the diagram pending when it changed during the upload', async () => {
     const uploadedDiagram = makeAccountDiagram({ dirty: true, version: 3 })
-    await db.diagrams.add({ ...uploadedDiagram, bpmnXml: '<xml>edited meanwhile</xml>' })
+    await db.diagrams.add({
+      ...uploadedDiagram,
+      bpmnXml: '<xml>edited meanwhile</xml>',
+    })
 
     await markDiagramUploaded(uploadedDiagram, makeDiagramRow({ version: 4 }))
 

@@ -2,6 +2,8 @@ import { Plus } from 'lucide-react'
 import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { NativeSelect } from '@/components/ui/native-select'
 
 import {
   assignMessageToEvent,
@@ -45,11 +47,11 @@ export function MessageField({
   return (
     <fieldset className="flex flex-col gap-2">
       <legend className="mb-1 text-xs font-medium">Mensagem</legend>
-      <select
+      <NativeSelect
+        size="sm"
         aria-label="Mensagem do evento"
         value={selectedMessageId}
         onChange={(event) => selectMessage(event.target.value)}
-        className="bg-background h-8 rounded-md border px-2 text-sm"
       >
         <option value={NO_MESSAGE}>Nenhuma</option>
         {definedMessages.map((message) => (
@@ -57,7 +59,7 @@ export function MessageField({
             {messageDisplayName(message)}
           </option>
         ))}
-      </select>
+      </NativeSelect>
       <form
         className="flex gap-1"
         onSubmit={(event) => {
@@ -65,12 +67,13 @@ export function MessageField({
           createMessage()
         }}
       >
-        <input
+        <Input
+          size="sm"
           aria-label="Nome da nova mensagem"
           placeholder="Nova mensagem"
           value={newMessageName}
           onChange={(event) => setNewMessageName(event.target.value)}
-          className="bg-background h-8 min-w-0 flex-1 rounded-md border px-2 text-sm"
+          className="min-w-0 flex-1"
         />
         <Button
           type="submit"

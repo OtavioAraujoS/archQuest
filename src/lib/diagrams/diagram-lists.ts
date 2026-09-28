@@ -1,7 +1,11 @@
 import { db, type DiagramRecord } from '@/lib/db'
 
 export function listAccountDiagrams(ownerId: string): Promise<DiagramRecord[]> {
-  return db.diagrams.where('ownerId').equals(ownerId).reverse().sortBy('updatedAt')
+  return db.diagrams
+    .where('ownerId')
+    .equals(ownerId)
+    .reverse()
+    .sortBy('updatedAt')
 }
 
 export function listGuestDiagrams(): Promise<DiagramRecord[]> {
@@ -20,6 +24,8 @@ export function listPendingUploads(ownerId: string): Promise<DiagramRecord[]> {
     .toArray()
 }
 
-export function getCachedDiagram(id: string): Promise<DiagramRecord | undefined> {
+export function getCachedDiagram(
+  id: string,
+): Promise<DiagramRecord | undefined> {
   return db.diagrams.get(id)
 }

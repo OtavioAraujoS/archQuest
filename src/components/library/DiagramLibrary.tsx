@@ -1,21 +1,23 @@
-import { useCallback, useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 
-import { MigrateGuestDiagramsDialog } from '@/components/auth/MigrateGuestDiagramsDialog'
 import { AppHeader } from '@/components/layout/AppHeader'
-import { DeleteDiagramDialog } from '@/components/library/DeleteDiagramDialog'
+import { buildLibraryView } from '@/components/library/build-library-view'
+import type { DiagramCardActions } from '@/components/library/diagram-card-actions'
 import { DiagramGrid } from '@/components/library/DiagramGrid'
-import { LibraryEmptyState } from '@/components/library/LibraryEmptyState'
+import { FolderGrid } from '@/components/library/folders/FolderGrid'
+import { LibraryDialogs } from '@/components/library/LibraryDialogs'
+import { LibraryEmptyContent } from '@/components/library/LibraryEmptyContent'
 import { LibraryHeading } from '@/components/library/LibraryHeading'
 import { LibraryToolbar } from '@/components/library/LibraryToolbar'
-import { NoSearchResults } from '@/components/library/NoSearchResults'
 import { SignedInDiagramSections } from '@/components/library/SignedInDiagramSections'
-import { TemplatePicker } from '@/components/library/TemplatePicker'
+import { ErrorMessage } from '@/components/ui/error-message'
+import { useFolder } from '@/hooks/folders/useFolder'
 import { useDiagramDeletion } from '@/hooks/library/useDiagramDeletion'
 import { useDiagramFilters } from '@/hooks/library/useDiagramFilters'
 import { useGuestMigrationPrompt } from '@/hooks/library/useGuestMigrationPrompt'
 import { useLibraryDiagrams } from '@/hooks/library/useLibraryDiagrams'
 import { useOpenDiagramFile } from '@/hooks/library/useOpenDiagramFile'
+import { useTemplatePicker } from '@/hooks/library/useTemplatePicker'
 import { useStartDiagram } from '@/hooks/useStartDiagram'
 import { isFileSystemAccessSupported } from '@/lib/file-system/file-system-support'
 import { editorPath } from '@/lib/routes'
@@ -24,46 +26,51 @@ export function DiagramLibrary() {
   const navigate = useNavigate()
   const { ownerId, accountDiagrams, guestDiagrams, cloudPullStatus } =
     useLibraryDiagrams()
+  const folder = useFolder()
+  const { folders, currentFolder, currentFolderId, isOpeningFolder } = folder
   const { isGuestMigrationOpen, openGuestMigration, closeGuestMigration } =
     useGuestMigrationPrompt(ownerId, guestDiagrams)
-  const [isTemplatePickerOpen, setIsTemplatePickerOpen] = useState(false)
-  const closeTemplatePicker = useCallback(
-    () => setIsTemplatePickerOpen(false),
-    [],
-  )
+  const { isTemplatePickerOpen, openTemplatePicker, closeTemplatePicker } =
+    useTemplatePicker()
   const openDiagram = (id: string) => navigate(editorPath(id))
-  const { startBlankDiagram, startDiagramFromTemplate } = useStartDiagram()
-  const { openFileAsDiagram, fileOpenError } = useOpenDiagramFile(openDiagram)
+  const { startBlankDiagram, startDiagramFromTemplate } =
+    useStartDiagram(currentFolderId)
+  const { openFileAsDiagram, fileOpenError } = useOpenDiagramFile(
+    openDiagram,
+    currentFolderId,
+  )
   const filters = useDiagramFilters()
   const deletion = useDiagramDeletion()
 
-  const visibleAccountDiagrams = filters.applyFilters(accountDiagrams)
-  const visibleGuestDiagrams = filters.applyFilters(guestDiagrams)
-  const savedDiagramCount =
-    (ownerId ? (accountDiagrams?.length ?? 0) : 0) +
-    (guestDiagrams?.length ?? 0)
-  const visibleDiagramCount =
-    (ownerId ? (visibleAccountDiagrams?.length ?? 0) : 0) +
-    (visibleGuestDiagrams?.length ?? 0)
-  const openTemplatePicker = () => setIsTemplatePickerOpen(true)
-
-  function emptyStateWith(message: string) {
-    if (filters.isSearching) {
-      return (
-        <NoSearchResults
-          searchQuery={filters.searchQuery}
-          onClearSearch={filters.clearSearch}
-        />
-      )
-    }
-    return (
-      <LibraryEmptyState
-        message={message}
-        onStartBlankDiagram={() => void startBlankDiagram()}
-        onBrowseTemplates={openTemplatePicker}
-      />
-    )
+  const view = buildLibraryView({
+    ownerId,
+    accountDiagrams,
+    guestDiagrams,
+    folders,
+    currentFolderId,
+    isOpeningFolder,
+    isSearching: filters.isSearching,
+    applyFilters: filters.applyFilters,
+  })
+  const cardActions: DiagramCardActions = {
+    folders: folders ?? [],
+    showsFolderName: !currentFolderId && filters.isSearching,
+    onOpen: openDiagram,
+    onDelete: deletion.requestDeletion,
+    onMoveToFolder: (diagram, folderId) =>
+      void folder.moveDiagramToFolder(diagram.id, folderId),
   }
+  const emptyState = view.hidesEmptyState ? null : (
+    <LibraryEmptyContent
+      isSearching={filters.isSearching}
+      searchQuery={filters.searchQuery}
+      onClearSearch={filters.clearSearch}
+      isSignedIn={ownerId !== null}
+      isInsideFolder={currentFolderId !== null}
+      onStartBlankDiagram={() => void startBlankDiagram()}
+      onBrowseTemplates={openTemplatePicker}
+    />
+  )
 
   return (
     <div className="flex min-h-svh flex-col">
@@ -72,73 +79,63 @@ export function DiagramLibrary() {
         <LibraryHeading
           isSignedIn={ownerId !== null}
           canOpenFiles={isFileSystemAccessSupported()}
+          currentFolder={currentFolder}
           onStartBlankDiagram={() => void startBlankDiagram()}
           onBrowseTemplates={openTemplatePicker}
           onOpenFile={() => void openFileAsDiagram()}
+          onCreateFolder={folder.requestNewFolder}
         />
-        {fileOpenError && (
-          <p role="alert" className="text-destructive text-sm">
-            {fileOpenError}
-          </p>
+        {fileOpenError && <ErrorMessage>{fileOpenError}</ErrorMessage>}
+        {folder.folderError && !folder.folderDialog && (
+          <ErrorMessage>{folder.folderError}</ErrorMessage>
         )}
-        {savedDiagramCount > 0 && (
+        {view.savedDiagramCount > 0 && (
           <LibraryToolbar
             searchQuery={filters.searchQuery}
             onSearchQueryChange={filters.setSearchQuery}
             sortOrder={filters.sortOrder}
             onSortOrderChange={filters.setSortOrder}
-            visibleDiagramCount={visibleDiagramCount}
+            visibleDiagramCount={view.visibleDiagramCount}
+          />
+        )}
+        {view.showsFolders && folders && (
+          <FolderGrid
+            folders={folders}
+            diagrams={view.ownDiagrams}
+            onRename={folder.requestFolderRename}
+            onDelete={folder.requestFolderDeletion}
           />
         )}
         {ownerId ? (
           <SignedInDiagramSections
-            accountDiagrams={visibleAccountDiagrams}
-            guestDiagrams={visibleGuestDiagrams}
-            hasGuestDiagrams={(visibleGuestDiagrams?.length ?? 0) > 0}
+            accountDiagrams={view.shownOwnDiagrams}
+            guestDiagrams={view.visibleGuestDiagrams}
+            hasGuestDiagrams={(view.visibleGuestDiagrams?.length ?? 0) > 0}
             cloudPullStatus={cloudPullStatus}
-            accountEmptyState={emptyStateWith(
-              'Nenhum diagrama na sua conta ainda. Crie o primeiro para começar.',
-            )}
-            onOpen={openDiagram}
-            onDelete={deletion.requestDeletion}
+            accountEmptyState={emptyState}
+            cardActions={cardActions}
+            guestCardActions={{ ...cardActions, folders: [] }}
             onMoveGuestDiagrams={openGuestMigration}
           />
         ) : (
           <DiagramGrid
-            diagrams={visibleGuestDiagrams}
-            emptyState={emptyStateWith(
-              'Nenhum diagrama ainda. Crie o primeiro para começar a modelar um processo.',
-            )}
-            onOpen={openDiagram}
-            onDelete={deletion.requestDeletion}
+            diagrams={view.shownOwnDiagrams}
+            emptyState={emptyState}
+            cardActions={cardActions}
           />
         )}
       </main>
-
-      {isTemplatePickerOpen && (
-        <TemplatePicker
-          onTemplateChosen={(template) =>
-            void startDiagramFromTemplate(template)
-          }
-          onClose={closeTemplatePicker}
-        />
-      )}
-      {isGuestMigrationOpen && ownerId && guestDiagrams && (
-        <MigrateGuestDiagramsDialog
-          ownerId={ownerId}
-          guestDiagrams={guestDiagrams}
-          onClose={closeGuestMigration}
-        />
-      )}
-      {deletion.diagramPendingDeletion && (
-        <DeleteDiagramDialog
-          diagram={deletion.diagramPendingDeletion}
-          isDeleting={deletion.isDeleting}
-          deletionError={deletion.deletionError}
-          onCancel={deletion.cancelDeletion}
-          onConfirm={() => void deletion.confirmDeletion()}
-        />
-      )}
+      <LibraryDialogs
+        isTemplatePickerOpen={isTemplatePickerOpen}
+        onTemplateChosen={(template) => void startDiagramFromTemplate(template)}
+        onCloseTemplatePicker={closeTemplatePicker}
+        guestMigrationOwnerId={isGuestMigrationOpen ? ownerId : null}
+        guestDiagrams={guestDiagrams}
+        onCloseGuestMigration={closeGuestMigration}
+        deletion={deletion}
+        folder={folder}
+        ownDiagrams={view.ownDiagrams}
+      />
     </div>
   )
 }

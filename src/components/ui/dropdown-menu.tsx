@@ -14,6 +14,9 @@ interface DropdownMenuProps {
   trigger: ReactNode
   menuLabel: string
   align?: 'start' | 'end'
+  triggerAriaLabel?: string
+  triggerClassName?: string
+  isIconTrigger?: boolean
   children: ReactNode
 }
 
@@ -21,6 +24,9 @@ export function DropdownMenu({
   trigger,
   menuLabel,
   align = 'end',
+  triggerAriaLabel,
+  triggerClassName,
+  isIconTrigger = false,
   children,
 }: Readonly<DropdownMenuProps>) {
   const [isOpen, setIsOpen] = useState(false)
@@ -55,8 +61,10 @@ export function DropdownMenu({
     <div ref={containerRef} className="relative">
       <Button
         ref={triggerRef}
-        variant="outline"
-        size="sm"
+        variant={isIconTrigger ? 'ghost' : 'outline'}
+        size={isIconTrigger ? 'icon' : 'sm'}
+        className={triggerClassName}
+        aria-label={triggerAriaLabel}
         aria-haspopup="menu"
         aria-expanded={isOpen}
         aria-controls={isOpen ? menuId : undefined}
@@ -74,7 +82,7 @@ export function DropdownMenu({
             aria-label={menuLabel}
             onKeyDown={moveFocusWithArrows}
             className={cn(
-              'bg-popover text-popover-foreground absolute top-full z-50 mt-1 flex min-w-56 flex-col rounded-lg border p-1 shadow-lg',
+              'bg-popover text-popover-foreground absolute top-full z-50 mt-1 flex max-h-80 min-w-56 flex-col overflow-y-auto rounded-lg border p-1 shadow-lg',
               align === 'end' ? 'right-0' : 'left-0',
             )}
           >

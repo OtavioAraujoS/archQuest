@@ -4,6 +4,7 @@ import {
   BPMN_IO_URL,
   REPOSITORY_URL,
 } from '@/components/landing/landing-links'
+import { ExternalLink } from '@/components/ui/external-link'
 
 const FOOTER_LINK_CLASS =
   'hover:text-foreground underline-offset-4 hover:underline'
@@ -17,30 +18,18 @@ export function LandingFooter() {
           archQuest · código aberto sob licença MIT
         </p>
         <nav aria-label="Rodapé" className="flex flex-wrap gap-x-5 gap-y-2">
-          <a
-            className={FOOTER_LINK_CLASS}
-            href={REPOSITORY_URL}
-            target="_blank"
-            rel="noreferrer"
-          >
+          <ExternalLink className={FOOTER_LINK_CLASS} href={REPOSITORY_URL}>
             GitHub
-          </a>
-          <a
+          </ExternalLink>
+          <ExternalLink
             className={FOOTER_LINK_CLASS}
             href={ARCHITECTURE_DECISIONS_URL}
-            target="_blank"
-            rel="noreferrer"
           >
             Decisões de arquitetura
-          </a>
-          <a
-            className={FOOTER_LINK_CLASS}
-            href={BPMN_IO_URL}
-            target="_blank"
-            rel="noreferrer"
-          >
+          </ExternalLink>
+          <ExternalLink className={FOOTER_LINK_CLASS} href={BPMN_IO_URL}>
             Diagramas desenhados com bpmn.io
-          </a>
+          </ExternalLink>
         </nav>
       </div>
     </footer>

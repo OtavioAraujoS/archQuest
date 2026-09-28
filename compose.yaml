@@ -1,0 +1,62 @@
+x-dev-build: &dev-build
+  context: .
+  target: dev
+  secrets:
+    - extra_ca_certs
+
+services:
+  web:
+    build:
+      context: .
+      target: runtime
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:-}
+        VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY:-}
+      secrets:
+        - extra_ca_certs
+    ports:
+      - "8080:80"
+
+  dev:
+    profiles: [dev]
+    build: *dev-build
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      DOCKER_DEV: "true"
+
+  dev-watch:
+    profiles: [watch]
+    build: *dev-build
+    ports:
+      - "5173:5173"
+    env_file:
+      - path: .env
+        required: false
+      - path: .env.local
+        required: false
+    develop:
+      watch:
+        - action: sync
+          path: ./src
+          target: /app/src
+        - action: sync
+          path: ./public
+          target: /app/public
+        - action: sync
+          path: ./index.html
+          target: /app/index.html
+        - action: sync
+          path: ./vite.config.ts
+          target: /app/vite.config.ts
+        - action: rebuild
+          path: ./package.json
+        - action: rebuild
+          path: ./package-lock.json
+
+secrets:
+  extra_ca_certs:
+    file: ${NODE_EXTRA_CA_CERTS:-./docker/no-extra-ca-certs.pem}

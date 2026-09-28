@@ -1,6 +1,9 @@
 import { requireSupabaseClient } from '@/lib/supabase/require-supabase-client'
 
-export async function setCloudPublicSlug(id: string, publicSlug: string | null) {
+export async function setCloudPublicSlug(
+  id: string,
+  publicSlug: string | null,
+) {
   const supabase = await requireSupabaseClient()
   const { data, error } = await supabase
     .from('diagrams')

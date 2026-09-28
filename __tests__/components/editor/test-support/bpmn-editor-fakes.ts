@@ -12,7 +12,7 @@ export const fakeModeler = {
 }
 
 export const fakeExport = {
-  downloadBlob: vi.fn(),
+  downloadBpmnXml: vi.fn(),
   exportSvg: vi.fn(),
   exportPng: vi.fn(),
 }

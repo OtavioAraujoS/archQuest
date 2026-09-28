@@ -11,9 +11,15 @@ export async function fetchAccountDiagramRows(): Promise<DiagramRow[]> {
   return data
 }
 
-export async function fetchCloudDiagramRow(id: string): Promise<DiagramRow | null> {
+export async function fetchCloudDiagramRow(
+  id: string,
+): Promise<DiagramRow | null> {
   const supabase = await requireSupabaseClient()
-  const { data, error } = await supabase.from('diagrams').select('*').eq('id', id).maybeSingle()
+  const { data, error } = await supabase
+    .from('diagrams')
+    .select('*')
+    .eq('id', id)
+    .maybeSingle()
   if (error) throw error
   return data
 }

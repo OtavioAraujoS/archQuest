@@ -3,11 +3,14 @@ import { useNavigate, useParams } from 'react-router-dom'
 import { ConflictDialog } from '@/components/editor/ConflictDialog'
 import { EditorCanvasStatus } from '@/components/editor/EditorCanvasStatus'
 import { EditorHeader } from '@/components/editor/EditorHeader'
-import { ElementInspector } from '@/components/editor/ElementInspector'
+import { ElementContextMenu } from '@/components/editor/element-menu/ElementContextMenu'
 import { PaletteHint } from '@/components/editor/palette/PaletteHint'
+import { RefusedConnectionNotice } from '@/components/editor/RefusedConnectionNotice'
+import { useElementContextMenu } from '@/hooks/editor/element-menu/useElementContextMenu'
 import { useFileLink } from '@/hooks/editor/file-link/useFileLink'
 import { useBpmnEditor } from '@/hooks/editor/useBpmnEditor'
 import { useCanvasResizeSync } from '@/hooks/editor/useCanvasResizeSync'
+import { useRefusedConnectionNotice } from '@/hooks/editor/useRefusedConnectionNotice'
 import { LIBRARY_PATH } from '@/lib/routes'
 import { useSyncStore } from '@/lib/sync/sync-store'
 
@@ -42,6 +45,13 @@ export function BpmnEditor() {
     (state) => id !== undefined && state.conflictedDiagramIds.includes(id),
   )
   useCanvasResizeSync(containerRef, modelerRef)
+  const { refusedConnectionMessage, dismissRefusedConnectionMessage } =
+    useRefusedConnectionNotice(modelerRef, status)
+  const { menuAnchor, closeMenu } = useElementContextMenu(
+    modelerRef,
+    containerRef,
+    status,
+  )
   const backToLibrary = () => navigate(LIBRARY_PATH)
 
   return (
@@ -67,13 +77,20 @@ export function BpmnEditor() {
           }
         />
       )}
-      <div className="relative flex min-h-0 flex-1 flex-col md:flex-row">
-        <div className="relative min-w-0 flex-1">
-          <div ref={containerRef} className="archquest-bpmn size-full" />
-          <EditorCanvasStatus status={status} onBackToLibrary={backToLibrary} />
-          {status === 'ready' && <PaletteHint />}
-        </div>
-        <ElementInspector modelerRef={modelerRef} status={status} />
+      <div className="relative min-h-0 flex-1">
+        <div ref={containerRef} className="archquest-bpmn size-full" />
+        <EditorCanvasStatus status={status} onBackToLibrary={backToLibrary} />
+        {status === 'ready' && <PaletteHint />}
+        <RefusedConnectionNotice
+          message={refusedConnectionMessage}
+          onDismiss={dismissRefusedConnectionMessage}
+        />
+        <ElementContextMenu
+          modelerRef={modelerRef}
+          status={status}
+          anchor={menuAnchor}
+          onClose={closeMenu}
+        />
       </div>
     </div>
   )

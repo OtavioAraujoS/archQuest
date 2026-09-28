@@ -6,6 +6,7 @@ export type DiagramRow = {
   thumbnail: string | null
   version: number
   public_slug: string | null
+  folder_id: string | null
   created_at: string
   updated_at: string
 }
@@ -17,11 +18,25 @@ export type DiagramInsert = {
   bpmn_xml: string
   thumbnail?: string | null
   public_slug?: string | null
+  folder_id?: string | null
   created_at?: string
   updated_at?: string
 }
 
 export type DiagramUpdate = Partial<Omit<DiagramInsert, 'id' | 'owner_id'>>
+
+export type FolderRow = {
+  id: string
+  owner_id: string
+  name: string
+  created_at: string
+  updated_at: string
+}
+
+export type FolderUpsert = Pick<
+  FolderRow,
+  'id' | 'name' | 'created_at' | 'updated_at'
+>
 
 export type PublicDiagram = Pick<DiagramRow, 'name' | 'bpmn_xml' | 'updated_at'>
 
@@ -32,6 +47,12 @@ export type Database = {
         Row: DiagramRow
         Insert: DiagramInsert
         Update: DiagramUpdate
+        Relationships: []
+      }
+      diagram_folders: {
+        Row: FolderRow
+        Insert: FolderUpsert
+        Update: Partial<FolderUpsert>
         Relationships: []
       }
     }
