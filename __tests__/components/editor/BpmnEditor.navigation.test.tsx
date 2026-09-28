@@ -39,8 +39,8 @@ describe('BpmnEditor navigation', () => {
     await db.diagrams.add(makeDiagramRecord({ folderId: 'folder-1' }))
     render(<BpmnEditor />)
 
-    fireEvent.click(screen.getByRole('button', { name: 'Voltar' }))
     await waitFor(() => {
+      fireEvent.click(screen.getByRole('button', { name: 'Voltar' }))
       expect(mockNavigate).toHaveBeenLastCalledWith(
         '/diagramas/pastas/folder-1',
       )
