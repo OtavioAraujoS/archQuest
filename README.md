@@ -99,7 +99,14 @@ Para desenvolver dentro do container, com hot reload e o código montado como vo
 docker compose --profile dev up --build dev
 ```
 
-Abra http://localhost:5173. As variáveis vêm do `.env.local`, se existir.
+Abra http://localhost:5173. O Vite lê `.env` e `.env.local` da pasta montada, como no
+`npm run dev`.
+
+Atrás de proxy ou antivírus que inspeciona HTTPS (Cisco Umbrella, Zscaler etc.), o
+`npm ci` do build falha com `UNABLE_TO_GET_ISSUER_CERT_LOCALLY`. Se o seu Node local já
+usa `NODE_EXTRA_CA_CERTS`, o compose repassa esse arquivo ao build como *secret*, só
+durante a instalação e sem gravá-lo na imagem. Caso contrário, defina a variável com o
+caminho do certificado raiz do proxy antes de rodar o compose.
 
 ## Scripts
 

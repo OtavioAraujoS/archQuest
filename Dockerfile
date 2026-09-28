@@ -1,7 +1,10 @@
 FROM node:24-alpine AS deps
 WORKDIR /app
 COPY package.json package-lock.json ./
-RUN npm ci
+RUN --mount=type=secret,id=extra_ca_certs,required=false \
+    if [ -s /run/secrets/extra_ca_certs ]; then \
+      export NODE_EXTRA_CA_CERTS=/run/secrets/extra_ca_certs; \
+    fi && npm ci
 
 FROM deps AS dev
 EXPOSE 5173

@@ -38,6 +38,8 @@ nuvem só liga quando `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` existem no 
   SPA fallback (`netlify.toml` e `docker/nginx.conf`) para manter em sincronia.
 - **Riscos e mitigações**: o `.dockerignore` exclui `.env*`, então segredos locais nunca
   entram no contexto de build; só a chave `anon`, que é pública, vai para o bundle.
+  Redes com inspeção de HTTPS quebram o `npm ci`; o compose repassa o arquivo de
+  `NODE_EXTRA_CA_CERTS` como build secret, que não fica em nenhuma camada da imagem.
 
 ## Relacionados
 

@@ -6,6 +6,8 @@ services:
       args:
         VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:-}
         VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY:-}
+      secrets:
+        - extra_ca_certs
     ports:
       - "8080:80"
 
@@ -14,13 +16,16 @@ services:
     build:
       context: .
       target: dev
+      secrets:
+        - extra_ca_certs
     ports:
       - "5173:5173"
     volumes:
       - .:/app
       - /app/node_modules
-    env_file:
-      - path: .env.local
-        required: false
     environment:
       DOCKER_DEV: "true"
+
+secrets:
+  extra_ca_certs:
+    file: ${NODE_EXTRA_CA_CERTS:-./docker/no-extra-ca-certs.pem}
