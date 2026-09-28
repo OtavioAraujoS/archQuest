@@ -6,6 +6,10 @@ export function editorPath(diagramId: string) {
   return `/editor/${diagramId}`
 }
 
+export function libraryPathFor(folderId: string | null | undefined) {
+  return folderId ? libraryFolderPath(folderId) : LIBRARY_PATH
+}
+
 export function libraryFolderPath(folderId: string) {
   return `/diagramas/pastas/${folderId}`
 }
