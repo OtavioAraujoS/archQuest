@@ -13,6 +13,7 @@ export function createFakeDiagramsQuery(
     select: vi.fn(() => query),
     insert: vi.fn(() => query),
     update: vi.fn(() => query),
+    upsert: vi.fn(() => query),
     delete: vi.fn(() => query),
     eq: vi.fn(() => query),
     order: vi.fn(async () => result),

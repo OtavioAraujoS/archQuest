@@ -17,6 +17,9 @@ const { pullAccountDiagrams } = vi.hoisted(() => ({
 }))
 
 vi.mock('@/lib/diagrams/pull-account-diagrams', () => ({ pullAccountDiagrams }))
+vi.mock('@/lib/folders/cloud-folders', () => ({
+  fetchAccountFolders: vi.fn(async () => []),
+}))
 vi.mock('react-router-dom', async (importOriginal) => ({
   ...(await importOriginal<typeof import('react-router-dom')>()),
   useNavigate: () => vi.fn(),

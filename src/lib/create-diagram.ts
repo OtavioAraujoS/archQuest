@@ -7,6 +7,7 @@ export const BLANK_DIAGRAM_NAME = 'Novo diagrama'
 export async function createDiagram(
   name = BLANK_DIAGRAM_NAME,
   bpmnXml = BLANK_DIAGRAM_XML,
+  folderId: string | null = null,
 ) {
   const now = Date.now()
   const ownerId = currentDiagramOwnerId()
@@ -19,6 +20,7 @@ export async function createDiagram(
     ...GUEST_SYNC_FIELDS,
     ownerId,
     dirty: ownerId !== null,
+    folderId,
   }
   await db.diagrams.add(diagram)
   return diagram.id

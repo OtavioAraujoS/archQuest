@@ -7,6 +7,7 @@ import {
   listGuestDiagrams,
 } from '@/lib/diagrams/diagram-lists'
 import { pullAccountDiagrams } from '@/lib/diagrams/pull-account-diagrams'
+import { pullAccountFolders } from '@/lib/folders/cached-folders'
 
 export type CloudPullStatus = 'pulling' | 'pulled' | 'failed'
 
@@ -41,7 +42,10 @@ export function useLibraryDiagrams() {
     const finishPull = (succeeded: boolean) => {
       if (!isCancelled) setFinishedPull({ ownerId, succeeded })
     }
-    pullAccountDiagrams(ownerId).then(
+    Promise.all([
+      pullAccountFolders(ownerId),
+      pullAccountDiagrams(ownerId),
+    ]).then(
       () => finishPull(true),
       () => finishPull(false),
     )

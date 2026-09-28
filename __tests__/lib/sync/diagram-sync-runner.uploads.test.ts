@@ -19,6 +19,9 @@ vi.mock('@/lib/diagrams/diagram-lists', async () => ({
 vi.mock('@/lib/sync/upload-diagram', async () => ({
   uploadDiagram: (await import('./sync-runner-harness')).syncRunnerFakes.uploadDiagram,
 }))
+vi.mock('@/lib/sync/upload-pending-folders', async () => ({
+  uploadPendingFolders: (await import('./sync-runner-harness')).syncRunnerFakes.uploadPendingFolders,
+}))
 
 describe('diagram sync runner uploads', () => {
   let stopDiagramSync = () => {}

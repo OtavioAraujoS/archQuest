@@ -1,8 +1,10 @@
 import { liveQuery } from 'dexie'
 
 import { listPendingUploads } from '@/lib/diagrams/diagram-lists'
+import { listPendingFolderUploads } from '@/lib/folders/cached-folders'
 import { INITIAL_SYNC_STATE, useSyncStore } from '@/lib/sync/sync-store'
 import { uploadDiagram } from '@/lib/sync/upload-diagram'
+import { uploadPendingFolders } from '@/lib/sync/upload-pending-folders'
 import { withUploadLock } from '@/lib/sync/with-upload-lock'
 
 export const UPLOAD_DEBOUNCE_MS = 1000
@@ -22,6 +24,7 @@ export function startDiagramSync(ownerId: string): () => void {
   }
 
   async function uploadPendingDiagrams() {
+    await uploadPendingFolders(ownerId)
     const { conflictedDiagramIds } = useSyncStore.getState()
     const pendingDiagrams = (await listPendingUploads(ownerId)).filter(
       (diagram) => !conflictedDiagramIds.includes(diagram.id),
@@ -88,7 +91,10 @@ export function startDiagramSync(ownerId: string): () => void {
   window.addEventListener('online', followNetworkStatus)
   window.addEventListener('offline', followNetworkStatus)
   const pendingUploadsSubscription = liveQuery(() =>
-    listPendingUploads(ownerId),
+    Promise.all([
+      listPendingUploads(ownerId),
+      listPendingFolderUploads(ownerId),
+    ]),
   ).subscribe({
     next: () => scheduleUploadRound(UPLOAD_DEBOUNCE_MS),
     error: () => useSyncStore.setState({ lastUploadFailed: true }),

@@ -1,7 +1,7 @@
 import { db, type DiagramRecord } from '@/lib/db'
 
 type DiagramChanges = Partial<
-  Pick<DiagramRecord, 'name' | 'bpmnXml' | 'thumbnail'>
+  Pick<DiagramRecord, 'name' | 'bpmnXml' | 'thumbnail' | 'folderId'>
 >
 
 async function applyDiagramChanges(
@@ -29,6 +29,10 @@ export function saveDiagramContent(
 
 export function renameDiagram(id: string, name: string) {
   return applyDiagramChanges(id, { name }, { countsAsEdit: true })
+}
+
+export function moveDiagramToFolder(id: string, folderId: string | null) {
+  return applyDiagramChanges(id, { folderId }, { countsAsEdit: false })
 }
 
 export function saveDiagramThumbnail(id: string, thumbnail: string) {

@@ -5,7 +5,8 @@ function hasSameContent(current: DiagramRecord, uploaded: DiagramRecord) {
   return (
     current.name === uploaded.name &&
     current.bpmnXml === uploaded.bpmnXml &&
-    current.thumbnail === uploaded.thumbnail
+    current.thumbnail === uploaded.thumbnail &&
+    (current.folderId ?? null) === (uploaded.folderId ?? null)
   )
 }
 
