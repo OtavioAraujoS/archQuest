@@ -13,7 +13,7 @@ import { asTRBL, roundBounds } from 'diagram-js/lib/layout/LayoutUtil'
 import {
   ACTIVITY_MIN_DIMENSIONS,
   isResizableActivity,
-} from '@/components/editor/element-resize/activity-resize-limits'
+} from '@/components/editor/element-resize/activity-minimum-size'
 import { isOfType } from '@/lib/bpmn/diagram-element-ancestry'
 
 import type {

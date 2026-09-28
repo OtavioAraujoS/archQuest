@@ -5,12 +5,14 @@ import { Button } from '@/components/ui/button'
 import { DisplayHeading } from '@/components/ui/display-heading'
 
 interface LibraryEmptyStateProps {
+  title?: string
   message: string
   onStartBlankDiagram: () => void
   onBrowseTemplates: () => void
 }
 
 export function LibraryEmptyState({
+  title = 'Seu primeiro processo começa aqui',
   message,
   onStartBlankDiagram,
   onBrowseTemplates,
@@ -19,9 +21,7 @@ export function LibraryEmptyState({
     <div className="flex flex-col items-center gap-4 rounded-xl border px-6 py-14 text-center">
       <ArchQuestMark className="size-12" />
       <div className="flex max-w-md flex-col gap-1">
-        <DisplayHeading size="subtitle">
-          Seu primeiro processo começa aqui
-        </DisplayHeading>
+        <DisplayHeading size="subtitle">{title}</DisplayHeading>
         <p className="text-muted-foreground text-sm text-pretty">{message}</p>
       </div>
       <div className="flex flex-wrap justify-center gap-2">

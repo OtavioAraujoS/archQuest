@@ -1,0 +1,90 @@
+import type BpmnModeler from 'bpmn-js/lib/Modeler'
+import { useCallback, useEffect, useState, type RefObject } from 'react'
+
+import { OPEN_ELEMENT_MENU_EVENT } from '@/components/editor/element-menu/open-element-menu-event'
+import {
+  type MenuRect,
+  unionOfRects,
+} from '@/components/editor/element-menu/place-element-menu'
+import type { EditorStatus } from '@/hooks/editor/useSelectedElements'
+
+interface MenuTarget {
+  parent?: unknown
+  labelTarget?: MenuTarget
+}
+
+interface MenuOpeningEvent {
+  element: MenuTarget
+  originalEvent?: Event
+}
+
+interface MenuEventBus {
+  on(event: string, callback: (event: MenuOpeningEvent) => void): void
+  off(event: string, callback: (event: MenuOpeningEvent) => void): void
+}
+
+interface MenuSelection {
+  get(): unknown[]
+  isSelected(element: unknown): boolean
+  select(element: unknown): void
+}
+
+interface GraphicsRegistry {
+  getGraphics(element: unknown): Element | undefined
+}
+
+const CLOSING_EVENTS = ['selection.changed', 'canvas.viewbox.changing']
+
+export function useElementContextMenu(
+  modelerRef: RefObject<BpmnModeler | null>,
+  containerRef: RefObject<HTMLElement | null>,
+  status: EditorStatus,
+) {
+  const [menuAnchor, setMenuAnchor] = useState<MenuRect | null>(null)
+  const closeMenu = useCallback(() => setMenuAnchor(null), [])
+
+  useEffect(() => {
+    const modeler = modelerRef.current
+    if (status !== 'ready' || !modeler) return
+    const eventBus = modeler.get<MenuEventBus>('eventBus')
+    const selection = modeler.get<MenuSelection>('selection')
+    const elementRegistry = modeler.get<GraphicsRegistry>('elementRegistry')
+
+    function measureSelection() {
+      const container = containerRef.current
+      const rects = selection
+        .get()
+        .map((element) => elementRegistry.getGraphics(element))
+        .filter((graphics): graphics is Element => Boolean(graphics))
+        .map((graphics) => graphics.getBoundingClientRect())
+      if (!container || rects.length === 0) return null
+      return unionOfRects(rects, container.getBoundingClientRect())
+    }
+
+    function openMenu({ element, originalEvent }: MenuOpeningEvent) {
+      const target = element.labelTarget ?? element
+      if (!target.parent) return
+      originalEvent?.preventDefault()
+      if (!selection.isSelected(target)) selection.select(target)
+      setMenuAnchor(measureSelection())
+    }
+
+    function followChangedElements() {
+      setMenuAnchor((anchor) => (anchor ? measureSelection() : anchor))
+    }
+
+    eventBus.on('element.contextmenu', openMenu)
+    eventBus.on(OPEN_ELEMENT_MENU_EVENT, openMenu)
+    eventBus.on('elements.changed', followChangedElements)
+    CLOSING_EVENTS.forEach((event) => eventBus.on(event, closeMenu))
+    return () => {
+      eventBus.off('element.contextmenu', openMenu)
+      eventBus.off(OPEN_ELEMENT_MENU_EVENT, openMenu)
+      eventBus.off('elements.changed', followChangedElements)
+      CLOSING_EVENTS.forEach((event) => eventBus.off(event, closeMenu))
+      setMenuAnchor(null)
+    }
+  }, [modelerRef, containerRef, status, closeMenu])
+
+  return { menuAnchor, closeMenu }
+}
