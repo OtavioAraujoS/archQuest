@@ -72,6 +72,35 @@ Para usar um projeto Supabase próprio:
 Para rodar tudo localmente, com o Supabase no Docker, veja o
 [CONTRIBUTING](./CONTRIBUTING.md#rodando-com-o-supabase-local).
 
+## Rodando com Docker
+
+Só com Docker instalado, sem Node na máquina:
+
+```bash
+docker compose up --build
+```
+
+Abra http://localhost:8080. A imagem faz o build de produção e serve o `dist/` com nginx,
+com fallback de SPA para as rotas client-side. Sem variáveis, sobe em **modo convidado**.
+
+Para habilitar a nuvem, o compose lê `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` do
+`.env` automaticamente, ou de outro arquivo com `--env-file`:
+
+```bash
+docker compose --env-file .env.local up --build
+```
+
+O Vite embute as variáveis no build, então mudá-las exige `--build` de novo. Cadastre
+também `http://localhost:8080/**` nas *Redirect URLs* do Supabase.
+
+Para desenvolver dentro do container, com hot reload e o código montado como volume:
+
+```bash
+docker compose --profile dev up --build dev
+```
+
+Abra http://localhost:5173. As variáveis vêm do `.env.local`, se existir.
+
 ## Scripts
 
 - `npm run dev` — servidor de desenvolvimento

@@ -1,0 +1,26 @@
+services:
+  web:
+    build:
+      context: .
+      target: runtime
+      args:
+        VITE_SUPABASE_URL: ${VITE_SUPABASE_URL:-}
+        VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY:-}
+    ports:
+      - "8080:80"
+
+  dev:
+    profiles: [dev]
+    build:
+      context: .
+      target: dev
+    ports:
+      - "5173:5173"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    env_file:
+      - path: .env.local
+        required: false
+    environment:
+      DOCKER_DEV: "true"
