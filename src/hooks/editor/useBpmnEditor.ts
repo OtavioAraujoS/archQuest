@@ -1,6 +1,7 @@
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import { useEffect, useRef, useState } from 'react'
 
+import multiResizeModule from '@/components/editor/multi-resize'
 import groupedPaletteModule from '@/components/editor/palette'
 import propertyCommandsModule from '@/components/editor/properties'
 import portugueseTranslationModule from '@/components/editor/translations'
@@ -20,6 +21,7 @@ import {
   renameDiagram,
   saveDiagramThumbnail,
 } from '@/lib/diagrams/local-diagram-changes'
+import { savePendingChangesWhenPageHides } from '@/lib/diagrams/save-pending-changes-when-page-hides'
 
 export function useBpmnEditor(id: string | undefined) {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -28,16 +30,19 @@ export function useBpmnEditor(id: string | undefined) {
   const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
   const [autosaveState, setAutosaveState] = useState<AutosaveState>('idle')
   const [loadRevision, setLoadRevision] = useState(0)
+  const discardPendingSaveRef = useRef(false)
   const diagramExports = useDiagramExports(modelerRef, name)
 
   useEffect(() => {
     if (!id || !containerRef.current) return
+    discardPendingSaveRef.current = false
 
     const modeler = new BpmnModeler({
       container: containerRef.current,
       ...ARCHQUEST_RENDERING_OPTIONS,
       additionalModules: [
         groupedPaletteModule,
+        multiResizeModule,
         propertyCommandsModule,
         portugueseTranslationModule,
         textStyleRendererModule,
@@ -76,16 +81,20 @@ export function useBpmnEditor(id: string | undefined) {
     modeler
       .get<{ on: (event: string, callback: () => void) => void }>('eventBus')
       .on('commandStack.changed', autosave.scheduleSave)
+    const stopSavingOnPageHide = savePendingChangesWhenPageHides(autosave)
 
     return () => {
       cancelled = true
-      autosave.cancelPendingSave()
-      modeler.destroy()
+      stopSavingOnPageHide()
       modelerRef.current = null
+      if (discardPendingSaveRef.current) autosave.cancelPendingSave()
+      if (!autosave.hasPendingSave()) return modeler.destroy()
+      void autosave.flushPendingSave().finally(() => modeler.destroy())
     }
   }, [id, loadRevision])
 
   function reloadDiagram() {
+    discardPendingSaveRef.current = true
     setStatus('loading')
     setLoadRevision((revision) => revision + 1)
   }

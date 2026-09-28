@@ -9,7 +9,10 @@ function hasSameContent(current: DiagramRecord, uploaded: DiagramRecord) {
   )
 }
 
-export async function markDiagramUploaded(uploaded: DiagramRecord, cloudRow: DiagramRow) {
+export async function markDiagramUploaded(
+  uploaded: DiagramRecord,
+  cloudRow: DiagramRow,
+) {
   await db.transaction('rw', db.diagrams, async () => {
     const current = await db.diagrams.get(uploaded.id)
     if (!current) return

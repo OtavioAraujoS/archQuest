@@ -18,10 +18,12 @@ describe('setCloudPublicSlug', () => {
       error: null,
     })
 
-    await expect(setCloudPublicSlug('account-1', 'slugPublicoComEntropia01')).resolves.toBe(
-      'slugPublicoComEntropia01',
-    )
-    expect(query.update).toHaveBeenCalledWith({ public_slug: 'slugPublicoComEntropia01' })
+    await expect(
+      setCloudPublicSlug('account-1', 'slugPublicoComEntropia01'),
+    ).resolves.toBe('slugPublicoComEntropia01')
+    expect(query.update).toHaveBeenCalledWith({
+      public_slug: 'slugPublicoComEntropia01',
+    })
     expect(query.eq).toHaveBeenCalledWith('id', 'account-1')
   })
 

@@ -6,7 +6,10 @@ import {
   fetchCloudDiagramRow,
 } from '@/lib/diagrams/cloud-diagrams'
 import { makeDiagramRow } from './diagram-fixtures'
-import { createFakeDiagramsQuery as createFakeQueryFor, type FakeQueryResult } from './fake-diagrams-query'
+import {
+  createFakeDiagramsQuery as createFakeQueryFor,
+  type FakeQueryResult,
+} from './fake-diagrams-query'
 
 const { getSupabaseClient } = vi.hoisted(() => ({ getSupabaseClient: vi.fn() }))
 
@@ -22,16 +25,24 @@ describe('cloud diagrams', () => {
   })
 
   it('fetches the account diagrams, most recently updated first', async () => {
-    const query = createFakeDiagramsQuery({ data: [makeDiagramRow()], error: null })
+    const query = createFakeDiagramsQuery({
+      data: [makeDiagramRow()],
+      error: null,
+    })
 
     await expect(fetchAccountDiagramRows()).resolves.toEqual([makeDiagramRow()])
     expect(query.order).toHaveBeenCalledWith('updated_at', { ascending: false })
   })
 
   it('fetches one diagram by id', async () => {
-    const query = createFakeDiagramsQuery({ data: makeDiagramRow(), error: null })
+    const query = createFakeDiagramsQuery({
+      data: makeDiagramRow(),
+      error: null,
+    })
 
-    await expect(fetchCloudDiagramRow('account-1')).resolves.toEqual(makeDiagramRow())
+    await expect(fetchCloudDiagramRow('account-1')).resolves.toEqual(
+      makeDiagramRow(),
+    )
     expect(query.eq).toHaveBeenCalledWith('id', 'account-1')
   })
 
@@ -54,6 +65,8 @@ describe('cloud diagrams', () => {
   it('refuses to run without the cloud configured', async () => {
     getSupabaseClient.mockResolvedValue(null)
 
-    await expect(fetchAccountDiagramRows()).rejects.toThrow('A nuvem não está configurada')
+    await expect(fetchAccountDiagramRows()).rejects.toThrow(
+      'A nuvem não está configurada',
+    )
   })
 })

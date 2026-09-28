@@ -1,6 +1,9 @@
 import { db, type DiagramRecord } from '@/lib/db'
 
-export async function moveGuestDiagramsToAccount(diagramIds: string[], ownerId: string) {
+export async function moveGuestDiagramsToAccount(
+  diagramIds: string[],
+  ownerId: string,
+) {
   await db.transaction('rw', db.diagrams, async () => {
     const chosenDiagrams = await db.diagrams.bulkGet(diagramIds)
     const guestDiagramIds = chosenDiagrams

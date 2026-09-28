@@ -102,6 +102,15 @@ docker compose --profile dev up --build dev
 Abra http://localhost:5173. O Vite lê `.env` e `.env.local` da pasta montada, como no
 `npm run dev`.
 
+Alternativa sem volume, com o [Compose Watch](https://docs.docker.com/compose/how-tos/file-watch/):
+alterações em `src/`, `public/`, `index.html` e `vite.config.ts` são sincronizadas para o
+container (o HMR dispara na hora, sem polling) e mudanças em `package.json` ou
+`package-lock.json` recriam a imagem:
+
+```bash
+docker compose --profile watch watch dev-watch
+```
+
 Atrás de proxy ou antivírus que inspeciona HTTPS (Cisco Umbrella, Zscaler etc.), o
 `npm ci` do build falha com `UNABLE_TO_GET_ISSUER_CERT_LOCALLY`. Se o seu Node local já
 usa `NODE_EXTRA_CA_CERTS`, o compose repassa esse arquivo ao build como *secret*, só
@@ -116,6 +125,12 @@ caminho do certificado raiz do proxy antes de rodar o compose.
 - `npm run lint` — roda o oxlint
 - `npm test` — roda os testes (Vitest)
 - `npx supabase test db` — roda os testes de banco (pgTAP) no Supabase local
+- `npm run docker:up` — builda e sobe a imagem de produção em http://localhost:8080
+- `npm run docker:build` — só builda a imagem de produção
+- `npm run docker:dev` — dev no container com o código montado como volume
+- `npm run docker:watch` — dev no container com Compose Watch
+- `npm run docker:logs` — acompanha os logs dos containers
+- `npm run docker:down` — derruba todos os containers do projeto
 
 ## Deploy
 

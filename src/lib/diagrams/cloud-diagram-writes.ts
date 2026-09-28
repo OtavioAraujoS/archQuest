@@ -1,11 +1,21 @@
-import type { DiagramInsert, DiagramRow, DiagramUpdate } from '@/lib/supabase/database-types'
+import type {
+  DiagramInsert,
+  DiagramRow,
+  DiagramUpdate,
+} from '@/lib/supabase/database-types'
 import { requireSupabaseClient } from '@/lib/supabase/require-supabase-client'
 
 const UNIQUE_VIOLATION_CODE = '23505'
 
-export async function insertCloudDiagram(diagram: DiagramInsert): Promise<DiagramRow | null> {
+export async function insertCloudDiagram(
+  diagram: DiagramInsert,
+): Promise<DiagramRow | null> {
   const supabase = await requireSupabaseClient()
-  const { data, error } = await supabase.from('diagrams').insert(diagram).select().single()
+  const { data, error } = await supabase
+    .from('diagrams')
+    .insert(diagram)
+    .select()
+    .single()
   if (error?.code === UNIQUE_VIOLATION_CODE) return null
   if (error) throw error
   return data

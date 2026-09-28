@@ -1,9 +1,9 @@
 import { resolveThemedColorsForExport } from '@/lib/diagram-colors'
 import { saveDiagramContent } from '@/lib/diagrams/local-diagram-changes'
 
-export type AutosaveState = 'idle' | 'saving' | 'saved' | 'failed'
+export type AutosaveState = 'idle' | 'pending' | 'saving' | 'saved' | 'failed'
 
-export const AUTOSAVE_DEBOUNCE_MS = 800
+export const AUTOSAVE_DEBOUNCE_MS = 2 * 60 * 1000
 
 interface AutosavableModeler {
   saveXML(options: { format: boolean }): Promise<{ xml?: string }>
@@ -41,8 +41,22 @@ export function createDiagramAutosave(
 
   function scheduleSave() {
     cancelPendingSave()
-    pendingSaveTimeout = setTimeout(persist, AUTOSAVE_DEBOUNCE_MS)
+    onAutosaveStateChange('pending')
+    pendingSaveTimeout = setTimeout(() => {
+      pendingSaveTimeout = null
+      void persist()
+    }, AUTOSAVE_DEBOUNCE_MS)
   }
 
-  return { scheduleSave, cancelPendingSave }
+  function hasPendingSave() {
+    return pendingSaveTimeout !== null
+  }
+
+  async function flushPendingSave() {
+    if (!hasPendingSave()) return
+    cancelPendingSave()
+    await persist()
+  }
+
+  return { scheduleSave, cancelPendingSave, hasPendingSave, flushPendingSave }
 }

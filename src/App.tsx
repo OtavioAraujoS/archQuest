@@ -12,10 +12,14 @@ import { PUBLIC_VIEW_PATH } from '@/lib/sharing/public-link'
 import { startDiagramSyncWhileSignedIn } from '@/lib/sync/sync-while-signed-in'
 
 const BpmnEditor = lazy(() =>
-  import('@/components/editor/BpmnEditor').then((module) => ({ default: module.BpmnEditor })),
+  import('@/components/editor/BpmnEditor').then((module) => ({
+    default: module.BpmnEditor,
+  })),
 )
 const PublicViewer = lazy(() =>
-  import('@/components/viewer/PublicViewer').then((module) => ({ default: module.PublicViewer })),
+  import('@/components/viewer/PublicViewer').then((module) => ({
+    default: module.PublicViewer,
+  })),
 )
 
 function App() {

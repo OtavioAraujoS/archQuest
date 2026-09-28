@@ -27,7 +27,9 @@ nuvem só liga quando `VITE_SUPABASE_URL` e `VITE_SUPABASE_ANON_KEY` existem no 
   `/assets/` e `no-cache` no `index.html`.
 - As variáveis do Supabase entram como build args (opção 1). Sem elas, modo convidado.
 - `compose.yaml` com o serviço `web` (porta 8080) e o serviço `dev` no profile `dev`
-  (porta 5173, código montado e polling de arquivos via `DOCKER_DEV=true`).
+  (porta 5173, código montado e polling de arquivos via `DOCKER_DEV=true`), além do
+  serviço `dev-watch` no profile `watch`, que usa Compose Watch para sincronizar o código
+  sem volume e recriar a imagem quando as dependências mudam.
 - O CI builda a imagem em cada PR. O Netlify continua sendo o deploy oficial.
 
 ## Consequências

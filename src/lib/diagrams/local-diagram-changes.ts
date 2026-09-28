@@ -1,6 +1,8 @@
 import { db, type DiagramRecord } from '@/lib/db'
 
-type DiagramChanges = Partial<Pick<DiagramRecord, 'name' | 'bpmnXml' | 'thumbnail'>>
+type DiagramChanges = Partial<
+  Pick<DiagramRecord, 'name' | 'bpmnXml' | 'thumbnail'>
+>
 
 async function applyDiagramChanges(
   id: string,

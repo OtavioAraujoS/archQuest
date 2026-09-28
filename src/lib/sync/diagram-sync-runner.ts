@@ -41,9 +41,13 @@ export function startDiagramSync(ownerId: string): () => void {
     }
     useSyncStore.setState((state) => ({
       tooLargeDiagramIds,
-      conflictedDiagramIds: [...state.conflictedDiagramIds, ...newlyConflictedIds],
+      conflictedDiagramIds: [
+        ...state.conflictedDiagramIds,
+        ...newlyConflictedIds,
+      ],
     }))
-    if (hasFailedUpload) throw new Error('Some pending diagrams could not be uploaded')
+    if (hasFailedUpload)
+      throw new Error('Some pending diagrams could not be uploaded')
   }
 
   async function runUploadRound() {
@@ -83,7 +87,9 @@ export function startDiagramSync(ownerId: string): () => void {
   useSyncStore.setState({ ...INITIAL_SYNC_STATE, isOnline: navigator.onLine })
   window.addEventListener('online', followNetworkStatus)
   window.addEventListener('offline', followNetworkStatus)
-  const pendingUploadsSubscription = liveQuery(() => listPendingUploads(ownerId)).subscribe({
+  const pendingUploadsSubscription = liveQuery(() =>
+    listPendingUploads(ownerId),
+  ).subscribe({
     next: () => scheduleUploadRound(UPLOAD_DEBOUNCE_MS),
     error: () => useSyncStore.setState({ lastUploadFailed: true }),
   })

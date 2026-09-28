@@ -2,7 +2,11 @@ import { Moon, Sun } from 'lucide-react'
 import { useState } from 'react'
 
 import { Button } from '@/components/ui/button'
-import { getPreferredTheme, setTheme as persistTheme, type Theme } from '@/lib/theme'
+import {
+  getPreferredTheme,
+  setTheme as persistTheme,
+  type Theme,
+} from '@/lib/theme'
 
 export function ThemeToggle() {
   const [theme, setTheme] = useState<Theme>(() => getPreferredTheme())
@@ -14,7 +18,12 @@ export function ThemeToggle() {
   }
 
   return (
-    <Button variant="outline" size="icon" onClick={toggle} aria-label="Alternar tema">
+    <Button
+      variant="outline"
+      size="icon"
+      onClick={toggle}
+      aria-label="Alternar tema"
+    >
       {theme === 'dark' ? <Sun /> : <Moon />}
     </Button>
   )

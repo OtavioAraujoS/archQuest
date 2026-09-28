@@ -4,7 +4,9 @@ import { db } from '@/lib/db'
 import { deleteDiagram } from '@/lib/diagrams/delete-diagram'
 import { makeAccountDiagram, makeGuestDiagram } from './diagram-fixtures'
 
-const { deleteCloudDiagram } = vi.hoisted(() => ({ deleteCloudDiagram: vi.fn() }))
+const { deleteCloudDiagram } = vi.hoisted(() => ({
+  deleteCloudDiagram: vi.fn(),
+}))
 
 vi.mock('@/lib/diagrams/cloud-diagrams', () => ({ deleteCloudDiagram }))
 

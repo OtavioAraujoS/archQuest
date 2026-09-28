@@ -5,9 +5,11 @@ import { EditorCanvasStatus } from '@/components/editor/EditorCanvasStatus'
 import { EditorHeader } from '@/components/editor/EditorHeader'
 import { ElementInspector } from '@/components/editor/ElementInspector'
 import { PaletteHint } from '@/components/editor/palette/PaletteHint'
+import { RefusedConnectionNotice } from '@/components/editor/RefusedConnectionNotice'
 import { useFileLink } from '@/hooks/editor/file-link/useFileLink'
 import { useBpmnEditor } from '@/hooks/editor/useBpmnEditor'
 import { useCanvasResizeSync } from '@/hooks/editor/useCanvasResizeSync'
+import { useRefusedConnectionNotice } from '@/hooks/editor/useRefusedConnectionNotice'
 import { LIBRARY_PATH } from '@/lib/routes'
 import { useSyncStore } from '@/lib/sync/sync-store'
 
@@ -42,6 +44,8 @@ export function BpmnEditor() {
     (state) => id !== undefined && state.conflictedDiagramIds.includes(id),
   )
   useCanvasResizeSync(containerRef, modelerRef)
+  const { refusedConnectionMessage, dismissRefusedConnectionMessage } =
+    useRefusedConnectionNotice(modelerRef, status)
   const backToLibrary = () => navigate(LIBRARY_PATH)
 
   return (
@@ -72,6 +76,10 @@ export function BpmnEditor() {
           <div ref={containerRef} className="archquest-bpmn size-full" />
           <EditorCanvasStatus status={status} onBackToLibrary={backToLibrary} />
           {status === 'ready' && <PaletteHint />}
+          <RefusedConnectionNotice
+            message={refusedConnectionMessage}
+            onDismiss={dismissRefusedConnectionMessage}
+          />
         </div>
         <ElementInspector modelerRef={modelerRef} status={status} />
       </div>

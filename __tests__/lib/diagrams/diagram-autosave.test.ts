@@ -14,11 +14,9 @@ import {
 function createModeler() {
   return {
     saveXML: vi.fn().mockResolvedValue({ xml: '<xml />' }),
-    saveSVG: vi
-      .fn()
-      .mockResolvedValue({
-        svg: '<rect style="fill: var(--bpmn-shape-fill)"/>',
-      }),
+    saveSVG: vi.fn().mockResolvedValue({
+      svg: '<rect style="fill: var(--bpmn-shape-fill)"/>',
+    }),
   }
 }
 
@@ -43,7 +41,12 @@ describe('createDiagramAutosave', () => {
       bpmnXml: '<xml />',
       thumbnail: '<rect style="fill: #ffffff"/>',
     })
-    expect(onStateChange.mock.calls).toEqual([['saving'], ['saved']])
+    expect(onStateChange.mock.calls).toEqual([
+      ['pending'],
+      ['pending'],
+      ['saving'],
+      ['saved'],
+    ])
   })
 
   it('reports a failed save', async () => {
@@ -66,5 +69,36 @@ describe('createDiagramAutosave', () => {
     await vi.advanceTimersByTimeAsync(AUTOSAVE_DEBOUNCE_MS)
 
     expect(saveDiagramContent).not.toHaveBeenCalled()
+  })
+
+  it('waits two minutes after the last change', async () => {
+    const autosave = createDiagramAutosave(createModeler(), 'd1', vi.fn())
+
+    autosave.scheduleSave()
+    await vi.advanceTimersByTimeAsync(AUTOSAVE_DEBOUNCE_MS - 1)
+
+    expect(AUTOSAVE_DEBOUNCE_MS).toBe(120_000)
+    expect(saveDiagramContent).not.toHaveBeenCalled()
+    expect(autosave.hasPendingSave()).toBe(true)
+  })
+
+  it('saves right away when asked to flush pending changes', async () => {
+    const autosave = createDiagramAutosave(createModeler(), 'd1', vi.fn())
+
+    autosave.scheduleSave()
+    await autosave.flushPendingSave()
+    await autosave.flushPendingSave()
+
+    expect(saveDiagramContent).toHaveBeenCalledOnce()
+    expect(autosave.hasPendingSave()).toBe(false)
+  })
+
+  it('has nothing pending once the scheduled save ran', async () => {
+    const autosave = createDiagramAutosave(createModeler(), 'd1', vi.fn())
+
+    autosave.scheduleSave()
+    await vi.advanceTimersByTimeAsync(AUTOSAVE_DEBOUNCE_MS)
+
+    expect(autosave.hasPendingSave()).toBe(false)
   })
 })

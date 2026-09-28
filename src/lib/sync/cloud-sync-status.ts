@@ -31,12 +31,14 @@ export function describeCloudSyncStatus(
     }
   }
   if (!diagram.dirty) return { tone: 'saved', label: 'Salvo na nuvem' }
-  if (!syncState.isOnline) return { tone: 'warning', label: 'Offline — alterações pendentes' }
+  if (!syncState.isOnline)
+    return { tone: 'warning', label: 'Offline — alterações pendentes' }
   if (syncState.lastUploadFailed && !syncState.isUploading) {
     return {
       tone: 'warning',
       label: 'Erro ao salvar — tentando de novo',
-      detail: 'As alterações estão salvas neste navegador e vão para a nuvem na próxima tentativa.',
+      detail:
+        'As alterações estão salvas neste navegador e vão para a nuvem na próxima tentativa.',
     }
   }
   return { tone: 'saving', label: 'Salvando…' }
