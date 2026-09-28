@@ -42,10 +42,8 @@ export function useLibraryDiagrams() {
     const finishPull = (succeeded: boolean) => {
       if (!isCancelled) setFinishedPull({ ownerId, succeeded })
     }
-    Promise.all([
-      pullAccountFolders(ownerId),
-      pullAccountDiagrams(ownerId),
-    ]).then(
+    pullAccountFolders(ownerId).catch(() => undefined)
+    pullAccountDiagrams(ownerId).then(
       () => finishPull(true),
       () => finishPull(false),
     )

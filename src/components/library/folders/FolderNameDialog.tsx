@@ -1,4 +1,4 @@
-import type { SubmitEvent } from 'react'
+import { useEffect, useRef, type SubmitEvent } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { DialogActions } from '@/components/ui/dialog-actions'
@@ -23,6 +23,9 @@ export function FolderNameDialog({
   onSubmit,
 }: Readonly<FolderNameDialogProps>) {
   const isRenaming = currentName !== undefined
+  const nameInputRef = useRef<HTMLInputElement>(null)
+
+  useEffect(() => nameInputRef.current?.select(), [])
 
   function submitTypedName(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -45,7 +48,7 @@ export function FolderNameDialog({
             defaultValue={currentName}
             maxLength={FOLDER_NAME_MAX_LENGTH}
             autoComplete="off"
-            autoFocus
+            ref={nameInputRef}
           />
         </label>
         {error && <ErrorMessage className="mt-3">{error}</ErrorMessage>}

@@ -37,6 +37,7 @@ describe('pullAccountDiagrams', () => {
       version: 4,
       publicSlug: null,
       dirty: false,
+      folderId: null,
     })
   })
 

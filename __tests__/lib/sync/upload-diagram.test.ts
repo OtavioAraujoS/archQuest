@@ -36,6 +36,7 @@ describe('uploadDiagram', () => {
       name: 'Processo na conta',
       bpmn_xml: '<xml>account</xml>',
       thumbnail: null,
+      folder_id: null,
       created_at: '1970-01-01T00:00:00.000Z',
       updated_at: '1970-01-01T00:00:01.000Z',
     })
@@ -52,6 +53,7 @@ describe('uploadDiagram', () => {
       name: 'Processo na conta',
       bpmn_xml: '<xml>account</xml>',
       thumbnail: '<svg />',
+      folder_id: null,
     })
     await expect(db.diagrams.get('account-1')).resolves.toMatchObject({ version: 4, dirty: false })
   })

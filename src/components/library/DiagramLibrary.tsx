@@ -12,8 +12,6 @@ import { LibraryToolbar } from '@/components/library/LibraryToolbar'
 import { SignedInDiagramSections } from '@/components/library/SignedInDiagramSections'
 import { ErrorMessage } from '@/components/ui/error-message'
 import { useFolder } from '@/hooks/folders/useFolder'
-import { useFolderDialogs } from '@/hooks/folders/useFolderDialogs'
-import { useCurrentFolder } from '@/hooks/library/useCurrentFolder'
 import { useDiagramDeletion } from '@/hooks/library/useDiagramDeletion'
 import { useDiagramFilters } from '@/hooks/library/useDiagramFilters'
 import { useGuestMigrationPrompt } from '@/hooks/library/useGuestMigrationPrompt'
@@ -28,11 +26,8 @@ export function DiagramLibrary() {
   const navigate = useNavigate()
   const { ownerId, accountDiagrams, guestDiagrams, cloudPullStatus } =
     useLibraryDiagrams()
-  const folderActions = useFolder()
-  const { folders } = folderActions
-  const { currentFolder, currentFolderId, isOpeningFolder } =
-    useCurrentFolder(folders)
-  const folderDialogs = useFolderDialogs(folderActions)
+  const folder = useFolder()
+  const { folders, currentFolder, currentFolderId, isOpeningFolder } = folder
   const { isGuestMigrationOpen, openGuestMigration, closeGuestMigration } =
     useGuestMigrationPrompt(ownerId, guestDiagrams)
   const { isTemplatePickerOpen, openTemplatePicker, closeTemplatePicker } =
@@ -63,7 +58,7 @@ export function DiagramLibrary() {
     onOpen: openDiagram,
     onDelete: deletion.requestDeletion,
     onMoveToFolder: (diagram, folderId) =>
-      void folderActions.moveDiagramToFolder(diagram.id, folderId),
+      void folder.moveDiagramToFolder(diagram.id, folderId),
   }
   const emptyState = view.hidesEmptyState ? null : (
     <LibraryEmptyContent
@@ -88,11 +83,11 @@ export function DiagramLibrary() {
           onStartBlankDiagram={() => void startBlankDiagram()}
           onBrowseTemplates={openTemplatePicker}
           onOpenFile={() => void openFileAsDiagram()}
-          onCreateFolder={folderDialogs.requestNewFolder}
+          onCreateFolder={folder.requestNewFolder}
         />
         {fileOpenError && <ErrorMessage>{fileOpenError}</ErrorMessage>}
-        {folderActions.folderError && !folderDialogs.folderDialog && (
-          <ErrorMessage>{folderActions.folderError}</ErrorMessage>
+        {folder.folderError && !folder.folderDialog && (
+          <ErrorMessage>{folder.folderError}</ErrorMessage>
         )}
         {view.savedDiagramCount > 0 && (
           <LibraryToolbar
@@ -107,8 +102,8 @@ export function DiagramLibrary() {
           <FolderGrid
             folders={folders}
             diagrams={view.ownDiagrams}
-            onRename={folderDialogs.requestFolderRename}
-            onDelete={folderDialogs.requestFolderDeletion}
+            onRename={folder.requestFolderRename}
+            onDelete={folder.requestFolderDeletion}
           />
         )}
         {ownerId ? (
@@ -138,8 +133,7 @@ export function DiagramLibrary() {
         guestDiagrams={guestDiagrams}
         onCloseGuestMigration={closeGuestMigration}
         deletion={deletion}
-        folderActions={folderActions}
-        folderDialogs={folderDialogs}
+        folder={folder}
         ownDiagrams={view.ownDiagrams}
       />
     </div>

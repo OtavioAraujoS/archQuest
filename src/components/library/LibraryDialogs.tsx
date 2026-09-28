@@ -3,7 +3,6 @@ import { DeleteDiagramDialog } from '@/components/library/DeleteDiagramDialog'
 import { FolderDialogs } from '@/components/library/folders/FolderDialogs'
 import { TemplatePicker } from '@/components/library/TemplatePicker'
 import type { useFolder } from '@/hooks/folders/useFolder'
-import type { useFolderDialogs } from '@/hooks/folders/useFolderDialogs'
 import type { useDiagramDeletion } from '@/hooks/library/useDiagramDeletion'
 import type { DiagramRecord } from '@/lib/db'
 import type { DiagramTemplate } from '@/templates'
@@ -16,8 +15,7 @@ interface LibraryDialogsProps {
   guestDiagrams: DiagramRecord[] | undefined
   onCloseGuestMigration: () => void
   deletion: ReturnType<typeof useDiagramDeletion>
-  folderActions: ReturnType<typeof useFolder>
-  folderDialogs: ReturnType<typeof useFolderDialogs>
+  folder: ReturnType<typeof useFolder>
   ownDiagrams: DiagramRecord[] | undefined
 }
 
@@ -29,8 +27,7 @@ export function LibraryDialogs({
   guestDiagrams,
   onCloseGuestMigration,
   deletion,
-  folderActions,
-  folderDialogs,
+  folder,
   ownDiagrams,
 }: Readonly<LibraryDialogsProps>) {
   return (
@@ -58,15 +55,13 @@ export function LibraryDialogs({
         />
       )}
       <FolderDialogs
-        folderDialog={folderDialogs.folderDialog}
+        folderDialog={folder.folderDialog}
         diagrams={ownDiagrams}
-        error={folderActions.folderError}
-        isSaving={folderActions.isSavingFolder}
-        onClose={folderDialogs.closeFolderDialog}
-        onSubmitName={(typedName) =>
-          void folderDialogs.submitFolderName(typedName)
-        }
-        onConfirmDeletion={() => void folderDialogs.confirmFolderDeletion()}
+        error={folder.folderError}
+        isSaving={folder.isSavingFolder}
+        onClose={folder.closeFolderDialog}
+        onSubmitName={(typedName) => void folder.submitFolderName(typedName)}
+        onConfirmDeletion={() => void folder.confirmFolderDeletion()}
       />
     </>
   )
