@@ -19,7 +19,8 @@ export function PaletteHint() {
         />
         <span>
           Os ícones da paleta com um triângulo no canto agrupam variações:
-          clique para escolher o tipo ou arraste para criar o mais comum.
+          clique para escolher o tipo ou arraste para criar o mais comum. Clique
+          com o botão direito em um elemento para mudar cores, texto e tamanho.
         </span>
       </p>
       <Button

@@ -10,6 +10,10 @@ import {
 } from 'diagram-js/lib/features/resize/ResizeUtil'
 import { asTRBL, roundBounds } from 'diagram-js/lib/layout/LayoutUtil'
 
+import {
+  ACTIVITY_MIN_DIMENSIONS,
+  isResizableActivity,
+} from '@/components/editor/element-resize/activity-resize-limits'
 import { isOfType } from '@/lib/bpmn/diagram-element-ancestry'
 
 import type {
@@ -36,6 +40,7 @@ export function measureEdgeDeltas(before: Bounds, after: Bounds): EdgeDeltas {
 }
 
 function minimumDimensionsOf(shape: ResizableShape) {
+  if (isResizableActivity(shape)) return ACTIVITY_MIN_DIMENSIONS
   if (isOfType(shape, 'bpmn:SubProcess')) return SUB_PROCESS_MIN_DIMENSIONS
   if (isOfType(shape, 'bpmn:TextAnnotation')) {
     return TEXT_ANNOTATION_MIN_DIMENSIONS

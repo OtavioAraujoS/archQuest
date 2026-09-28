@@ -41,6 +41,7 @@ export function makeDiagramRow(
     thumbnail: '<svg>cloud</svg>',
     version: 4,
     public_slug: null,
+    folder_id: null,
     created_at: '2026-09-20T10:00:00.000Z',
     updated_at: '2026-09-24T10:00:00.000Z',
     ...overrides,

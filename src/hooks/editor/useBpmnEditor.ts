@@ -1,6 +1,8 @@
 import BpmnModeler from 'bpmn-js/lib/Modeler'
 import { useEffect, useRef, useState } from 'react'
 
+import elementMenuModule from '@/components/editor/element-menu'
+import activityResizeModule from '@/components/editor/element-resize'
 import multiResizeModule from '@/components/editor/multi-resize'
 import groupedPaletteModule from '@/components/editor/palette'
 import propertyCommandsModule from '@/components/editor/properties'
@@ -43,6 +45,8 @@ export function useBpmnEditor(id: string | undefined) {
       additionalModules: [
         groupedPaletteModule,
         multiResizeModule,
+        activityResizeModule,
+        elementMenuModule,
         propertyCommandsModule,
         portugueseTranslationModule,
         textStyleRendererModule,

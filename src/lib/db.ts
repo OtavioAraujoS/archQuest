@@ -11,6 +11,16 @@ export interface DiagramRecord {
   version: number
   publicSlug: string | null
   dirty: boolean
+  folderId?: string | null
+}
+
+export interface FolderRecord {
+  id: string
+  name: string
+  createdAt: number
+  updatedAt: number
+  ownerId: string | null
+  dirty: boolean
 }
 
 export type SyncFields = Pick<
@@ -27,6 +37,7 @@ export const GUEST_SYNC_FIELDS: SyncFields = {
 
 export type ArchQuestDatabase = Dexie & {
   diagrams: EntityTable<DiagramRecord, 'id'>
+  folders: EntityTable<FolderRecord, 'id'>
 }
 
 export function createArchQuestDatabase(databaseName = 'archquest') {
@@ -47,6 +58,11 @@ export function createArchQuestDatabase(databaseName = 'archquest') {
         .toCollection()
         .modify({ ...GUEST_SYNC_FIELDS }),
     )
+
+  database.version(3).stores({
+    diagrams: 'id, name, updatedAt, ownerId, folderId',
+    folders: 'id, ownerId, name',
+  })
 
   return database
 }

@@ -35,11 +35,17 @@ export function createFakeEventBus() {
 export const allowEveryResize = { allowed: () => true }
 
 export const smallestResizeBox = {
-  computeMinResizeBox: ({ shape }: { shape: Bounds }) => ({
+  computeMinResizeBox: ({
+    shape,
+    minDimensions,
+  }: {
+    shape: Bounds
+    minDimensions?: { width: number; height: number }
+  }) => ({
     x: shape.x,
     y: shape.y,
-    width: 10,
-    height: 10,
+    width: minDimensions?.width ?? 10,
+    height: minDimensions?.height ?? 10,
   }),
 }
 
