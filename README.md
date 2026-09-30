@@ -11,6 +11,8 @@ Projeto open-source, licenciado sob MIT.
   sub-processos, com painel de propriedades e estilos de texto.
 - Começar de um template ou de um diagrama em branco; importar e exportar `.bpmn`, PNG e
   SVG.
+- Escrever com verificação ortográfica em português nos rótulos, no nome do diagrama e
+  nas pastas, com sugestões de correção e sem enviar o texto para fora do navegador.
 - **Sem conta (modo convidado):** tudo fica salvo neste navegador, no IndexedDB.
 - **Com conta (opcional):** login por GitHub ou link mágico por e-mail, diagramas salvos
   na nuvem e disponíveis em outros dispositivos, edição offline com sincronização, e
@@ -144,6 +146,11 @@ Environment variables** e faça um novo deploy (o Vite embute as variáveis no b
 Este projeto depende do [bpmn-js](https://bpmn.io/license/), cuja licença exige manter
 visível a marca d'água "powered by bpmn.io" nos diagramas renderizados, inclusive na
 página pública. Não a remova.
+
+A verificação ortográfica usa o [espells](https://github.com/Monkatraz/espells) (MPL-2.0) e
+o dicionário VERO pt-BR distribuído em
+[dictionary-pt](https://github.com/wooorm/dictionaries/tree/main/dictionaries/pt)
+(LGPL-3.0 ou MPL-2.0), ambos sem modificação.
 
 ## Contribuindo
 

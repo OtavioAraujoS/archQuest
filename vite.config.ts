@@ -9,7 +9,14 @@ export default defineConfig({
   resolve: {
     alias: {
       "@": path.resolve(import.meta.dirname, "./src"),
+      "dictionary-pt-files": path.resolve(
+        import.meta.dirname,
+        "./node_modules/dictionary-pt",
+      ),
     },
+  },
+  worker: {
+    format: "es",
   },
   server: {
     watch: {
