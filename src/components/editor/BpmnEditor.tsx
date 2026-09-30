@@ -6,8 +6,10 @@ import { EditorHeader } from '@/components/editor/EditorHeader'
 import { ElementContextMenu } from '@/components/editor/element-menu/ElementContextMenu'
 import { PaletteHint } from '@/components/editor/palette/PaletteHint'
 import { RefusedConnectionNotice } from '@/components/editor/RefusedConnectionNotice'
+import { LabelSpellingPopover } from '@/components/editor/spelling/LabelSpellingPopover'
 import { useElementContextMenu } from '@/hooks/editor/element-menu/useElementContextMenu'
 import { useFileLink } from '@/hooks/editor/file-link/useFileLink'
+import { useLabelSpellingSuggestions } from '@/hooks/editor/spelling/useLabelSpellingSuggestions'
 import { useBpmnEditor } from '@/hooks/editor/useBpmnEditor'
 import { useCanvasResizeSync } from '@/hooks/editor/useCanvasResizeSync'
 import { useRefusedConnectionNotice } from '@/hooks/editor/useRefusedConnectionNotice'
@@ -19,6 +21,7 @@ import 'bpmn-js/dist/assets/bpmn-font/css/bpmn.css'
 import 'bpmn-js/dist/assets/bpmn-js.css'
 import 'bpmn-js/dist/assets/diagram-js.css'
 import '@/components/editor/bpmn-theme.css'
+import '@/components/editor/spelling/spelling.css'
 
 export function BpmnEditor() {
   const { id } = useParams<{ id: string }>()
@@ -49,6 +52,11 @@ export function BpmnEditor() {
   const { refusedConnectionMessage, dismissRefusedConnectionMessage } =
     useRefusedConnectionNotice(modelerRef, status)
   const { menuAnchor, closeMenu } = useElementContextMenu(
+    modelerRef,
+    containerRef,
+    status,
+  )
+  const { openSuggestions, closeSuggestions } = useLabelSpellingSuggestions(
     modelerRef,
     containerRef,
     status,
@@ -92,6 +100,10 @@ export function BpmnEditor() {
           status={status}
           anchor={menuAnchor}
           onClose={closeMenu}
+        />
+        <LabelSpellingPopover
+          openSuggestions={openSuggestions}
+          onClose={closeSuggestions}
         />
       </div>
     </div>

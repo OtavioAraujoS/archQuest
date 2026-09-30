@@ -26,6 +26,8 @@
     "clsx": "^2.1.1",
     "dexie": "^4.4.6",
     "dexie-react-hooks": "^4.4.0",
+    "dictionary-pt": "^4.0.0",
+    "espells": "^0.4.1",
     "lucide-react": "^1.47.0",
     "min-dash": "^5.1.0",
     "react": "^19.2.8",

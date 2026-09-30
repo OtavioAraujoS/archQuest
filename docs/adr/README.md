@@ -32,6 +32,7 @@ Decisões de arquitetura do archQuest. Formato e regras em
 | [0023](0023-autenticacao-com-magic-link-e-github.md) | Autenticar com magic link + GitHub em vez de Google | Accepted |
 | [0024](0024-canvas-escuro-no-tema-escuro.md) | Manter o canvas do editor escuro no tema escuro | Accepted |
 | [0025](0025-docker-para-execucao-local-e-producao.md) | Distribuir o app como imagem Docker, além do Netlify | Accepted |
+| [0026](0026-verificacao-ortografica-local-em-worker.md) | Verificar a ortografia em português localmente, em um Web Worker | Accepted |
 
 ## Criando um ADR
 

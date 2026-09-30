@@ -6,6 +6,7 @@ import activityResizeModule from '@/components/editor/element-resize'
 import multiResizeModule from '@/components/editor/multi-resize'
 import groupedPaletteModule from '@/components/editor/palette'
 import propertyCommandsModule from '@/components/editor/properties'
+import labelSpellingModule from '@/components/editor/spelling'
 import portugueseTranslationModule from '@/components/editor/translations'
 import { useDiagramExports } from '@/hooks/editor/useDiagramExports'
 import {
@@ -61,6 +62,7 @@ export function useBpmnEditor(id: string | undefined) {
         activityResizeModule,
         elementMenuModule,
         propertyCommandsModule,
+        labelSpellingModule,
         portugueseTranslationModule,
         textStyleRendererModule,
       ],
