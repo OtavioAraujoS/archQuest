@@ -1,5 +1,6 @@
-import { useEffect, useRef, type SubmitEvent } from 'react'
+import { useEffect, useRef, useState, type SubmitEvent } from 'react'
 
+import { SpellingHint } from '@/components/spelling/SpellingHint'
 import { Button } from '@/components/ui/button'
 import { DialogActions } from '@/components/ui/dialog-actions'
 import { ErrorMessage } from '@/components/ui/error-message'
@@ -24,8 +25,14 @@ export function FolderNameDialog({
 }: Readonly<FolderNameDialogProps>) {
   const isRenaming = currentName !== undefined
   const nameInputRef = useRef<HTMLInputElement>(null)
+  const [typedName, setTypedName] = useState(currentName ?? '')
 
   useEffect(() => nameInputRef.current?.select(), [])
+
+  function replaceTypedName(correctedName: string) {
+    if (nameInputRef.current) nameInputRef.current.value = correctedName
+    setTypedName(correctedName)
+  }
 
   function submitTypedName(event: SubmitEvent<HTMLFormElement>) {
     event.preventDefault()
@@ -49,8 +56,14 @@ export function FolderNameDialog({
             maxLength={FOLDER_NAME_MAX_LENGTH}
             autoComplete="off"
             ref={nameInputRef}
+            onChange={(event) => setTypedName(event.target.value)}
           />
         </label>
+        <SpellingHint
+          text={typedName}
+          onReplaceText={replaceTypedName}
+          className="mt-2"
+        />
         {error && <ErrorMessage className="mt-3">{error}</ErrorMessage>}
         <DialogActions>
           <Button type="button" variant="outline" onClick={onCancel}>
