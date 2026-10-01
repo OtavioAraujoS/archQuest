@@ -1,4 +1,4 @@
-import { useLatestAnswer } from '@/hooks/spelling/useLatestAnswer'
+import { useLatestAnswer } from '@/hooks/ui/useLatestAnswer'
 import { dictionaryFormOf } from '@/lib/spelling/portuguese-word-forms'
 import { suggestCorrections } from '@/lib/spelling/spelling-client'
 

@@ -1,4 +1,4 @@
-import { useLatestAnswer } from '@/hooks/spelling/useLatestAnswer'
+import { useLatestAnswer } from '@/hooks/ui/useLatestAnswer'
 import {
   findSpellingIssues,
   type SpellingIssue,
