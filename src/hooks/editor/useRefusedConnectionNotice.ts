@@ -3,23 +3,13 @@ import { useEffect, useState } from 'react'
 import type { RefObject } from 'react'
 
 import { describeRefusedConnection } from '@/lib/bpmn/describe-refused-connection'
-import type { DiagramElement } from '@/lib/bpmn/diagram-element-ancestry'
 import { isExplainableRefusal } from '@/lib/bpmn/is-explainable-refusal'
 import type { EventBusService } from '@/types/diagram-js-services'
-import type { EditorStatus } from '@/types/editor'
-
-interface RefusedConnectEvent {
-  context: {
-    start: DiagramElement
-    hover?: DiagramElement | null
-    canExecute?: unknown
-  }
-}
-
-interface RefusedConnectionNotice {
-  message: string
-  shownAt: number
-}
+import type {
+  EditorStatus,
+  RefusedConnectEvent,
+  RefusedConnectionNotice,
+} from '@/types/editor'
 
 export const REFUSED_CONNECTION_NOTICE_DURATION_MS = 8000
 

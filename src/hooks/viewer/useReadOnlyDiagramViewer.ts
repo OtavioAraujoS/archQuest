@@ -6,10 +6,7 @@ import {
   textStyleRendererModule,
 } from '@/lib/bpmn/archquest-rendering-options'
 import { fitDiagramToViewport } from '@/lib/bpmn/fit-diagram-to-viewport'
-
-type ViewerClass<DiagramViewer extends Viewer> = new (
-  options: ConstructorParameters<typeof Viewer>[0],
-) => DiagramViewer
+import type { ViewerClass } from '@/types/viewer'
 
 export function useReadOnlyDiagramViewer<DiagramViewer extends Viewer>(
   ViewerType: ViewerClass<DiagramViewer>,

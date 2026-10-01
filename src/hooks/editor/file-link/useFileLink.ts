@@ -1,17 +1,10 @@
-import type BpmnModeler from 'bpmn-js/lib/Modeler'
-import { useEffect, useEffectEvent, useState, type RefObject } from 'react'
+import { useEffect, useEffectEvent, useState } from 'react'
 
 import { FileWritePermissionDeniedError } from '@/lib/file-system/bpmn-file-access'
 import { isFileSystemAccessSupported } from '@/lib/file-system/file-system-support'
 import { useLinkedFilesStore } from '@/lib/file-system/linked-files-store'
 import { saveDiagramToFile } from '@/lib/file-system/save-diagram-to-file'
-
-interface UseFileLinkOptions {
-  diagramId: string | undefined
-  diagramName: string
-  modelerRef: RefObject<BpmnModeler | null>
-  downloadBpmnInstead: () => void
-}
+import type { UseFileLinkOptions } from '@/types/editor'
 
 function isSaveShortcut(event: KeyboardEvent) {
   return (

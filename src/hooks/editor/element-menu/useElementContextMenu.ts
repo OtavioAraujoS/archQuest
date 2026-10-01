@@ -9,17 +9,7 @@ import {
   unionOfRects,
 } from '@/components/editor/element-menu/place-element-menu'
 import type { EventBusService } from '@/types/diagram-js-services'
-import type { EditorStatus } from '@/types/editor'
-
-interface MenuTarget {
-  parent?: unknown
-  labelTarget?: MenuTarget
-}
-
-interface MenuOpeningEvent {
-  element: MenuTarget
-  originalEvent?: Event
-}
+import type { EditorStatus, MenuOpeningEvent } from '@/types/editor'
 
 const CLOSING_EVENTS = ['selection.changed', 'canvas.viewbox.changing']
 
