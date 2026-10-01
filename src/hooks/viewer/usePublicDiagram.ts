@@ -1,12 +1,6 @@
 import { useLatestAnswer } from '@/hooks/ui/useLatestAnswer'
 import { fetchPublicDiagram } from '@/lib/sharing/fetch-public-diagram'
-import type { PublicDiagram } from '@/lib/supabase/database-types'
-
-export type PublicDiagramLookup =
-  | { status: 'loading' }
-  | { status: 'found'; diagram: PublicDiagram }
-  | { status: 'not-found' }
-  | { status: 'failed' }
+import type { PublicDiagramLookup } from '@/types/viewer'
 
 function lookUpPublicDiagram(slug: string): Promise<PublicDiagramLookup> {
   if (!slug) return Promise.resolve({ status: 'not-found' })

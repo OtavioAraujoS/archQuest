@@ -1,13 +1,10 @@
 import type BpmnModeler from 'bpmn-js/lib/Modeler'
+import type Selection from 'diagram-js/lib/features/selection/Selection'
 import { useEffect, useState } from 'react'
 import type { RefObject } from 'react'
 
-export type EditorStatus = 'loading' | 'ready' | 'error'
-
-interface EventBus {
-  on(event: string, callback: () => void): void
-  off(event: string, callback: () => void): void
-}
+import type { EventBusService } from '@/types/diagram-js-services'
+import type { EditorStatus } from '@/types/editor'
 
 const REFRESH_EVENTS = ['selection.changed', 'commandStack.changed']
 const NO_ELEMENTS: unknown[] = []
@@ -30,8 +27,8 @@ export function useSelectedElements(
     }
     setModeler(currentModeler)
 
-    const eventBus = currentModeler.get<EventBus>('eventBus')
-    const selection = currentModeler.get<{ get(): unknown[] }>('selection')
+    const eventBus = currentModeler.get<EventBusService>('eventBus')
+    const selection = currentModeler.get<Selection>('selection')
 
     function refreshSelectedElements() {
       setSelectedElements([...selection.get()])

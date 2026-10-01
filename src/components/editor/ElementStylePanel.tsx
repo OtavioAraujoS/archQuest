@@ -15,10 +15,8 @@ import {
   type TextStyleModeling,
 } from '@/components/editor/text-style'
 import { useIsDarkTheme } from '@/hooks/editor/style/useIsDarkTheme'
-import {
-  type EditorStatus,
-  useSelectedElements,
-} from '@/hooks/editor/useSelectedElements'
+import { useSelectedElements } from '@/hooks/editor/useSelectedElements'
+import type { EditorStatus } from '@/types/editor'
 
 interface ElementStylePanelProps {
   modelerRef: RefObject<BpmnModeler | null>

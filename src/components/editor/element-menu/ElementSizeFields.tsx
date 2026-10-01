@@ -11,10 +11,8 @@ import type {
   ResizeService,
   RulesService,
 } from '@/components/editor/multi-resize/multi-resize-services'
-import {
-  type EditorStatus,
-  useSelectedElements,
-} from '@/hooks/editor/useSelectedElements'
+import { useSelectedElements } from '@/hooks/editor/useSelectedElements'
+import type { EditorStatus } from '@/types/editor'
 
 import { DimensionInput } from './DimensionInput'
 import {

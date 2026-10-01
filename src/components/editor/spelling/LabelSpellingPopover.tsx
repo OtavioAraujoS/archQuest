@@ -2,7 +2,7 @@ import { useRef } from 'react'
 
 import { SpellingSuggestionList } from '@/components/spelling/SpellingSuggestionList'
 import { useElementMenuPlacement } from '@/hooks/editor/element-menu/useElementMenuPlacement'
-import type { OpenSpellingSuggestions } from '@/hooks/editor/spelling/useLabelSpellingSuggestions'
+import type { OpenSpellingSuggestions } from '@/types/editor'
 import { useDismissOnOutsideOrEscape } from '@/hooks/ui/useDismissOnOutsideOrEscape'
 
 interface LabelSpellingPopoverProps {

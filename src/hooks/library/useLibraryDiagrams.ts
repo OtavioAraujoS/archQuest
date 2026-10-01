@@ -8,8 +8,7 @@ import {
 } from '@/lib/diagrams/diagram-lists'
 import { pullAccountDiagrams } from '@/lib/diagrams/pull-account-diagrams'
 import { pullAccountFolders } from '@/lib/folders/cached-folders'
-
-export type CloudPullStatus = 'pulling' | 'pulled' | 'failed'
+import type { CloudPullStatus } from '@/types/library'
 
 function pullFromCloud(ownerId: string): Promise<CloudPullStatus> {
   if (!ownerId) return Promise.resolve('pulling')

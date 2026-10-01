@@ -1,5 +1,7 @@
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 
+import type { EventBusService } from '@/types/diagram-js-services'
+
 export interface TextStyle {
   bold: boolean
   italic: boolean
@@ -37,9 +39,7 @@ export interface TextStyleModeling {
   ) => void
 }
 
-export interface TextStyleEventBus {
-  fire: (event: string, payload: unknown) => void
-}
+export type TextStyleEventBus = Pick<EventBusService, 'fire'>
 
 function findTextStyleEntry(
   businessObject: ModdleElement | undefined,

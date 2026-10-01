@@ -5,7 +5,7 @@ import type { DiagramCardActions } from '@/components/library/diagram-card-actio
 import { DiagramGrid } from '@/components/library/DiagramGrid'
 import { DisplayHeading } from '@/components/ui/display-heading'
 import { ErrorMessage } from '@/components/ui/error-message'
-import type { CloudPullStatus } from '@/hooks/library/useLibraryDiagrams'
+import type { CloudPullStatus } from '@/types/library'
 import { Button } from '@/components/ui/button'
 import type { DiagramRecord } from '@/lib/db'
 

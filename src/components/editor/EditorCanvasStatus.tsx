@@ -1,7 +1,7 @@
 import { ArrowLeft } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-import type { EditorStatus } from '@/hooks/editor/useSelectedElements'
+import type { EditorStatus } from '@/types/editor'
 
 interface EditorCanvasStatusProps {
   status: EditorStatus

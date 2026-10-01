@@ -6,10 +6,8 @@ import { ElementStylePanel } from '@/components/editor/ElementStylePanel'
 import { PropertiesPanel } from '@/components/editor/properties/PropertiesPanel'
 import { Button } from '@/components/ui/button'
 import { useElementMenuPlacement } from '@/hooks/editor/element-menu/useElementMenuPlacement'
-import {
-  type EditorStatus,
-  useSelectedElements,
-} from '@/hooks/editor/useSelectedElements'
+import { useSelectedElements } from '@/hooks/editor/useSelectedElements'
+import type { EditorStatus } from '@/types/editor'
 import { useDismissOnOutsideOrEscape } from '@/hooks/ui/useDismissOnOutsideOrEscape'
 
 import { ElementSizeFields } from './ElementSizeFields'

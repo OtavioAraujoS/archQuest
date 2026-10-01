@@ -7,9 +7,13 @@ import {
   OPEN_SPELLING_SUGGESTIONS_EVENT,
 } from '@/components/editor/spelling/spelling-events'
 import { useLabelSpellingSuggestions } from '@/hooks/editor/spelling/useLabelSpellingSuggestions'
-import type { EditorStatus } from '@/hooks/editor/useSelectedElements'
+import type { EventBusService } from '@/types/diagram-js-services'
+import type { EditorStatus } from '@/types/editor'
 
-import { createElementMenuModeler, rect } from '../element-menu/element-menu-fakes'
+import {
+  createElementMenuModeler,
+  rect,
+} from '../element-menu/element-menu-fakes'
 
 function renderSuggestionsHook(status: EditorStatus = 'ready') {
   const { modeler, eventBus } = createElementMenuModeler(() => rect(0, 0, 0, 0))
@@ -23,7 +27,7 @@ function renderSuggestionsHook(status: EditorStatus = 'ready') {
   return { ...hook, eventBus }
 }
 
-function requestSuggestions(eventBus: { fire(event: string, payload?: unknown): void }) {
+function requestSuggestions(eventBus: Pick<EventBusService, 'fire'>) {
   const replaceWith = vi.fn()
   act(() =>
     eventBus.fire(OPEN_SPELLING_SUGGESTIONS_EVENT, {

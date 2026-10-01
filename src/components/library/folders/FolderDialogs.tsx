@@ -1,7 +1,7 @@
 import { DeleteFolderDialog } from '@/components/library/folders/DeleteFolderDialog'
 import { FolderNameDialog } from '@/components/library/folders/FolderNameDialog'
 import { countDiagramsInFolder } from '@/components/library/library-view'
-import type { FolderDialog } from '@/hooks/folders/useFolder'
+import type { FolderDialog } from '@/types/library'
 import type { DiagramRecord } from '@/lib/db'
 
 interface FolderDialogsProps {
