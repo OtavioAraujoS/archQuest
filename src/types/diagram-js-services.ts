@@ -8,6 +8,8 @@ export interface PaletteService {
   registerProvider(priority: number, provider: unknown): void
 }
 
+export type ContextPadService = PaletteService
+
 export interface PopupMenuService {
   registerProvider(id: string, provider: unknown): void
   open(
@@ -50,4 +52,10 @@ export interface CommandStackService {
 
 export interface BpmnFactoryService {
   create<T = unknown>(type: string, attrs?: Record<string, unknown>): T
+}
+
+export interface EventBusService {
+  on(event: string, callback: (event: never) => void): void
+  off(event: string, callback: (event: never) => void): void
+  fire(event: string, payload?: unknown): void
 }
