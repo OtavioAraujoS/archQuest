@@ -1,11 +1,6 @@
-import type { PaletteGroup } from './palette-group'
+import type { GroupPaletteEntryActions, PaletteGroup } from '@/types/palette'
 
 export const PALETTE_GROUP_CLASS = 'archquest-palette-group'
-
-interface GroupPaletteEntryActions {
-  openMenu: (event: MouseEvent) => void
-  createDefaultVariant: (event: Event) => void
-}
 
 export function buildGroupPaletteEntry(
   group: PaletteGroup,

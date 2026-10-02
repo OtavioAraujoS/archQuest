@@ -2,7 +2,11 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { AccountMenu } from '@/components/auth/AccountMenu'
-import { INITIAL_AUTH_STATE, useAuthStore, type AuthState } from '@/lib/auth/auth-store'
+import {
+  type AuthState,
+  INITIAL_AUTH_STATE,
+  useAuthStore,
+} from '@/lib/auth/auth-store'
 
 const { signOut } = vi.hoisted(() => ({ signOut: vi.fn(async () => {}) }))
 
@@ -37,7 +41,10 @@ describe('AccountMenu', () => {
   })
 
   it('renders nothing without the cloud configured', () => {
-    const { container } = renderAccountMenuWith({ status: 'cloud-disabled', user: null })
+    const { container } = renderAccountMenuWith({
+      status: 'cloud-disabled',
+      user: null,
+    })
 
     expect(container).toBeEmptyDOMElement()
   })
@@ -53,14 +60,18 @@ describe('AccountMenu', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Entrar' }))
 
-    expect(screen.getByRole('dialog', { name: 'Entrar no archQuest' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('dialog', { name: 'Entrar no archQuest' }),
+    ).toBeInTheDocument()
   })
 
   it('shows the signed-in user name', () => {
     renderAccountMenuWith(SIGNED_IN_STATE)
 
     expect(screen.getByText('devhub')).toBeInTheDocument()
-    expect(screen.queryByRole('button', { name: 'Entrar' })).not.toBeInTheDocument()
+    expect(
+      screen.queryByRole('button', { name: 'Entrar' }),
+    ).not.toBeInTheDocument()
   })
 
   it('signs out through the sign out button', async () => {

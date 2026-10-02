@@ -1,7 +1,7 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import LabelSpellingMarkers from '@/components/editor/spelling/LabelSpellingMarkers'
-import type { LabeledElement } from '@/components/editor/spelling/spelling-services'
+import type { LabeledElement } from '@/types/spelling'
 
 import {
   createFakeElementRegistry,
@@ -12,9 +12,8 @@ import {
 } from './spelling-module-fakes'
 
 const spellingClient = await vi.hoisted(async () => {
-  const { createFakeSpellingClient } = await import(
-    '../../spelling/fake-spelling-client'
-  )
+  const { createFakeSpellingClient } =
+    await import('../../spelling/fake-spelling-client')
   return createFakeSpellingClient()
 })
 
@@ -73,7 +72,10 @@ describe('LabelSpellingMarkers', () => {
   })
 
   it('ignores the diagram root', async () => {
-    const root = { ...makeLabeledTask('Process_1', 'proceso'), parent: undefined }
+    const root = {
+      ...makeLabeledTask('Process_1', 'proceso'),
+      parent: undefined,
+    }
 
     const { overlays } = await importDiagram([root])
 

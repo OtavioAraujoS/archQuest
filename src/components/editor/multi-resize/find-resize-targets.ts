@@ -1,6 +1,5 @@
 import { isOfType } from '@/lib/bpmn/diagram-element-ancestry'
-
-import type { ResizableShape, RulesService } from './multi-resize-services'
+import type { ResizableShape, RulesService } from '@/types/resize'
 
 function hasSelectedAncestor(
   shape: ResizableShape,

@@ -1,14 +1,14 @@
 import type BpmnModeler from 'bpmn-js/lib/Modeler'
-import { useCallback, useEffect, useState, type RefObject } from 'react'
+import { type RefObject, useCallback, useEffect, useState } from 'react'
 
 import { unionOfRects } from '@/components/editor/element-menu/place-element-menu'
 import {
   CLOSE_SPELLING_SUGGESTIONS_EVENT,
   OPEN_SPELLING_SUGGESTIONS_EVENT,
-  type SpellingSuggestionRequest,
 } from '@/components/editor/spelling/spelling-events'
 import type { EventBusService } from '@/types/diagram-js-services'
 import type { EditorStatus, OpenSpellingSuggestions } from '@/types/editor'
+import type { SpellingSuggestionRequest } from '@/types/spelling'
 
 export function useLabelSpellingSuggestions(
   modelerRef: RefObject<BpmnModeler | null>,

@@ -2,7 +2,11 @@ import { describe, expect, it } from 'vitest'
 
 import { describeCloudSyncStatus } from '@/lib/sync/cloud-sync-status'
 import { INITIAL_SYNC_STATE, type SyncState } from '@/lib/sync/sync-store'
-import { makeAccountDiagram, makeGuestDiagram } from '../diagrams/diagram-fixtures'
+
+import {
+  makeAccountDiagram,
+  makeGuestDiagram,
+} from '../diagrams/diagram-fixtures'
 
 function syncState(overrides: Partial<SyncState> = {}): SyncState {
   return { ...INITIAL_SYNC_STATE, ...overrides }
@@ -15,7 +19,9 @@ describe('describeCloudSyncStatus', () => {
   })
 
   it('is saved when the account diagram has no pending changes', () => {
-    expect(describeCloudSyncStatus(makeAccountDiagram(), syncState())).toMatchObject({
+    expect(
+      describeCloudSyncStatus(makeAccountDiagram(), syncState()),
+    ).toMatchObject({
       tone: 'saved',
       label: 'Salvo na nuvem',
     })
@@ -35,12 +41,18 @@ describe('describeCloudSyncStatus', () => {
 
     expect(
       describeCloudSyncStatus(pendingDiagram, syncState({ isOnline: false })),
-    ).toMatchObject({ tone: 'warning', label: 'Offline — alterações pendentes' })
+    ).toMatchObject({
+      tone: 'warning',
+      label: 'Offline — alterações pendentes',
+    })
   })
 
   it('stays saved offline when nothing is pending', () => {
     expect(
-      describeCloudSyncStatus(makeAccountDiagram(), syncState({ isOnline: false })),
+      describeCloudSyncStatus(
+        makeAccountDiagram(),
+        syncState({ isOnline: false }),
+      ),
     ).toMatchObject({ tone: 'saved' })
   })
 
@@ -48,8 +60,14 @@ describe('describeCloudSyncStatus', () => {
     const pendingDiagram = makeAccountDiagram({ dirty: true })
 
     expect(
-      describeCloudSyncStatus(pendingDiagram, syncState({ lastUploadFailed: true })),
-    ).toMatchObject({ tone: 'warning', label: 'Erro ao salvar — tentando de novo' })
+      describeCloudSyncStatus(
+        pendingDiagram,
+        syncState({ lastUploadFailed: true }),
+      ),
+    ).toMatchObject({
+      tone: 'warning',
+      label: 'Erro ao salvar — tentando de novo',
+    })
     expect(
       describeCloudSyncStatus(
         pendingDiagram,
@@ -66,7 +84,10 @@ describe('describeCloudSyncStatus', () => {
       syncState({ tooLargeDiagramIds: [hugeDiagram.id] }),
     )
 
-    expect(status).toMatchObject({ tone: 'error', label: 'Grande demais para a nuvem' })
+    expect(status).toMatchObject({
+      tone: 'error',
+      label: 'Grande demais para a nuvem',
+    })
     expect(status?.detail).toContain('2 MB')
   })
 

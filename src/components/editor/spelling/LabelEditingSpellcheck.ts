@@ -3,28 +3,28 @@ import {
   type SpellingIssue,
 } from '@/lib/spelling/find-spelling-issues'
 import { isSpellingEngineUnavailable } from '@/lib/spelling/spelling-client'
+import type { EventBusService } from '@/types/diagram-js-services'
+import type {
+  DirectEditingService,
+  DirectEditingTextBox,
+  EditableTextSnapshot,
+  SpellingSuggestionRequest,
+} from '@/types/spelling'
 
 import {
   caretOffsetIn,
-  readEditableText,
   rangeOfTextSpan,
+  readEditableText,
   replaceRangeText,
-  type EditableTextSnapshot,
 } from './editable-text'
 import {
   CLOSE_SPELLING_SUGGESTIONS_EVENT,
   OPEN_SPELLING_SUGGESTIONS_EVENT,
-  type SpellingSuggestionRequest,
 } from './spelling-events'
 import {
   clearSpellingHighlights,
   paintSpellingHighlights,
 } from './spelling-highlights'
-import type {
-  DirectEditingService,
-  DirectEditingTextBox,
-  SpellingEventBus,
-} from './spelling-services'
 
 export const TYPING_PAUSE_BEFORE_LABEL_CHECK_MS = 400
 
@@ -37,7 +37,7 @@ const EDITING_ENDED_EVENTS = [
 export default class LabelEditingSpellcheck {
   static readonly $inject = ['eventBus', 'directEditing']
 
-  private readonly eventBus: SpellingEventBus
+  private readonly eventBus: Pick<EventBusService, 'on' | 'fire'>
   private readonly textBox: DirectEditingTextBox | undefined
   private isChecking = false
   private areSuggestionsOpen = false
@@ -46,7 +46,10 @@ export default class LabelEditingSpellcheck {
   private checkedSnapshot: EditableTextSnapshot | null = null
   private issues: SpellingIssue[] = []
 
-  constructor(eventBus: SpellingEventBus, directEditing: DirectEditingService) {
+  constructor(
+    eventBus: Pick<EventBusService, 'on' | 'fire'>,
+    directEditing: DirectEditingService,
+  ) {
     this.eventBus = eventBus
     this.textBox = directEditing._textbox
     if (!this.textBox) return

@@ -1,10 +1,8 @@
 import { vi } from 'vitest'
 
-import type { Entry } from '@/types/pallete'
-
 import GroupedPaletteProvider from '@/components/editor/palette/GroupedPaletteProvider'
 import { groupMenuId } from '@/components/editor/palette/group-menu-entries'
-import type { PaletteGroup } from '@/components/editor/palette/palette-group'
+import type { Entry, PaletteGroup } from '@/types/palette'
 
 export type MenuEntry = Entry & { label: string }
 

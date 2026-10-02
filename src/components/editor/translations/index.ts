@@ -1,6 +1,6 @@
-import { PT_BR_EDITOR_STRINGS } from './pt-br-editor-strings'
+import type { TranslationReplacements } from '@/types/editor'
 
-type TranslationReplacements = Record<string, string>
+import { PT_BR_EDITOR_STRINGS } from './pt-br-editor-strings'
 
 export function translateToPortuguese(
   template: string,

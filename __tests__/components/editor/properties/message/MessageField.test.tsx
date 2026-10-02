@@ -1,15 +1,12 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { MessageField } from '@/components/editor/properties/message/MessageField'
 import {
   assignMessageToEvent,
   createMessageForEvent,
 } from '@/components/editor/properties/message/message-commands'
-import type {
-  BpmnMessage,
-  MessageEventDefinition,
-} from '@/components/editor/properties/message/message-event-definition'
-import { MessageField } from '@/components/editor/properties/message/MessageField'
+import type { BpmnMessage, MessageEventDefinition } from '@/types/properties'
 
 vi.mock('@/components/editor/properties/message/message-commands', () => ({
   assignMessageToEvent: vi.fn(),

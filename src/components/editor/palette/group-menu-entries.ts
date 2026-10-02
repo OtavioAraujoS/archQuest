@@ -1,6 +1,8 @@
-import type { PaletteGroup, PaletteVariant } from './palette-group'
-
-type CreateVariant = (event: Event, variant: PaletteVariant) => void
+import type {
+  CreateVariant,
+  PaletteGroup,
+  PaletteVariant,
+} from '@/types/palette'
 
 export function groupMenuId(group: PaletteGroup) {
   return `archquest-${group.id}`

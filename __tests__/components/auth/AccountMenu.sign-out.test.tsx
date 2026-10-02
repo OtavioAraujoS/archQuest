@@ -4,7 +4,11 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { AccountMenu } from '@/components/auth/AccountMenu'
 import { useAuthStore } from '@/lib/auth/auth-store'
 import { db } from '@/lib/db'
-import { makeAccountDiagram, makeGuestDiagram } from '../../lib/diagrams/diagram-fixtures'
+
+import {
+  makeAccountDiagram,
+  makeGuestDiagram,
+} from '../../lib/diagrams/diagram-fixtures'
 import {
   signInAsDiagramOwner,
   signOutDiagramOwner,
@@ -25,9 +29,11 @@ function clickSignOut() {
 describe('AccountMenu sign out', () => {
   beforeEach(async () => {
     await db.diagrams.clear()
-    signOut.mockReset().mockImplementation(async () =>
-      act(() => useAuthStore.setState({ status: 'signed-out', user: null })),
-    )
+    signOut
+      .mockReset()
+      .mockImplementation(async () =>
+        act(() => useAuthStore.setState({ status: 'signed-out', user: null })),
+      )
     signInAsDiagramOwner()
   })
 
@@ -54,7 +60,9 @@ describe('AccountMenu sign out', () => {
     clickSignOut()
 
     expect(
-      await screen.findByRole('dialog', { name: 'Sair com alterações pendentes?' }),
+      await screen.findByRole('dialog', {
+        name: 'Sair com alterações pendentes?',
+      }),
     ).toHaveTextContent('Você tem 1 diagrama')
     expect(signOut).not.toHaveBeenCalled()
   })
@@ -63,7 +71,9 @@ describe('AccountMenu sign out', () => {
     await db.diagrams.add(makeAccountDiagram({ dirty: true }))
     render(<AccountMenu />)
     clickSignOut()
-    fireEvent.click(await screen.findByRole('button', { name: 'Sair mesmo assim' }))
+    fireEvent.click(
+      await screen.findByRole('button', { name: 'Sair mesmo assim' }),
+    )
     await screen.findByRole('button', { name: 'Entrar' })
 
     signInAsDiagramOwner()

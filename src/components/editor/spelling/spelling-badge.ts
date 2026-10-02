@@ -1,4 +1,4 @@
-import type { LabeledElement, OverlayPosition } from './spelling-services'
+import type { LabeledElement, OverlayPosition } from '@/types/spelling'
 
 export const SPELLING_BADGE_CLASS = 'archquest-spelling-badge'
 

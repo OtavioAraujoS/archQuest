@@ -1,22 +1,10 @@
 import type {
-  BpmnFactoryService,
-  CommandStackService,
-  ModelingService,
-} from '@/types/diagram-js-services'
+  BpmnMessage,
+  MessageCommandServices,
+  MessageEventDefinition,
+} from '@/types/properties'
 
 import { CREATE_AND_ASSIGN_MESSAGE } from './CreateAndAssignMessageHandler'
-import type {
-  BpmnDefinitions,
-  BpmnMessage,
-  MessageEventDefinition,
-} from './message-event-definition'
-
-export interface MessageCommandServices {
-  modeling: ModelingService
-  commandStack: CommandStackService
-  bpmnFactory: BpmnFactoryService
-  definitions: BpmnDefinitions
-}
 
 export function assignMessageToEvent(
   services: MessageCommandServices,

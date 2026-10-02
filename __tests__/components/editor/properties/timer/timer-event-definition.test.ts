@@ -4,8 +4,8 @@ import { describe, expect, it } from 'vitest'
 import {
   findTimerEventDefinition,
   readTimerExpression,
-  type TimerEventDefinition,
 } from '@/components/editor/properties/timer/timer-event-definition'
+import type { TimerEventDefinition } from '@/types/properties'
 
 const moddle = new BpmnModdle()
 

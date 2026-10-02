@@ -1,8 +1,8 @@
 import type { ReactNode } from 'react'
 
-import type { DiagramCardActions } from '@/components/library/diagram-card-actions'
 import { DiagramCard } from '@/components/library/DiagramCard'
 import type { DiagramRecord } from '@/lib/db'
+import type { DiagramCardActions } from '@/types/library'
 
 interface DiagramGridProps {
   diagrams: DiagramRecord[] | undefined

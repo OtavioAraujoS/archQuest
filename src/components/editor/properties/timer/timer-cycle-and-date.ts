@@ -1,13 +1,6 @@
-import {
-  durationToIso,
-  parseIsoDuration,
-  type TimerDuration,
-} from './timer-duration'
+import type { TimerCycle } from '@/types/properties'
 
-export interface TimerCycle {
-  repetitions?: number
-  interval: TimerDuration
-}
+import { durationToIso, parseIsoDuration } from './timer-duration'
 
 const ISO_CYCLE = /^R(\d*)\/(.+)$/
 const LOCAL_ISO_DATE_TIME = /^(\d{4}-\d{2}-\d{2}T\d{2}:\d{2})(?::00)?$/

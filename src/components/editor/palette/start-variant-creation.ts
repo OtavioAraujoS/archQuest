@@ -1,18 +1,6 @@
-import type {
-  CreateService,
-  ElementFactoryService,
-  PopupMenuService,
-} from '@/types/diagram-js-services'
-
-import type { PaletteVariant } from './palette-group'
+import type { PaletteVariant, VariantCreationServices } from '@/types/palette'
 
 const SUBPROCESS_START_EVENT_POSITION = { x: 40, y: 82 }
-
-export interface VariantCreationServices {
-  create: CreateService
-  elementFactory: ElementFactoryService
-  popupMenu: PopupMenuService
-}
 
 export function startVariantCreation(
   services: VariantCreationServices,

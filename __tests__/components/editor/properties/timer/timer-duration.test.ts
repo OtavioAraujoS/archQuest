@@ -3,8 +3,8 @@ import { describe, expect, it } from 'vitest'
 import {
   durationToIso,
   parseIsoDuration,
-  type TimerDuration,
 } from '@/components/editor/properties/timer/timer-duration'
+import type { TimerDuration } from '@/types/properties'
 
 const ROUND_TRIP_CASES: [TimerDuration, string][] = [
   [{ amount: 15, unit: 'minutes' }, 'PT15M'],

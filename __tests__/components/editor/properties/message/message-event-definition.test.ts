@@ -5,9 +5,8 @@ import {
   findMessageEventDefinition,
   listDefinedMessages,
   messageDisplayName,
-  type BpmnDefinitions,
-  type BpmnMessage,
 } from '@/components/editor/properties/message/message-event-definition'
+import type { BpmnDefinitions, BpmnMessage } from '@/types/properties'
 
 const moddle = new BpmnModdle()
 

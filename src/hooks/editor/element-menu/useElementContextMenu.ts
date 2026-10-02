@@ -1,15 +1,13 @@
 import type BpmnModeler from 'bpmn-js/lib/Modeler'
 import type ElementRegistry from 'diagram-js/lib/core/ElementRegistry'
 import type Selection from 'diagram-js/lib/features/selection/Selection'
-import { useCallback, useEffect, useState, type RefObject } from 'react'
+import { type RefObject, useCallback, useEffect, useState } from 'react'
 
 import { OPEN_ELEMENT_MENU_EVENT } from '@/components/editor/element-menu/open-element-menu-event'
-import {
-  type MenuRect,
-  unionOfRects,
-} from '@/components/editor/element-menu/place-element-menu'
+import { unionOfRects } from '@/components/editor/element-menu/place-element-menu'
 import type { EventBusService } from '@/types/diagram-js-services'
 import type { EditorStatus, MenuOpeningEvent } from '@/types/editor'
+import type { MenuRect } from '@/types/geometry'
 
 const CLOSING_EVENTS = ['selection.changed', 'canvas.viewbox.changing']
 

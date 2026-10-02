@@ -1,4 +1,4 @@
-import type { PaletteGroup } from '../palette-group'
+import type { PaletteGroup } from '@/types/palette'
 
 export const SUBPROCESS_GROUP: PaletteGroup = {
   id: 'subprocesses',

@@ -36,6 +36,10 @@ export interface ResizeElementsContext {
   resizes: PlannedResize[]
 }
 
+export interface ResizeCommandStack {
+  execute(command: string, context: ResizeElementsContext): void
+}
+
 export interface ResizeStartEvent {
   context: { shape: DiagramElement; minDimensions?: unknown }
 }

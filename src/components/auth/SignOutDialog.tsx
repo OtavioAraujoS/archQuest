@@ -1,21 +1,17 @@
 import { useState } from 'react'
 
+import { describeDiagramCount } from '@/components/library/library-view'
 import { Button } from '@/components/ui/button'
 import { ErrorMessage } from '@/components/ui/error-message'
 import { ModalDialog } from '@/components/ui/modal-dialog'
 import { signOutOfThisDevice } from '@/lib/auth/sign-out-of-this-device'
 import { flushPendingUploads } from '@/lib/sync/flush-pending-uploads'
+import type { SignOutStep } from '@/types/auth'
 
 interface SignOutDialogProps {
   ownerId: string
   pendingDiagramCount: number
   onClose: () => void
-}
-
-type SignOutStep = 'choosing' | 'syncing' | 'signing-out'
-
-function pendingDiagramsLabel(count: number) {
-  return count === 1 ? '1 diagrama' : `${count} diagramas`
 }
 
 function notUploadedMessage(count: number) {
@@ -60,7 +56,7 @@ export function SignOutDialog({
       className="max-w-md"
     >
       <p className="text-muted-foreground mb-4 text-sm">
-        Você tem {pendingDiagramsLabel(pendingDiagramCount)} com alterações que
+        Você tem {describeDiagramCount(pendingDiagramCount)} com alterações que
         ainda não foram para a nuvem. Ao sair, os diagramas da conta são
         apagados deste navegador.
       </p>

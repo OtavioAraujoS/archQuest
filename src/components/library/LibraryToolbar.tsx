@@ -1,11 +1,10 @@
 import { Search, X } from 'lucide-react'
 
-import {
-  DIAGRAM_SORT_OPTIONS,
-  type DiagramSortOrder,
-} from '@/components/library/filter-and-sort-diagrams'
+import { DIAGRAM_SORT_OPTIONS } from '@/components/library/filter-and-sort-diagrams'
+import { describeDiagramCount } from '@/components/library/library-view'
 import { Input } from '@/components/ui/input'
 import { NativeSelect } from '@/components/ui/native-select'
+import type { DiagramSortOrder } from '@/types/library'
 
 interface LibraryToolbarProps {
   searchQuery: string
@@ -13,10 +12,6 @@ interface LibraryToolbarProps {
   sortOrder: DiagramSortOrder
   onSortOrderChange: (sortOrder: DiagramSortOrder) => void
   visibleDiagramCount: number
-}
-
-function describeDiagramCount(count: number) {
-  return count === 1 ? '1 diagrama' : `${count} diagramas`
 }
 
 export function LibraryToolbar({

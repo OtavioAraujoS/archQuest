@@ -2,16 +2,12 @@ import {
   haveBoundsChanged,
   planCompanionBounds,
 } from '@/components/editor/multi-resize/companion-bounds'
+import type { RequestedSize } from '@/types/geometry'
 import type {
+  PlannedResize,
   ResizableShape,
   ResizeService,
-} from '@/components/editor/multi-resize/multi-resize-services'
-import type { PlannedResize } from '@/components/editor/element-resize/ResizeElementsHandler'
-
-export interface RequestedSize {
-  width?: number
-  height?: number
-}
+} from '@/types/resize'
 
 export function sharedDimension(
   shapes: ResizableShape[],

@@ -1,33 +1,24 @@
 import type BpmnModeler from 'bpmn-js/lib/Modeler'
-import { useState, type RefObject } from 'react'
+import { type RefObject, useState } from 'react'
 
-import {
-  RESIZE_ELEMENTS,
-  type ResizeElementsContext,
-} from '@/components/editor/element-resize/ResizeElementsHandler'
+import { RESIZE_ELEMENTS } from '@/components/editor/element-resize/ResizeElementsHandler'
 import { findResizeTargets } from '@/components/editor/multi-resize/find-resize-targets'
-import type {
-  ResizableShape,
-  ResizeService,
-  RulesService,
-} from '@/components/editor/multi-resize/multi-resize-services'
 import { useSelectedElements } from '@/hooks/editor/useSelectedElements'
 import type { EditorStatus } from '@/types/editor'
+import type { RequestedSize } from '@/types/geometry'
+import type {
+  ResizableShape,
+  ResizeCommandStack,
+  ResizeService,
+  RulesService,
+} from '@/types/resize'
 
 import { DimensionInput } from './DimensionInput'
-import {
-  planElementSizes,
-  type RequestedSize,
-  sharedDimension,
-} from './plan-element-sizes'
+import { planElementSizes, sharedDimension } from './plan-element-sizes'
 
 interface ElementSizeFieldsProps {
   modelerRef: RefObject<BpmnModeler | null>
   status: EditorStatus
-}
-
-interface ResizeCommandStack {
-  execute(command: string, context: ResizeElementsContext): void
 }
 
 export function ElementSizeFields({

@@ -1,11 +1,11 @@
 import { attr as svgAttr, remove as svgRemove } from 'tiny-svg'
 
+import type { Bounds } from '@/types/geometry'
 import type {
-  Bounds,
   GroupResizeContext,
   PreviewSupportService,
   ResizeCanvasService,
-} from './multi-resize-services'
+} from '@/types/resize'
 
 const RESIZING_MARKER = 'djs-resizing'
 

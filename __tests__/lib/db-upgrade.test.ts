@@ -1,7 +1,7 @@
 import Dexie from 'dexie'
 import { afterEach, describe, expect, it } from 'vitest'
 
-import { createArchQuestDatabase, type ArchQuestDatabase } from '@/lib/db'
+import { type ArchQuestDatabase, createArchQuestDatabase } from '@/lib/db'
 
 const UPGRADE_TEST_DATABASE_NAME = 'archquest-upgrade-test'
 
@@ -9,8 +9,21 @@ async function seedVersionOneDatabase() {
   const versionOneDatabase = new Dexie(UPGRADE_TEST_DATABASE_NAME)
   versionOneDatabase.version(1).stores({ diagrams: 'id, name, updatedAt' })
   await versionOneDatabase.table('diagrams').bulkAdd([
-    { id: 'legacy-1', name: 'Legado', bpmnXml: '<xml />', thumbnail: '<svg />', createdAt: 1, updatedAt: 2 },
-    { id: 'legacy-2', name: 'Outro', bpmnXml: '<xml />', createdAt: 3, updatedAt: 4 },
+    {
+      id: 'legacy-1',
+      name: 'Legado',
+      bpmnXml: '<xml />',
+      thumbnail: '<svg />',
+      createdAt: 1,
+      updatedAt: 2,
+    },
+    {
+      id: 'legacy-2',
+      name: 'Outro',
+      bpmnXml: '<xml />',
+      createdAt: 3,
+      updatedAt: 4,
+    },
   ])
   versionOneDatabase.close()
 }
@@ -51,7 +64,10 @@ describe('Dexie v1 → v2 upgrade', () => {
 
     await upgradedDatabase.diagrams.update('legacy-2', { ownerId: 'owner-1' })
 
-    const ownedDiagrams = await upgradedDatabase.diagrams.where('ownerId').equals('owner-1').toArray()
+    const ownedDiagrams = await upgradedDatabase.diagrams
+      .where('ownerId')
+      .equals('owner-1')
+      .toArray()
     expect(ownedDiagrams.map((diagram) => diagram.id)).toEqual(['legacy-2'])
   })
 })

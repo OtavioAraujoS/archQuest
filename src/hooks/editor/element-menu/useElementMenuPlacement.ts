@@ -1,9 +1,7 @@
-import { useLayoutEffect, type RefObject } from 'react'
+import { type RefObject, useLayoutEffect } from 'react'
 
-import {
-  type MenuRect,
-  placeElementMenu,
-} from '@/components/editor/element-menu/place-element-menu'
+import { placeElementMenu } from '@/components/editor/element-menu/place-element-menu'
+import type { MenuRect } from '@/types/geometry'
 
 export function useElementMenuPlacement(
   menuRef: RefObject<HTMLElement | null>,

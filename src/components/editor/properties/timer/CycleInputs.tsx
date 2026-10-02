@@ -1,7 +1,7 @@
 import { Input } from '@/components/ui/input'
+import type { TimerCycle } from '@/types/properties'
 
 import { DurationInputs } from './DurationInputs'
-import type { TimerCycle } from './timer-cycle-and-date'
 
 interface CycleInputsProps {
   cycle: TimerCycle

@@ -1,29 +1,17 @@
-import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
+import { is } from 'bpmn-js/lib/util/ModelUtil'
 
-export interface BpmnMessage {
-  $type: 'bpmn:Message'
-  id: string
-  name?: string
-}
+import { findEventDefinition } from '@/lib/bpmn/find-event-definition'
+import type {
+  BpmnDefinitions,
+  BpmnMessage,
+  MessageEventDefinition,
+} from '@/types/properties'
 
-export interface MessageEventDefinition {
-  $type: 'bpmn:MessageEventDefinition'
-  messageRef?: BpmnMessage
-}
-
-export interface BpmnDefinitions {
-  rootElements?: { $type: string }[]
-}
-
-export function findMessageEventDefinition(
-  element: unknown,
-): MessageEventDefinition | undefined {
-  const businessObject = getBusinessObject(element as never) as {
-    eventDefinitions?: unknown[]
-  }
-  return businessObject?.eventDefinitions?.find((definition) =>
-    is(definition as never, 'bpmn:MessageEventDefinition'),
-  ) as MessageEventDefinition | undefined
+export function findMessageEventDefinition(element: unknown) {
+  return findEventDefinition<MessageEventDefinition>(
+    element,
+    'bpmn:MessageEventDefinition',
+  )
 }
 
 export function listDefinedMessages(definitions: BpmnDefinitions) {

@@ -1,11 +1,8 @@
 import { Input } from '@/components/ui/input'
 import { NativeSelect } from '@/components/ui/native-select'
+import type { DurationUnit, TimerDuration } from '@/types/properties'
 
-import {
-  DURATION_UNIT_LABELS,
-  type DurationUnit,
-  type TimerDuration,
-} from './timer-duration'
+import { DURATION_UNIT_LABELS } from './timer-duration'
 
 const MINIMUM_AMOUNT = 1
 

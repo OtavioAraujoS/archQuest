@@ -4,16 +4,15 @@ import { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { NativeSelect } from '@/components/ui/native-select'
+import type {
+  MessageCommandServices,
+  MessageEventDefinition,
+} from '@/types/properties'
 
-import {
-  assignMessageToEvent,
-  createMessageForEvent,
-  type MessageCommandServices,
-} from './message-commands'
+import { assignMessageToEvent, createMessageForEvent } from './message-commands'
 import {
   listDefinedMessages,
   messageDisplayName,
-  type MessageEventDefinition,
 } from './message-event-definition'
 
 const NO_MESSAGE = ''

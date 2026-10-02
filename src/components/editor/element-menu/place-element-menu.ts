@@ -1,14 +1,4 @@
-export interface MenuRect {
-  left: number
-  top: number
-  width: number
-  height: number
-}
-
-interface Size {
-  width: number
-  height: number
-}
+import type { MenuRect, Size } from '@/types/geometry'
 
 export const MENU_GAP = 8
 

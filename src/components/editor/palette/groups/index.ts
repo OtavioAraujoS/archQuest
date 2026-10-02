@@ -1,4 +1,5 @@
-import type { PaletteGroup } from '../palette-group'
+import type { PaletteGroup } from '@/types/palette'
+
 import { EVENT_GROUP } from './events'
 import { GATEWAY_GROUP } from './gateways'
 import { SUBPROCESS_GROUP } from './subprocesses'

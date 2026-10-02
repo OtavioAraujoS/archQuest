@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { startDiagramSync } from '@/lib/sync/diagram-sync-runner'
 import { INITIAL_SYNC_STATE, useSyncStore } from '@/lib/sync/sync-store'
+
 import { makeAccountDiagram, OWNER_ID } from '../diagrams/diagram-fixtures'
 import {
   givenPendingUploads,
@@ -14,13 +15,16 @@ vi.mock('dexie', async (importOriginal) =>
   (await import('./sync-runner-harness')).mockDexieLiveQuery(importOriginal),
 )
 vi.mock('@/lib/diagrams/diagram-lists', async () => ({
-  listPendingUploads: (await import('./sync-runner-harness')).syncRunnerFakes.listPendingUploads,
+  listPendingUploads: (await import('./sync-runner-harness')).syncRunnerFakes
+    .listPendingUploads,
 }))
 vi.mock('@/lib/sync/upload-diagram', async () => ({
-  uploadDiagram: (await import('./sync-runner-harness')).syncRunnerFakes.uploadDiagram,
+  uploadDiagram: (await import('./sync-runner-harness')).syncRunnerFakes
+    .uploadDiagram,
 }))
 vi.mock('@/lib/sync/upload-pending-folders', async () => ({
-  uploadPendingFolders: (await import('./sync-runner-harness')).syncRunnerFakes.uploadPendingFolders,
+  uploadPendingFolders: (await import('./sync-runner-harness')).syncRunnerFakes
+    .uploadPendingFolders,
 }))
 
 describe('diagram sync runner uploads', () => {
@@ -47,7 +51,10 @@ describe('diagram sync runner uploads', () => {
 
     expect(syncRunnerFakes.listPendingUploads).toHaveBeenCalledWith(OWNER_ID)
     expect(syncRunnerFakes.uploadDiagram).toHaveBeenCalledWith(pendingDiagram)
-    expect(useSyncStore.getState()).toMatchObject({ isUploading: false, lastUploadFailed: false })
+    expect(useSyncStore.getState()).toMatchObject({
+      isUploading: false,
+      lastUploadFailed: false,
+    })
   })
 
   it('groups quick successive changes into a single upload round', async () => {

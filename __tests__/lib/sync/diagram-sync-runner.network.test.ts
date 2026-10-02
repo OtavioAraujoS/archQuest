@@ -6,6 +6,7 @@ import {
   startDiagramSync,
 } from '@/lib/sync/diagram-sync-runner'
 import { useSyncStore } from '@/lib/sync/sync-store'
+
 import { makeAccountDiagram, OWNER_ID } from '../diagrams/diagram-fixtures'
 import {
   changeNetworkTo,
@@ -20,13 +21,16 @@ vi.mock('dexie', async (importOriginal) =>
   (await import('./sync-runner-harness')).mockDexieLiveQuery(importOriginal),
 )
 vi.mock('@/lib/diagrams/diagram-lists', async () => ({
-  listPendingUploads: (await import('./sync-runner-harness')).syncRunnerFakes.listPendingUploads,
+  listPendingUploads: (await import('./sync-runner-harness')).syncRunnerFakes
+    .listPendingUploads,
 }))
 vi.mock('@/lib/sync/upload-diagram', async () => ({
-  uploadDiagram: (await import('./sync-runner-harness')).syncRunnerFakes.uploadDiagram,
+  uploadDiagram: (await import('./sync-runner-harness')).syncRunnerFakes
+    .uploadDiagram,
 }))
 vi.mock('@/lib/sync/upload-pending-folders', async () => ({
-  uploadPendingFolders: (await import('./sync-runner-harness')).syncRunnerFakes.uploadPendingFolders,
+  uploadPendingFolders: (await import('./sync-runner-harness')).syncRunnerFakes
+    .uploadPendingFolders,
 }))
 
 describe('diagram sync runner network handling', () => {
@@ -68,7 +72,9 @@ describe('diagram sync runner network handling', () => {
   })
 
   it('retries a failed upload after a pause and clears the failure', async () => {
-    syncRunnerFakes.uploadDiagram.mockRejectedValueOnce(new Error('Failed to fetch'))
+    syncRunnerFakes.uploadDiagram.mockRejectedValueOnce(
+      new Error('Failed to fetch'),
+    )
     stopDiagramSync = startDiagramSync(OWNER_ID)
     await waitForUploadDebounce()
 
@@ -97,7 +103,9 @@ describe('diagram sync runner network handling', () => {
   })
 
   it('doubles the pause between failed retries', async () => {
-    syncRunnerFakes.uploadDiagram.mockRejectedValue(new Error('Failed to fetch'))
+    syncRunnerFakes.uploadDiagram.mockRejectedValue(
+      new Error('Failed to fetch'),
+    )
     stopDiagramSync = startDiagramSync(OWNER_ID)
     await waitForUploadDebounce()
     await vi.advanceTimersByTimeAsync(FIRST_RETRY_DELAY_MS)
@@ -111,7 +119,9 @@ describe('diagram sync runner network handling', () => {
   })
 
   it('never waits longer than the maximum pause between retries', async () => {
-    syncRunnerFakes.uploadDiagram.mockRejectedValue(new Error('Failed to fetch'))
+    syncRunnerFakes.uploadDiagram.mockRejectedValue(
+      new Error('Failed to fetch'),
+    )
     stopDiagramSync = startDiagramSync(OWNER_ID)
     await waitForUploadDebounce()
     await vi.advanceTimersByTimeAsync(10 * MAX_RETRY_DELAY_MS)
@@ -119,11 +129,15 @@ describe('diagram sync runner network handling', () => {
 
     await vi.advanceTimersByTimeAsync(MAX_RETRY_DELAY_MS)
 
-    expect(syncRunnerFakes.uploadDiagram).toHaveBeenCalledTimes(attemptsSoFar + 1)
+    expect(syncRunnerFakes.uploadDiagram).toHaveBeenCalledTimes(
+      attemptsSoFar + 1,
+    )
   })
 
   it('retries right away when the connection returns after a failure', async () => {
-    syncRunnerFakes.uploadDiagram.mockRejectedValueOnce(new Error('Failed to fetch'))
+    syncRunnerFakes.uploadDiagram.mockRejectedValueOnce(
+      new Error('Failed to fetch'),
+    )
     stopDiagramSync = startDiagramSync(OWNER_ID)
     await waitForUploadDebounce()
 

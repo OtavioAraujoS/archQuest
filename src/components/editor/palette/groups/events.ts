@@ -1,4 +1,4 @@
-import type { PaletteGroup } from '../palette-group'
+import type { PaletteGroup } from '@/types/palette'
 
 const MESSAGE = 'bpmn:MessageEventDefinition'
 const TIMER = 'bpmn:TimerEventDefinition'

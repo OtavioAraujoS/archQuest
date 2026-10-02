@@ -5,13 +5,10 @@ import type {
   CommandStackService,
   ModelingService,
 } from '@/types/diagram-js-services'
-
-import type { MessageCommandServices } from './message/message-commands'
-import type { BpmnDefinitions } from './message/message-event-definition'
-import type { TimerCommandServices } from './timer/timer-commands'
-
-export type PropertyEditingServices = MessageCommandServices &
-  TimerCommandServices
+import type {
+  BpmnDefinitions,
+  PropertyEditingServices,
+} from '@/types/properties'
 
 export function propertyEditingServices(
   modeler: BpmnModeler,

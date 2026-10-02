@@ -1,18 +1,5 @@
 import { diagramsInFolderView } from '@/components/library/library-view'
-import type { DiagramRecord, FolderRecord } from '@/lib/db'
-
-interface LibraryViewInputs {
-  ownerId: string | null
-  accountDiagrams: DiagramRecord[] | undefined
-  guestDiagrams: DiagramRecord[] | undefined
-  folders: FolderRecord[] | undefined
-  currentFolderId: string | null
-  isOpeningFolder: boolean
-  isSearching: boolean
-  applyFilters: (
-    diagrams: DiagramRecord[] | undefined,
-  ) => DiagramRecord[] | undefined
-}
+import type { LibraryViewInputs } from '@/types/library'
 
 export function emptyLibraryMessage(
   isSignedIn: boolean,

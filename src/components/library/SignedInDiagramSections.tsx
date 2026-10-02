@@ -1,13 +1,12 @@
 import { UploadCloud } from 'lucide-react'
 import type { ReactNode } from 'react'
 
-import type { DiagramCardActions } from '@/components/library/diagram-card-actions'
 import { DiagramGrid } from '@/components/library/DiagramGrid'
+import { Button } from '@/components/ui/button'
 import { DisplayHeading } from '@/components/ui/display-heading'
 import { ErrorMessage } from '@/components/ui/error-message'
-import type { CloudPullStatus } from '@/types/library'
-import { Button } from '@/components/ui/button'
 import type { DiagramRecord } from '@/lib/db'
+import type { CloudPullStatus, DiagramCardActions } from '@/types/library'
 
 interface SignedInDiagramSectionsProps {
   accountDiagrams: DiagramRecord[] | undefined

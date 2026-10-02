@@ -1,4 +1,5 @@
 import { Input } from '@/components/ui/input'
+import type { TimerExpression } from '@/types/properties'
 
 import { CycleInputs } from './CycleInputs'
 import { DurationInputs } from './DurationInputs'
@@ -9,7 +10,6 @@ import {
   parseIsoLocalDateTime,
 } from './timer-cycle-and-date'
 import { durationToIso, parseIsoDuration } from './timer-duration'
-import type { TimerExpression } from './timer-event-definition'
 
 interface TimerExpressionInputsProps {
   timerExpression: TimerExpression

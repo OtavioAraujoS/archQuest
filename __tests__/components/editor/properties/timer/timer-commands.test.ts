@@ -4,7 +4,7 @@ import {
   defaultIsoExpressionFor,
   setTimerExpression,
 } from '@/components/editor/properties/timer/timer-commands'
-import type { TimerEventDefinition } from '@/components/editor/properties/timer/timer-event-definition'
+import type { TimerEventDefinition } from '@/types/properties'
 
 const timerEventShape = { id: 'Event_timer' }
 

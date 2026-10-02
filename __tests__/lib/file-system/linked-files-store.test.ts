@@ -6,6 +6,7 @@ import {
   unlinkDiagramFromFile,
   useLinkedFilesStore,
 } from '@/lib/file-system/linked-files-store'
+
 import { createFakeFileHandle } from './fake-file-handle'
 
 describe('linked files', () => {
@@ -14,8 +15,12 @@ describe('linked files', () => {
   })
 
   it('remembers the file linked to each diagram during the session', () => {
-    const { handle: purchaseFile } = createFakeFileHandle({ fileName: 'Compras.bpmn' })
-    const { handle: onboardingFile } = createFakeFileHandle({ fileName: 'Onboarding.bpmn' })
+    const { handle: purchaseFile } = createFakeFileHandle({
+      fileName: 'Compras.bpmn',
+    })
+    const { handle: onboardingFile } = createFakeFileHandle({
+      fileName: 'Onboarding.bpmn',
+    })
 
     linkDiagramToFile('purchase', purchaseFile)
     linkDiagramToFile('onboarding', onboardingFile)

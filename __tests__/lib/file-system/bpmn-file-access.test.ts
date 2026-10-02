@@ -6,7 +6,12 @@ import {
   saveBpmnFileAs,
   writeBpmnFile,
 } from '@/lib/file-system/bpmn-file-access'
-import { createFakeFileHandle, installFilePickers, pickerCancellation } from './fake-file-handle'
+
+import {
+  createFakeFileHandle,
+  installFilePickers,
+  pickerCancellation,
+} from './fake-file-handle'
 
 describe('BPMN file access', () => {
   afterEach(() => {
@@ -14,7 +19,10 @@ describe('BPMN file access', () => {
   })
 
   it('opens a .bpmn file with its content, name and handle', async () => {
-    const { handle } = createFakeFileHandle({ fileName: 'Compras.bpmn', content: '<xml>compras</xml>' })
+    const { handle } = createFakeFileHandle({
+      fileName: 'Compras.bpmn',
+      content: '<xml>compras</xml>',
+    })
     const showOpenFilePicker = vi.fn(async () => [handle])
     installFilePickers({ showOpenFilePicker, showSaveFilePicker: vi.fn() })
 
@@ -24,19 +32,27 @@ describe('BPMN file access', () => {
       xml: '<xml>compras</xml>',
     })
     expect(showOpenFilePicker).toHaveBeenCalledWith(
-      expect.objectContaining({ types: [expect.objectContaining({ description: 'Diagrama BPMN' })] }),
+      expect.objectContaining({
+        types: [expect.objectContaining({ description: 'Diagrama BPMN' })],
+      }),
     )
   })
 
   it('treats a cancelled open picker as nothing chosen, without an error', async () => {
-    installFilePickers({ showOpenFilePicker: vi.fn(async () => Promise.reject(pickerCancellation())) })
+    installFilePickers({
+      showOpenFilePicker: vi.fn(async () =>
+        Promise.reject(pickerCancellation()),
+      ),
+    })
 
     await expect(openBpmnFile()).resolves.toBeNull()
   })
 
   it('lets other open errors through', async () => {
     const securityError = new DOMException('Not allowed', 'SecurityError')
-    installFilePickers({ showOpenFilePicker: vi.fn(async () => Promise.reject(securityError)) })
+    installFilePickers({
+      showOpenFilePicker: vi.fn(async () => Promise.reject(securityError)),
+    })
 
     await expect(openBpmnFile()).rejects.toBe(securityError)
   })
@@ -46,7 +62,9 @@ describe('BPMN file access', () => {
     const showSaveFilePicker = vi.fn(async () => handle)
     installFilePickers({ showSaveFilePicker })
 
-    await expect(saveBpmnFileAs('<xml>novo</xml>', 'Onboarding')).resolves.toBe(handle)
+    await expect(saveBpmnFileAs('<xml>novo</xml>', 'Onboarding')).resolves.toBe(
+      handle,
+    )
     expect(showSaveFilePicker).toHaveBeenCalledWith(
       expect.objectContaining({ suggestedName: 'Onboarding.bpmn' }),
     )
@@ -54,7 +72,11 @@ describe('BPMN file access', () => {
   })
 
   it('treats a cancelled save picker as nothing saved, without an error', async () => {
-    installFilePickers({ showSaveFilePicker: vi.fn(async () => Promise.reject(pickerCancellation())) })
+    installFilePickers({
+      showSaveFilePicker: vi.fn(async () =>
+        Promise.reject(pickerCancellation()),
+      ),
+    })
 
     await expect(saveBpmnFileAs('<xml />', 'Onboarding')).resolves.toBeNull()
   })
@@ -62,8 +84,12 @@ describe('BPMN file access', () => {
   it('refuses to open or save when the browser has no file pickers', async () => {
     installFilePickers({})
 
-    await expect(openBpmnFile()).rejects.toThrow('não permite abrir ou salvar arquivos')
-    await expect(saveBpmnFileAs('<xml />', 'x')).rejects.toThrow('não permite abrir ou salvar arquivos')
+    await expect(openBpmnFile()).rejects.toThrow(
+      'não permite abrir ou salvar arquivos',
+    )
+    await expect(saveBpmnFileAs('<xml />', 'x')).rejects.toThrow(
+      'não permite abrir ou salvar arquivos',
+    )
   })
 
   it('writes over an existing file without asking when writing is already allowed', async () => {
@@ -76,11 +102,15 @@ describe('BPMN file access', () => {
   })
 
   it('asks for write permission on a file that was only opened', async () => {
-    const { handle, fakeHandle, writtenContents } = createFakeFileHandle({ currentPermission: 'prompt' })
+    const { handle, fakeHandle, writtenContents } = createFakeFileHandle({
+      currentPermission: 'prompt',
+    })
 
     await writeBpmnFile(handle, '<xml>atualizado</xml>')
 
-    expect(fakeHandle.requestPermission).toHaveBeenCalledWith({ mode: 'readwrite' })
+    expect(fakeHandle.requestPermission).toHaveBeenCalledWith({
+      mode: 'readwrite',
+    })
     expect(writtenContents).toEqual(['<xml>atualizado</xml>'])
   })
 

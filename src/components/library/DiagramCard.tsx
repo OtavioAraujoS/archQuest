@@ -1,12 +1,12 @@
 import { Folder } from 'lucide-react'
 
-import type { DiagramCardActions } from '@/components/library/diagram-card-actions'
 import { DiagramCardMenu } from '@/components/library/DiagramCardMenu'
-import type { DiagramRecord } from '@/lib/db'
 import {
   formatEditedAt,
   formatFullDateTime,
 } from '@/lib/dates/format-edited-at'
+import type { DiagramRecord } from '@/lib/db'
+import type { DiagramCardActions } from '@/types/library'
 
 interface DiagramCardProps {
   diagram: DiagramRecord

@@ -55,7 +55,11 @@ export interface BpmnFactoryService {
 }
 
 export interface EventBusService {
-  on(event: string, callback: (event: never) => void): void
+  on(events: string | string[], callback: (event: never) => void): void
   off(event: string, callback: (event: never) => void): void
   fire(event: string, payload?: unknown): void
+}
+
+export interface PrioritizedEventBusService {
+  on(event: string, priority: number, callback: (event: never) => void): void
 }

@@ -1,15 +1,14 @@
 import { useNavigate } from 'react-router-dom'
 
 import { AppHeader } from '@/components/layout/AppHeader'
-import { buildLibraryView } from '@/components/library/build-library-view'
-import type { DiagramCardActions } from '@/components/library/diagram-card-actions'
 import { DiagramGrid } from '@/components/library/DiagramGrid'
-import { FolderGrid } from '@/components/library/folders/FolderGrid'
 import { LibraryDialogs } from '@/components/library/LibraryDialogs'
 import { LibraryEmptyContent } from '@/components/library/LibraryEmptyContent'
 import { LibraryHeading } from '@/components/library/LibraryHeading'
 import { LibraryToolbar } from '@/components/library/LibraryToolbar'
 import { SignedInDiagramSections } from '@/components/library/SignedInDiagramSections'
+import { buildLibraryView } from '@/components/library/build-library-view'
+import { FolderGrid } from '@/components/library/folders/FolderGrid'
 import { ErrorMessage } from '@/components/ui/error-message'
 import { useFolder } from '@/hooks/folders/useFolder'
 import { useDiagramDeletion } from '@/hooks/library/useDiagramDeletion'
@@ -21,6 +20,7 @@ import { useTemplatePicker } from '@/hooks/library/useTemplatePicker'
 import { useStartDiagram } from '@/hooks/useStartDiagram'
 import { isFileSystemAccessSupported } from '@/lib/file-system/file-system-support'
 import { editorPath } from '@/lib/routes'
+import type { DiagramCardActions } from '@/types/library'
 
 export function DiagramLibrary() {
   const navigate = useNavigate()

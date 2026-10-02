@@ -1,28 +1,24 @@
 import { getLabel } from 'bpmn-js/lib/util/LabelUtil'
 
 import { findSpellingIssues } from '@/lib/spelling/find-spelling-issues'
-
-import { badgePositionFor, createSpellingBadge } from './spelling-badge'
+import type { EventBusService } from '@/types/diagram-js-services'
 import type {
   ChangedElementsEvent,
+  CheckedLabel,
   DirectEditingEvent,
   DirectEditingService,
   LabeledElement,
   LabeledElementRegistry,
   OverlaysService,
   RemovedElementEvent,
-  SpellingEventBus,
-} from './spelling-services'
+} from '@/types/spelling'
+
+import { badgePositionFor, createSpellingBadge } from './spelling-badge'
 
 export const SPELLING_OVERLAY_TYPE = 'archquest-spelling'
 
 const SMALLEST_ZOOM_SHOWING_BADGES = 0.4
 const BADGE_SCALE_LIMITS = { min: 0.75, max: 1.25 }
-
-interface CheckedLabel {
-  text: string
-  overlayId?: string
-}
 
 function labelOwnerOf(element: LabeledElement) {
   return element.labelTarget ?? element
@@ -48,7 +44,7 @@ export default class LabelSpellingMarkers {
   private labelOwnerBeingEdited: LabeledElement | null = null
 
   constructor(
-    eventBus: SpellingEventBus,
+    eventBus: Pick<EventBusService, 'on' | 'fire'>,
     overlays: OverlaysService,
     elementRegistry: LabeledElementRegistry,
     directEditing: DirectEditingService,
@@ -71,7 +67,9 @@ export default class LabelSpellingMarkers {
       .forEach((labelOwner) => void this.checkLabel(labelOwner))
   }
 
-  private readonly checkChangedLabels = ({ elements }: ChangedElementsEvent) => {
+  private readonly checkChangedLabels = ({
+    elements,
+  }: ChangedElementsEvent) => {
     new Set(elements.map(labelOwnerOf)).forEach(
       (labelOwner) => void this.checkLabel(labelOwner),
     )

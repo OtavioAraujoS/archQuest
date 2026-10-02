@@ -1,13 +1,11 @@
 import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
 
-import type { EventBusService } from '@/types/diagram-js-services'
-
-export interface TextStyle {
-  bold: boolean
-  italic: boolean
-  underline: boolean
-  color?: string
-}
+import type {
+  BpmnElementLike,
+  ModdleElement,
+  TextStyle,
+  TextStyleServices,
+} from '@/types/editor'
 
 export const DEFAULT_TEXT_STYLE: TextStyle = {
   bold: false,
@@ -15,47 +13,17 @@ export const DEFAULT_TEXT_STYLE: TextStyle = {
   underline: false,
 }
 
-export interface ModdleElement {
-  $type: string
-  $parent?: ModdleElement
-  get: (name: string) => unknown
-  [key: string]: unknown
-}
-
-interface BpmnElementLike {
-  businessObject?: ModdleElement
-  labelTarget?: BpmnElementLike
-}
-
-export interface BpmnFactory {
-  create: (type: string, attrs?: Record<string, unknown>) => ModdleElement
-}
-
-export interface TextStyleModeling {
-  updateModdleProperties: (
-    element: unknown,
-    moddleElement: ModdleElement,
-    properties: Record<string, unknown>,
-  ) => void
-}
-
-export type TextStyleEventBus = Pick<EventBusService, 'fire'>
-
-function findTextStyleEntry(
-  businessObject: ModdleElement | undefined,
-): ModdleElement | undefined {
-  const extensionElements = businessObject?.extensionElements as
-    ModdleElement | undefined
-  if (!extensionElements) return undefined
-
-  const values = extensionElements.get('values') as ModdleElement[]
-  return values.find((value) => is(value, 'archquest:TextStyle'))
+function findTextStyleEntry(extensionElements: ModdleElement | undefined) {
+  const values = extensionElements?.get('values') as ModdleElement[] | undefined
+  return values?.find((value) => is(value, 'archquest:TextStyle'))
 }
 
 export function getTextStyle(element: BpmnElementLike): TextStyle {
   const businessObject = getBusinessObject(element as never) as
     ModdleElement | undefined
-  const entry = findTextStyleEntry(businessObject)
+  const entry = findTextStyleEntry(
+    businessObject?.extensionElements as ModdleElement | undefined,
+  )
 
   return {
     bold: Boolean(entry?.bold),
@@ -68,32 +36,27 @@ export function getTextStyle(element: BpmnElementLike): TextStyle {
 export function setTextStyle(
   element: BpmnElementLike,
   style: Partial<TextStyle>,
-  services: {
-    modeling: TextStyleModeling
-    bpmnFactory: BpmnFactory
-    eventBus: TextStyleEventBus
-  },
+  { modeling, bpmnFactory, eventBus }: TextStyleServices,
 ) {
-  const { modeling, bpmnFactory, eventBus } = services
   const businessObject = getBusinessObject(element as never) as ModdleElement
 
   let extensionElements = businessObject.extensionElements as
     ModdleElement | undefined
 
   if (!extensionElements) {
-    extensionElements = bpmnFactory.create('bpmn:ExtensionElements', {
-      values: [],
-    })
+    extensionElements = bpmnFactory.create<ModdleElement>(
+      'bpmn:ExtensionElements',
+      { values: [] },
+    )
     extensionElements.$parent = businessObject
   }
 
-  const values = extensionElements.get('values') as ModdleElement[]
-  let entry = values.find((value) => is(value, 'archquest:TextStyle'))
+  let entry = findTextStyleEntry(extensionElements)
 
   if (!entry) {
-    entry = bpmnFactory.create('archquest:TextStyle')
+    entry = bpmnFactory.create<ModdleElement>('archquest:TextStyle')
     entry.$parent = extensionElements
-    values.push(entry)
+    ;(extensionElements.get('values') as ModdleElement[]).push(entry)
   }
 
   Object.assign(entry, style)
