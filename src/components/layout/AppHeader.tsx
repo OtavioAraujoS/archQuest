@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 
 import { AccountMenu } from '@/components/auth/AccountMenu'
 import { ArchQuestWordmark } from '@/components/brand/ArchQuestWordmark'
+import { PersonalDictionaryButton } from '@/components/spelling/PersonalDictionaryButton'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { LANDING_PATH } from '@/lib/routes'
 
@@ -18,6 +19,7 @@ export function AppHeader() {
         </Link>
         <div className="flex min-w-0 items-center gap-2">
           <AccountMenu />
+          <PersonalDictionaryButton />
           <ThemeToggle />
         </div>
       </div>

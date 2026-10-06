@@ -2,6 +2,7 @@ import { useState } from 'react'
 
 import { SpellingSuggestionList } from '@/components/spelling/SpellingSuggestionList'
 import { useSpellingIssues } from '@/hooks/spelling/useSpellingIssues'
+import { acceptTerm, isAcceptedTerm } from '@/lib/spelling/accepted-terms'
 import { replaceSpellingIssue } from '@/lib/spelling/find-spelling-issues'
 import { cn } from '@/lib/utils'
 
@@ -16,7 +17,9 @@ export function SpellingHint({
   onReplaceText,
   className,
 }: Readonly<SpellingHintProps>) {
-  const issues = useSpellingIssues(text)
+  const issues = useSpellingIssues(text).filter(
+    (issue) => !isAcceptedTerm(issue.word),
+  )
   const [openIssueStart, setOpenIssueStart] = useState<number | null>(null)
   const openIssue = issues.find((issue) => issue.start === openIssueStart)
 
@@ -48,6 +51,10 @@ export function SpellingHint({
             onChoose={(suggestion) => {
               setOpenIssueStart(null)
               onReplaceText(replaceSpellingIssue(text, openIssue, suggestion))
+            }}
+            onAccept={() => {
+              acceptTerm(openIssue.word)
+              setOpenIssueStart(null)
             }}
           />
         </div>

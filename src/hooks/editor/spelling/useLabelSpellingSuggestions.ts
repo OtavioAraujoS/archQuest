@@ -6,6 +6,7 @@ import {
   CLOSE_SPELLING_SUGGESTIONS_EVENT,
   OPEN_SPELLING_SUGGESTIONS_EVENT,
 } from '@/components/editor/spelling/spelling-events'
+import { acceptTerm } from '@/lib/spelling/accepted-terms'
 import type { EventBusService } from '@/types/diagram-js-services'
 import type { EditorStatus, OpenSpellingSuggestions } from '@/types/editor'
 import type { SpellingSuggestionRequest } from '@/types/spelling'
@@ -56,5 +57,13 @@ export function useLabelSpellingSuggestions(
       .fire(CLOSE_SPELLING_SUGGESTIONS_EVENT)
   }, [modelerRef])
 
-  return { openSuggestions, closeSuggestions }
+  const acceptWord = useCallback(
+    (word: string) => {
+      acceptTerm(word)
+      closeSuggestions()
+    },
+    [closeSuggestions],
+  )
+
+  return { openSuggestions, closeSuggestions, acceptWord }
 }

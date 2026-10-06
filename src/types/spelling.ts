@@ -55,6 +55,7 @@ export interface LabeledElementRegistry {
 export interface CheckedLabel {
   text: string
   overlayId?: string
+  words?: string[]
 }
 
 export interface TextPiece {
@@ -75,4 +76,10 @@ export interface SpellingSuggestionRequest {
   word: string
   anchor: DOMRect
   replaceWith: (suggestion: string) => void
+}
+
+export interface DiagramSpellingIssue {
+  elementId: string
+  text: string
+  words: string[]
 }

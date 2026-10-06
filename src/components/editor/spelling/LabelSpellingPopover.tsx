@@ -8,11 +8,13 @@ import { useDismissOnOutsideOrEscape } from '@/hooks/ui/useDismissOnOutsideOrEsc
 interface LabelSpellingPopoverProps {
   openSuggestions: OpenSpellingSuggestions | null
   onClose: () => void
+  onAccept: (word: string) => void
 }
 
 export function LabelSpellingPopover({
   openSuggestions,
   onClose,
+  onAccept,
 }: Readonly<LabelSpellingPopoverProps>) {
   const popoverRef = useRef<HTMLDialogElement>(null)
 
@@ -31,6 +33,7 @@ export function LabelSpellingPopover({
       <SpellingSuggestionList
         word={openSuggestions.word}
         onChoose={openSuggestions.replaceWith}
+        onAccept={() => onAccept(openSuggestions.word)}
       />
     </dialog>
   )
