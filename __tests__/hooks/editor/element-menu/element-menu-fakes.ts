@@ -5,6 +5,7 @@ type Listener = (event: never) => void
 
 export function createElementMenuModeler(
   rectOf: (element: unknown) => DOMRect,
+  pointer = { clientX: 0, clientY: 0 },
 ) {
   const listeners = new Map<string, Set<Listener>>()
   let selected: unknown[] = []
@@ -27,6 +28,7 @@ export function createElementMenuModeler(
   const services: Record<string, unknown> = {
     eventBus,
     selection,
+    mouse: { getLastMoveEvent: () => pointer },
     elementRegistry: {
       getGraphics: (element: unknown) => ({
         getBoundingClientRect: () => rectOf(element),

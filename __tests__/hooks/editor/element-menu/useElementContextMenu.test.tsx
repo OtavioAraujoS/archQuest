@@ -7,8 +7,11 @@ import { createElementMenuModeler, rect } from './element-menu-fakes'
 
 const task = { id: 'Task_1', parent: {} }
 
-function renderContextMenuHook() {
-  const fakes = createElementMenuModeler(() => rect(150, 120, 100, 80))
+function renderContextMenuHook(
+  elementRect = rect(150, 120, 100, 80),
+  pointer = { clientX: 0, clientY: 0 },
+) {
+  const fakes = createElementMenuModeler(() => elementRect, pointer)
   const container = document.createElement('div')
   container.getBoundingClientRect = () => rect(100, 100, 800, 600)
   const modelerRef = { current: fakes.modeler }
@@ -35,6 +38,24 @@ describe('useElementContextMenu', () => {
       top: 20,
       width: 100,
       height: 80,
+    })
+  })
+
+  it('opens next to the pointer when the element is larger than the canvas', () => {
+    const widePool = rect(-400, 50, 3000, 400)
+    const { eventBus, result } = renderContextMenuHook(widePool, {
+      clientX: 300,
+      clientY: 250,
+    })
+
+    act(() => eventBus.fire(OPEN_ELEMENT_MENU_EVENT, { element: task }))
+    act(() => eventBus.fire('elements.changed'))
+
+    expect(result.current.menuAnchor).toEqual({
+      left: 200,
+      top: 150,
+      width: 0,
+      height: 0,
     })
   })
 

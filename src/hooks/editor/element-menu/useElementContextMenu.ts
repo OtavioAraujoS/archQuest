@@ -5,7 +5,10 @@ import { type RefObject, useCallback, useEffect, useState } from 'react'
 
 import { OPEN_ELEMENT_MENU_EVENT } from '@/components/editor/element-menu/open-element-menu-event'
 import { unionOfRects } from '@/components/editor/element-menu/place-element-menu'
-import type { EventBusService } from '@/types/diagram-js-services'
+import type {
+  EventBusService,
+  MouseService,
+} from '@/types/diagram-js-services'
 import type { EditorStatus, MenuOpeningEvent } from '@/types/editor'
 import type { MenuRect } from '@/types/geometry'
 
@@ -25,6 +28,27 @@ export function useElementContextMenu(
     const eventBus = modeler.get<EventBusService>('eventBus')
     const selection = modeler.get<Selection>('selection')
     const elementRegistry = modeler.get<ElementRegistry>('elementRegistry')
+    const mouse = modeler.get<MouseService>('mouse')
+    let pointerAnchor: MenuRect | null = null
+
+    function anchorAtPointerIfOffScreen(selectionAnchor: MenuRect | null) {
+      const container = containerRef.current?.getBoundingClientRect()
+      if (!selectionAnchor || !container) return null
+      const { left, top, width, height } = selectionAnchor
+      const fitsOnScreen =
+        left >= 0 &&
+        top >= 0 &&
+        left + width <= container.width &&
+        top + height <= container.height
+      if (fitsOnScreen) return null
+      const { clientX, clientY } = mouse.getLastMoveEvent()
+      return {
+        left: clientX - container.left,
+        top: clientY - container.top,
+        width: 0,
+        height: 0,
+      }
+    }
 
     function measureSelection() {
       const container = containerRef.current
@@ -42,11 +66,15 @@ export function useElementContextMenu(
       if (!target.parent) return
       originalEvent?.preventDefault()
       if (!selection.isSelected(target)) selection.select(target)
-      setMenuAnchor(measureSelection())
+      const selectionAnchor = measureSelection()
+      pointerAnchor = anchorAtPointerIfOffScreen(selectionAnchor)
+      setMenuAnchor(pointerAnchor ?? selectionAnchor)
     }
 
     function followChangedElements() {
-      setMenuAnchor((anchor) => (anchor ? measureSelection() : anchor))
+      setMenuAnchor((anchor) =>
+        anchor ? (pointerAnchor ?? measureSelection()) : anchor,
+      )
     }
 
     eventBus.on('element.contextmenu', openMenu)
