@@ -1,15 +1,13 @@
 import { useEffect, useState } from 'react'
 
-function documentHasDarkTheme() {
-  return document.documentElement.classList.contains('dark')
-}
+import { isDarkThemeActive } from '@/lib/theme'
 
 export function useIsDarkTheme() {
-  const [isDarkTheme, setIsDarkTheme] = useState(documentHasDarkTheme)
+  const [isDarkTheme, setIsDarkTheme] = useState(isDarkThemeActive)
 
   useEffect(() => {
     const themeClassObserver = new MutationObserver(() =>
-      setIsDarkTheme(documentHasDarkTheme()),
+      setIsDarkTheme(isDarkThemeActive()),
     )
     themeClassObserver.observe(document.documentElement, {
       attributes: true,

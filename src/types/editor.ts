@@ -20,6 +20,8 @@ export type TextFormat = 'bold' | 'italic' | 'underline'
 
 export type TranslationReplacements = Record<string, string>
 
+export type Rgb = [number, number, number]
+
 export interface TextStyle {
   bold: boolean
   italic: boolean

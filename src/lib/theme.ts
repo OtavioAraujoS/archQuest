@@ -15,6 +15,10 @@ export function getPreferredTheme(): Theme {
     : 'light'
 }
 
+export function isDarkThemeActive() {
+  return document.documentElement.classList.contains('dark')
+}
+
 export function applyTheme(theme: Theme) {
   document.documentElement.classList.toggle('dark', theme === 'dark')
 }
