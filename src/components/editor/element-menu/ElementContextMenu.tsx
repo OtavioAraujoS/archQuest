@@ -1,19 +1,17 @@
 import type BpmnModeler from 'bpmn-js/lib/Modeler'
 import { X } from 'lucide-react'
-import { useCallback, useEffect, useRef, type RefObject } from 'react'
+import { type RefObject, useCallback, useEffect, useRef } from 'react'
 
 import { ElementStylePanel } from '@/components/editor/ElementStylePanel'
 import { PropertiesPanel } from '@/components/editor/properties/PropertiesPanel'
 import { Button } from '@/components/ui/button'
 import { useElementMenuPlacement } from '@/hooks/editor/element-menu/useElementMenuPlacement'
-import {
-  type EditorStatus,
-  useSelectedElements,
-} from '@/hooks/editor/useSelectedElements'
+import { useSelectedElements } from '@/hooks/editor/useSelectedElements'
 import { useDismissOnOutsideOrEscape } from '@/hooks/ui/useDismissOnOutsideOrEscape'
+import type { EditorStatus } from '@/types/editor'
+import type { MenuRect } from '@/types/geometry'
 
 import { ElementSizeFields } from './ElementSizeFields'
-import type { MenuRect } from './place-element-menu'
 
 interface ElementContextMenuProps {
   modelerRef: RefObject<BpmnModeler | null>

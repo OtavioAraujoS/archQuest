@@ -1,6 +1,9 @@
-import { getBusinessObject, is } from 'bpmn-js/lib/util/ModelUtil'
-
-export type TimerKind = 'timeDate' | 'timeDuration' | 'timeCycle'
+import { findEventDefinition } from '@/lib/bpmn/find-event-definition'
+import type {
+  TimerEventDefinition,
+  TimerExpression,
+  TimerKind,
+} from '@/types/properties'
 
 export const TIMER_KINDS: TimerKind[] = [
   'timeDate',
@@ -8,30 +11,11 @@ export const TIMER_KINDS: TimerKind[] = [
   'timeCycle',
 ]
 
-export interface FormalExpression {
-  $type: 'bpmn:FormalExpression'
-  $parent?: unknown
-  body?: string
-}
-
-export type TimerEventDefinition = {
-  $type: 'bpmn:TimerEventDefinition'
-} & Partial<Record<TimerKind, FormalExpression>>
-
-export interface TimerExpression {
-  kind: TimerKind
-  isoExpression: string
-}
-
-export function findTimerEventDefinition(
-  element: unknown,
-): TimerEventDefinition | undefined {
-  const businessObject = getBusinessObject(element as never) as {
-    eventDefinitions?: unknown[]
-  }
-  return businessObject?.eventDefinitions?.find((definition) =>
-    is(definition as never, 'bpmn:TimerEventDefinition'),
-  ) as TimerEventDefinition | undefined
+export function findTimerEventDefinition(element: unknown) {
+  return findEventDefinition<TimerEventDefinition>(
+    element,
+    'bpmn:TimerEventDefinition',
+  )
 }
 
 export function readTimerExpression(

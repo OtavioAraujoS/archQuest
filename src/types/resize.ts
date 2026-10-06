@@ -1,11 +1,5 @@
 import type { DiagramElement } from '@/lib/bpmn/diagram-element-ancestry'
-
-export interface Bounds {
-  x: number
-  y: number
-  width: number
-  height: number
-}
+import type { Bounds, Size } from '@/types/geometry'
 
 export type ResizableShape = DiagramElement &
   Bounds & {
@@ -28,8 +22,31 @@ export interface ResizeEvent {
   context: GroupResizeContext
 }
 
-export interface GroupResizeEventBus {
-  on(event: string, priority: number, callback: (event: never) => void): void
+export interface PendingGroupResize {
+  primaryShape: ResizableShape
+  companionBounds: Map<ResizableShape, Bounds>
+}
+
+export interface PlannedResize {
+  shape: ResizableShape
+  bounds: Bounds
+}
+
+export interface ResizeElementsContext {
+  resizes: PlannedResize[]
+}
+
+export interface ResizeCommandStack {
+  execute(command: string, context: ResizeElementsContext): void
+}
+
+export interface ResizeStartEvent {
+  context: { shape: DiagramElement; minDimensions?: unknown }
+}
+
+export interface ResizeRuleContext {
+  shape: DiagramElement
+  newBounds?: Size
 }
 
 export interface SelectionService {

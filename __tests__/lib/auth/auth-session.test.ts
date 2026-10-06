@@ -2,6 +2,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { startAuthSession } from '@/lib/auth/auth-session'
 import { INITIAL_AUTH_STATE, useAuthStore } from '@/lib/auth/auth-store'
+
 import { createFakeSupabaseAuth, createSession } from './fake-supabase-auth'
 
 const { isCloudEnabled, getSupabaseClient } = vi.hoisted(() => ({
@@ -17,7 +18,9 @@ async function startWithFakeSupabase() {
   isCloudEnabled.mockReturnValue(true)
   getSupabaseClient.mockResolvedValue(fakeSupabase.client)
   const stopAuthSession = startAuthSession()
-  await vi.waitFor(() => expect(fakeSupabase.auth.onAuthStateChange).toHaveBeenCalled())
+  await vi.waitFor(() =>
+    expect(fakeSupabase.auth.onAuthStateChange).toHaveBeenCalled(),
+  )
   return { ...fakeSupabase, stopAuthSession }
 }
 
@@ -36,7 +39,10 @@ describe('startAuthSession', () => {
 
     startAuthSession()
 
-    expect(useAuthStore.getState()).toEqual({ status: 'cloud-disabled', user: null })
+    expect(useAuthStore.getState()).toEqual({
+      status: 'cloud-disabled',
+      user: null,
+    })
     expect(getSupabaseClient).not.toHaveBeenCalled()
   })
 
@@ -51,7 +57,10 @@ describe('startAuthSession', () => {
 
     emitAuthStateChange('INITIAL_SESSION', null)
 
-    expect(useAuthStore.getState()).toEqual({ status: 'signed-out', user: null })
+    expect(useAuthStore.getState()).toEqual({
+      status: 'signed-out',
+      user: null,
+    })
   })
 
   it('is signed in with the GitHub profile when a session exists', async () => {
@@ -104,6 +113,8 @@ describe('startAuthSession', () => {
 
     startAuthSession()
 
-    await vi.waitFor(() => expect(useAuthStore.getState().status).toBe('signed-out'))
+    await vi.waitFor(() =>
+      expect(useAuthStore.getState().status).toBe('signed-out'),
+    )
   })
 })

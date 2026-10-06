@@ -3,7 +3,11 @@ import { MemoryRouter, Route, Routes } from 'react-router-dom'
 import { afterEach, describe, expect, it } from 'vitest'
 
 import { AuthCallback } from '@/components/auth/AuthCallback'
-import { INITIAL_AUTH_STATE, useAuthStore, type AuthState } from '@/lib/auth/auth-store'
+import {
+  type AuthState,
+  INITIAL_AUTH_STATE,
+  useAuthStore,
+} from '@/lib/auth/auth-store'
 
 const SIGNED_IN_STATE: AuthState = {
   status: 'signed-in',
@@ -49,8 +53,12 @@ describe('AuthCallback', () => {
   it('explains an expired or foreign-browser link when no session was created', () => {
     renderAuthCallback({ status: 'signed-out', user: null })
 
-    expect(screen.getByRole('heading', { name: 'Não foi possível entrar' })).toBeInTheDocument()
-    expect(screen.getByText(/expirou ou foi aberto em outro navegador/)).toBeInTheDocument()
+    expect(
+      screen.getByRole('heading', { name: 'Não foi possível entrar' }),
+    ).toBeInTheDocument()
+    expect(
+      screen.getByText(/expirou ou foi aberto em outro navegador/),
+    ).toBeInTheDocument()
   })
 
   it('shows the error description sent back by the provider', () => {
@@ -63,6 +71,8 @@ describe('AuthCallback', () => {
     renderAuthCallback(INITIAL_AUTH_STATE)
 
     expect(screen.getByText('The user denied access')).toBeInTheDocument()
-    expect(screen.getByRole('link', { name: 'Voltar para os diagramas' })).toBeInTheDocument()
+    expect(
+      screen.getByRole('link', { name: 'Voltar para os diagramas' }),
+    ).toBeInTheDocument()
   })
 })

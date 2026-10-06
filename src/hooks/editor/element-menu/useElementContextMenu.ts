@@ -1,37 +1,13 @@
 import type BpmnModeler from 'bpmn-js/lib/Modeler'
-import { useCallback, useEffect, useState, type RefObject } from 'react'
+import type ElementRegistry from 'diagram-js/lib/core/ElementRegistry'
+import type Selection from 'diagram-js/lib/features/selection/Selection'
+import { type RefObject, useCallback, useEffect, useState } from 'react'
 
 import { OPEN_ELEMENT_MENU_EVENT } from '@/components/editor/element-menu/open-element-menu-event'
-import {
-  type MenuRect,
-  unionOfRects,
-} from '@/components/editor/element-menu/place-element-menu'
-import type { EditorStatus } from '@/hooks/editor/useSelectedElements'
-
-interface MenuTarget {
-  parent?: unknown
-  labelTarget?: MenuTarget
-}
-
-interface MenuOpeningEvent {
-  element: MenuTarget
-  originalEvent?: Event
-}
-
-interface MenuEventBus {
-  on(event: string, callback: (event: MenuOpeningEvent) => void): void
-  off(event: string, callback: (event: MenuOpeningEvent) => void): void
-}
-
-interface MenuSelection {
-  get(): unknown[]
-  isSelected(element: unknown): boolean
-  select(element: unknown): void
-}
-
-interface GraphicsRegistry {
-  getGraphics(element: unknown): Element | undefined
-}
+import { unionOfRects } from '@/components/editor/element-menu/place-element-menu'
+import type { EventBusService } from '@/types/diagram-js-services'
+import type { EditorStatus, MenuOpeningEvent } from '@/types/editor'
+import type { MenuRect } from '@/types/geometry'
 
 const CLOSING_EVENTS = ['selection.changed', 'canvas.viewbox.changing']
 
@@ -46,16 +22,16 @@ export function useElementContextMenu(
   useEffect(() => {
     const modeler = modelerRef.current
     if (status !== 'ready' || !modeler) return
-    const eventBus = modeler.get<MenuEventBus>('eventBus')
-    const selection = modeler.get<MenuSelection>('selection')
-    const elementRegistry = modeler.get<GraphicsRegistry>('elementRegistry')
+    const eventBus = modeler.get<EventBusService>('eventBus')
+    const selection = modeler.get<Selection>('selection')
+    const elementRegistry = modeler.get<ElementRegistry>('elementRegistry')
 
     function measureSelection() {
       const container = containerRef.current
       const rects = selection
         .get()
         .map((element) => elementRegistry.getGraphics(element))
-        .filter((graphics): graphics is Element => Boolean(graphics))
+        .filter((graphics): graphics is SVGElement => Boolean(graphics))
         .map((graphics) => graphics.getBoundingClientRect())
       if (!container || rects.length === 0) return null
       return unionOfRects(rects, container.getBoundingClientRect())

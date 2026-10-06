@@ -1,6 +1,7 @@
 import { useState } from 'react'
 
 import { GuestDiagramChecklist } from '@/components/auth/GuestDiagramChecklist'
+import { describeDiagramCount } from '@/components/library/library-view'
 import { Button } from '@/components/ui/button'
 import { DialogActions } from '@/components/ui/dialog-actions'
 import { ErrorMessage } from '@/components/ui/error-message'
@@ -12,10 +13,6 @@ interface MigrateGuestDiagramsDialogProps {
   ownerId: string
   guestDiagrams: DiagramRecord[]
   onClose: () => void
-}
-
-function diagramCountLabel(count: number) {
-  return count === 1 ? '1 diagrama' : `${count} diagramas`
 }
 
 export function MigrateGuestDiagramsDialog({
@@ -57,7 +54,7 @@ export function MigrateGuestDiagramsDialog({
       className="max-w-md"
     >
       <p className="text-muted-foreground mb-4 text-sm">
-        Encontramos {diagramCountLabel(guestDiagrams.length)} criados neste
+        Encontramos {describeDiagramCount(guestDiagrams.length)} criados neste
         navegador sem login. Os escolhidos vão para a sua conta e ficam
         disponíveis em outros dispositivos; os outros continuam só neste
         navegador.
@@ -82,7 +79,7 @@ export function MigrateGuestDiagramsDialog({
         >
           {isMoving
             ? 'Enviando…'
-            : `Enviar ${diagramCountLabel(selectedDiagramIds.size)} para a conta`}
+            : `Enviar ${describeDiagramCount(selectedDiagramIds.size)} para a conta`}
         </Button>
       </DialogActions>
     </ModalDialog>

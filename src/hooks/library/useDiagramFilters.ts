@@ -1,10 +1,8 @@
 import { useState } from 'react'
 
-import {
-  filterAndSortDiagrams,
-  type DiagramSortOrder,
-} from '@/components/library/filter-and-sort-diagrams'
+import { filterAndSortDiagrams } from '@/components/library/filter-and-sort-diagrams'
 import type { DiagramRecord } from '@/lib/db'
+import type { DiagramSortOrder } from '@/types/library'
 
 export function useDiagramFilters() {
   const [searchQuery, setSearchQuery] = useState('')

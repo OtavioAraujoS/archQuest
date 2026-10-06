@@ -1,19 +1,9 @@
 import type {
-  Bounds,
-  ResizableShape,
+  ResizeElementsContext,
   ShapeResizingService,
-} from '@/components/editor/multi-resize/multi-resize-services'
+} from '@/types/resize'
 
 export const RESIZE_ELEMENTS = 'archquest.elements.resize'
-
-export interface PlannedResize {
-  shape: ResizableShape
-  bounds: Bounds
-}
-
-export interface ResizeElementsContext {
-  resizes: PlannedResize[]
-}
 
 export default class ResizeElementsHandler {
   static readonly $inject = ['modeling']

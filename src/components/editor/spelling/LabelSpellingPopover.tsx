@@ -2,17 +2,19 @@ import { useRef } from 'react'
 
 import { SpellingSuggestionList } from '@/components/spelling/SpellingSuggestionList'
 import { useElementMenuPlacement } from '@/hooks/editor/element-menu/useElementMenuPlacement'
-import type { OpenSpellingSuggestions } from '@/hooks/editor/spelling/useLabelSpellingSuggestions'
+import type { OpenSpellingSuggestions } from '@/types/editor'
 import { useDismissOnOutsideOrEscape } from '@/hooks/ui/useDismissOnOutsideOrEscape'
 
 interface LabelSpellingPopoverProps {
   openSuggestions: OpenSpellingSuggestions | null
   onClose: () => void
+  onAccept: (word: string) => void
 }
 
 export function LabelSpellingPopover({
   openSuggestions,
   onClose,
+  onAccept,
 }: Readonly<LabelSpellingPopoverProps>) {
   const popoverRef = useRef<HTMLDialogElement>(null)
 
@@ -31,6 +33,7 @@ export function LabelSpellingPopover({
       <SpellingSuggestionList
         word={openSuggestions.word}
         onChoose={openSuggestions.replaceWith}
+        onAccept={() => onAccept(openSuggestions.word)}
       />
     </dialog>
   )

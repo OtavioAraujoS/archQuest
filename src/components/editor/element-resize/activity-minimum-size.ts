@@ -2,30 +2,16 @@ import { isExpanded } from 'bpmn-js/lib/util/DiUtil'
 import RuleProvider from 'diagram-js/lib/features/rules/RuleProvider'
 
 import {
-  isOfType,
   type DiagramElement,
+  isOfType,
 } from '@/lib/bpmn/diagram-element-ancestry'
+import type { PrioritizedEventBusService } from '@/types/diagram-js-services'
+import type { Size } from '@/types/geometry'
+import type { ResizeRuleContext, ResizeStartEvent } from '@/types/resize'
 
-export const ACTIVITY_MIN_DIMENSIONS = { width: 50, height: 40 }
+export const ACTIVITY_MIN_DIMENSIONS: Size = { width: 50, height: 40 }
 
 const PRIORITY_BEFORE_BPMN_DEFAULTS = 1500
-
-interface ResizeStartEvent {
-  context: { shape: DiagramElement; minDimensions?: unknown }
-}
-
-interface ResizeEventBus {
-  on(
-    event: string,
-    priority: number,
-    callback: (event: ResizeStartEvent) => void,
-  ): void
-}
-
-interface ResizeRuleContext {
-  shape: DiagramElement
-  newBounds?: { width: number; height: number }
-}
 
 export function isResizableActivity(element: DiagramElement) {
   if (isOfType(element, 'bpmn:Task')) return true
@@ -33,7 +19,7 @@ export function isResizableActivity(element: DiagramElement) {
   return isOfType(element, 'bpmn:SubProcess') && !isExpanded(element as never)
 }
 
-export function fitsActivityMinimum(bounds: { width: number; height: number }) {
+export function fitsActivityMinimum(bounds: Size) {
   return (
     bounds.width >= ACTIVITY_MIN_DIMENSIONS.width &&
     bounds.height >= ACTIVITY_MIN_DIMENSIONS.height
@@ -58,7 +44,7 @@ export class ActivityResizeRules extends RuleProvider {
 export class ActivityResizeBehavior {
   static readonly $inject = ['eventBus']
 
-  constructor(eventBus: ResizeEventBus) {
+  constructor(eventBus: PrioritizedEventBusService) {
     eventBus.on(
       'resize.start',
       PRIORITY_BEFORE_BPMN_DEFAULTS,

@@ -4,32 +4,25 @@ import { isConnection } from 'diagram-js/lib/util/ModelUtil'
 import type { RefObject } from 'react'
 
 import { ColorPickerField } from '@/components/editor/style/ColorPickerField'
-import { readElementColors } from '@/components/editor/style/element-colors'
 import { TextFormatButtons } from '@/components/editor/style/TextFormatButtons'
-import {
-  type BpmnFactory,
-  getTextStyle,
-  setTextStyle,
-  type TextStyle,
-  type TextStyleEventBus,
-  type TextStyleModeling,
-} from '@/components/editor/text-style'
+import { readElementColors } from '@/components/editor/style/element-colors'
+import { getTextStyle, setTextStyle } from '@/components/editor/text-style'
 import { useIsDarkTheme } from '@/hooks/editor/style/useIsDarkTheme'
-import {
-  type EditorStatus,
-  useSelectedElements,
-} from '@/hooks/editor/useSelectedElements'
+import { useSelectedElements } from '@/hooks/editor/useSelectedElements'
+import type {
+  BpmnFactoryService,
+  EventBusService,
+} from '@/types/diagram-js-services'
+import type {
+  ColorModeling,
+  EditorStatus,
+  TextStyle,
+  TextStyleServices,
+} from '@/types/editor'
 
 interface ElementStylePanelProps {
   modelerRef: RefObject<BpmnModeler | null>
   status: EditorStatus
-}
-
-type ColorModeling = TextStyleModeling & {
-  setColor(
-    elements: unknown[],
-    colors: { fill?: string; stroke?: string },
-  ): void
 }
 
 export function ElementStylePanel({
@@ -42,10 +35,10 @@ export function ElementStylePanel({
   if (selectedElements.length === 0 || !modeler) return null
 
   const modeling = modeler.get<ColorModeling>('modeling')
-  const textStyleServices = {
+  const textStyleServices: TextStyleServices = {
     modeling,
-    bpmnFactory: modeler.get<BpmnFactory>('bpmnFactory'),
-    eventBus: modeler.get<TextStyleEventBus>('eventBus'),
+    bpmnFactory: modeler.get<BpmnFactoryService>('bpmnFactory'),
+    eventBus: modeler.get<EventBusService>('eventBus'),
   }
   const textStyle = getTextStyle(selectedElements[0] as never)
   const colors = readElementColors(

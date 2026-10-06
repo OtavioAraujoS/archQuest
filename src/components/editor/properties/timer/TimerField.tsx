@@ -1,16 +1,13 @@
 import { NativeSelect } from '@/components/ui/native-select'
+import type {
+  TimerCommandServices,
+  TimerEventDefinition,
+  TimerKind,
+} from '@/types/properties'
 
-import {
-  defaultIsoExpressionFor,
-  setTimerExpression,
-  type TimerCommandServices,
-} from './timer-commands'
-import {
-  readTimerExpression,
-  type TimerEventDefinition,
-  type TimerKind,
-} from './timer-event-definition'
 import { TimerExpressionInputs } from './TimerExpressionInputs'
+import { defaultIsoExpressionFor, setTimerExpression } from './timer-commands'
+import { readTimerExpression } from './timer-event-definition'
 
 const NOT_DEFINED = ''
 

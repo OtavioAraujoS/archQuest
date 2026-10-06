@@ -1,11 +1,6 @@
-import {
-  drawCompanionFrames,
-  removeCompanionFrames,
-} from './companion-resize-preview'
-import { findResizeTargets } from './find-resize-targets'
+import type { PrioritizedEventBusService } from '@/types/diagram-js-services'
 import type {
-  Bounds,
-  GroupResizeEventBus,
+  PendingGroupResize,
   PreviewSupportService,
   ResizableShape,
   ResizeCanvasService,
@@ -14,16 +9,17 @@ import type {
   RulesService,
   SelectionService,
   ShapeResizingService,
-} from './multi-resize-services'
+} from '@/types/resize'
+
+import {
+  drawCompanionFrames,
+  removeCompanionFrames,
+} from './companion-resize-preview'
+import { findResizeTargets } from './find-resize-targets'
 import { planGroupResize } from './plan-group-resize'
 
 const PRIORITY_AFTER_DEFAULT_RESIZE = 500
 const PRIORITY_BEFORE_DEFAULT_RESIZE = 1500
-
-interface PendingGroupResize {
-  primaryShape: ResizableShape
-  companionBounds: Map<ResizableShape, Bounds>
-}
 
 export default class GroupResizeBehavior {
   static readonly $inject = [
@@ -39,7 +35,7 @@ export default class GroupResizeBehavior {
   private pendingGroupResize: PendingGroupResize | null = null
 
   constructor(
-    eventBus: GroupResizeEventBus,
+    eventBus: PrioritizedEventBusService,
     selection: SelectionService,
     rules: RulesService,
     resize: ResizeService,

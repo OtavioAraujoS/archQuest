@@ -1,17 +1,18 @@
 import { roundBounds } from 'diagram-js/lib/layout/LayoutUtil'
 
+import type { Bounds } from '@/types/geometry'
+import type {
+  GroupResizeContext,
+  ResizableShape,
+  ResizeService,
+  RulesService,
+} from '@/types/resize'
+
 import {
   haveBoundsChanged,
   measureEdgeDeltas,
   planCompanionBounds,
 } from './companion-bounds'
-import type {
-  Bounds,
-  GroupResizeContext,
-  ResizableShape,
-  ResizeService,
-  RulesService,
-} from './multi-resize-services'
 
 export function planGroupResize(
   context: GroupResizeContext,

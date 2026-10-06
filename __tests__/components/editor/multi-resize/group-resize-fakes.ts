@@ -1,10 +1,8 @@
 import { BpmnModdle } from 'bpmn-moddle'
 import { vi } from 'vitest'
 
-import type {
-  Bounds,
-  ResizableShape,
-} from '@/components/editor/multi-resize/multi-resize-services'
+import type { Bounds } from '@/types/geometry'
+import type { ResizableShape } from '@/types/resize'
 
 const moddle = new BpmnModdle()
 

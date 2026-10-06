@@ -1,6 +1,5 @@
 import type { DiagramRecord } from '@/lib/db'
-
-export type DiagramSortOrder = 'recently-edited' | 'recently-created' | 'name'
+import type { DiagramSortOrder } from '@/types/library'
 
 export const DIAGRAM_SORT_OPTIONS: {
   value: DiagramSortOrder

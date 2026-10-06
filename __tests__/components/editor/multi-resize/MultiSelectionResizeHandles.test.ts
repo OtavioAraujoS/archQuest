@@ -1,7 +1,8 @@
 import { describe, expect, it, vi } from 'vitest'
 
-import type { ResizableShape } from '@/components/editor/multi-resize/multi-resize-services'
 import MultiSelectionResizeHandles from '@/components/editor/multi-resize/MultiSelectionResizeHandles'
+import type { ResizableShape } from '@/types/resize'
+
 import {
   allowEveryResize,
   createFakeEventBus,

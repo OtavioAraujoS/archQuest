@@ -1,9 +1,4 @@
-export type DurationUnit = 'minutes' | 'hours' | 'days' | 'weeks'
-
-export interface TimerDuration {
-  amount: number
-  unit: DurationUnit
-}
+import type { DurationUnit, TimerDuration } from '@/types/properties'
 
 export const DURATION_UNIT_LABELS: Record<DurationUnit, string> = {
   minutes: 'minutos',

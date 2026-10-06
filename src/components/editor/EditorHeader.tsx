@@ -5,15 +5,21 @@ import { ArchQuestMark } from '@/components/brand/ArchQuestMark'
 import { DiagramFileMenu } from '@/components/editor/DiagramFileMenu'
 import { DiagramSaveStatus } from '@/components/editor/DiagramSaveStatus'
 import { ShareButton } from '@/components/editor/sharing/ShareButton'
+import { SpellingIssuesMenu } from '@/components/editor/spelling/SpellingIssuesMenu'
 import { SpellingHint } from '@/components/spelling/SpellingHint'
 import { ThemeToggle } from '@/components/theme-toggle'
 import { Button } from '@/components/ui/button'
 import type { AutosaveState } from '@/lib/diagrams/diagram-autosave'
+import type { DiagramSpellingIssue } from '@/types/spelling'
 
 interface EditorHeaderProps {
   diagramId: string | undefined
   diagramName: string
   autosaveState: AutosaveState
+  spellingIssues: {
+    issues: DiagramSpellingIssue[]
+    goToIssue: (elementId: string) => void
+  }
   fileLink: {
     isFileSystemSupported: boolean
     linkedFileName: string | null
@@ -32,6 +38,7 @@ export function EditorHeader({
   diagramId,
   diagramName,
   autosaveState,
+  spellingIssues,
   fileLink,
   onBack,
   onRename,
@@ -62,6 +69,10 @@ export function EditorHeader({
       </div>
       <DiagramSaveStatus diagramId={diagramId} autosaveState={autosaveState} />
       <div className="ml-auto flex shrink-0 items-center gap-2">
+        <SpellingIssuesMenu
+          issues={spellingIssues.issues}
+          onGoToIssue={spellingIssues.goToIssue}
+        />
         <ShareButton diagramId={diagramId} />
         <DiagramFileMenu
           canSaveToFile={fileLink.isFileSystemSupported}

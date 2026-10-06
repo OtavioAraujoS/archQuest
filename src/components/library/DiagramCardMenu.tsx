@@ -1,6 +1,5 @@
 import { Folder, FolderOutput, MoreHorizontal, Trash2 } from 'lucide-react'
 
-import type { DiagramCardActions } from '@/components/library/diagram-card-actions'
 import { DropdownMenu } from '@/components/ui/dropdown-menu'
 import {
   DropdownMenuItem,
@@ -8,6 +7,7 @@ import {
   DropdownMenuSeparator,
 } from '@/components/ui/dropdown-menu-item'
 import type { DiagramRecord } from '@/lib/db'
+import type { DiagramCardActions } from '@/types/library'
 
 interface DiagramCardMenuProps {
   diagram: DiagramRecord

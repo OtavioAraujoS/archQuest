@@ -1,7 +1,7 @@
 import { MigrateGuestDiagramsDialog } from '@/components/auth/MigrateGuestDiagramsDialog'
-import { DeleteDiagramDialog } from '@/components/library/DeleteDiagramDialog'
 import { FolderDialogs } from '@/components/library/folders/FolderDialogs'
 import { TemplatePicker } from '@/components/library/TemplatePicker'
+import { ConfirmDeletionDialog } from '@/components/ui/confirm-deletion-dialog'
 import type { useFolder } from '@/hooks/folders/useFolder'
 import type { useDiagramDeletion } from '@/hooks/library/useDiagramDeletion'
 import type { DiagramRecord } from '@/lib/db'
@@ -46,10 +46,12 @@ export function LibraryDialogs({
         />
       )}
       {deletion.diagramPendingDeletion && (
-        <DeleteDiagramDialog
-          diagram={deletion.diagramPendingDeletion}
+        <ConfirmDeletionDialog
+          title={`Excluir “${deletion.diagramPendingDeletion.name}”?`}
+          description="O diagrama sai da sua lista e essa ação não pode ser desfeita."
+          confirmLabel="Excluir diagrama"
           isDeleting={deletion.isDeleting}
-          deletionError={deletion.deletionError}
+          error={deletion.deletionError}
           onCancel={deletion.cancelDeletion}
           onConfirm={() => void deletion.confirmDeletion()}
         />

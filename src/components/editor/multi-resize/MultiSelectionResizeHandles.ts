@@ -1,10 +1,11 @@
-import { findResizeTargets } from './find-resize-targets'
+import type { PrioritizedEventBusService } from '@/types/diagram-js-services'
 import type {
-  GroupResizeEventBus,
   ResizeHandlesService,
   RulesService,
   SelectionService,
-} from './multi-resize-services'
+} from '@/types/resize'
+
+import { findResizeTargets } from './find-resize-targets'
 
 export const PRIORITY_AFTER_DEFAULT_HANDLES = 500
 
@@ -12,7 +13,7 @@ export default class MultiSelectionResizeHandles {
   static readonly $inject = ['eventBus', 'selection', 'resizeHandles', 'rules']
 
   constructor(
-    eventBus: GroupResizeEventBus,
+    eventBus: PrioritizedEventBusService,
     selection: SelectionService,
     resizeHandles: ResizeHandlesService,
     rules: RulesService,

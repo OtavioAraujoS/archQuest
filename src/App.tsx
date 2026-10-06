@@ -9,6 +9,7 @@ import { AUTH_CALLBACK_PATH } from '@/lib/auth/auth-actions'
 import { startAuthSession } from '@/lib/auth/auth-session'
 import { LANDING_PATH, LIBRARY_FOLDER_PATH, LIBRARY_PATH } from '@/lib/routes'
 import { PUBLIC_VIEW_PATH } from '@/lib/sharing/public-link'
+import { startAcceptedTermsSyncWhileSignedIn } from '@/lib/spelling/sync-accepted-terms'
 import { startDiagramSyncWhileSignedIn } from '@/lib/sync/sync-while-signed-in'
 
 const BpmnEditor = lazy(() =>
@@ -25,6 +26,7 @@ const PublicViewer = lazy(() =>
 function App() {
   useEffect(() => startAuthSession(), [])
   useEffect(() => startDiagramSyncWhileSignedIn(), [])
+  useEffect(() => startAcceptedTermsSyncWhileSignedIn(), [])
 
   return (
     <BrowserRouter>

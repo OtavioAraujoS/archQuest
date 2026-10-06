@@ -1,9 +1,6 @@
 import { useEffect, useState } from 'react'
 
-interface AnsweredQuestion<Answer> {
-  question: string
-  answer: Answer
-}
+import type { AnsweredQuestion } from '@/types/ui'
 
 export function useLatestAnswer<Answer>(
   question: string,

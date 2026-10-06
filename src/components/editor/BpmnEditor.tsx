@@ -9,6 +9,7 @@ import { RefusedConnectionNotice } from '@/components/editor/RefusedConnectionNo
 import { LabelSpellingPopover } from '@/components/editor/spelling/LabelSpellingPopover'
 import { useElementContextMenu } from '@/hooks/editor/element-menu/useElementContextMenu'
 import { useFileLink } from '@/hooks/editor/file-link/useFileLink'
+import { useDiagramSpellingIssues } from '@/hooks/editor/spelling/useDiagramSpellingIssues'
 import { useLabelSpellingSuggestions } from '@/hooks/editor/spelling/useLabelSpellingSuggestions'
 import { useBpmnEditor } from '@/hooks/editor/useBpmnEditor'
 import { useCanvasResizeSync } from '@/hooks/editor/useCanvasResizeSync'
@@ -56,11 +57,9 @@ export function BpmnEditor() {
     containerRef,
     status,
   )
-  const { openSuggestions, closeSuggestions } = useLabelSpellingSuggestions(
-    modelerRef,
-    containerRef,
-    status,
-  )
+  const { openSuggestions, closeSuggestions, acceptWord } =
+    useLabelSpellingSuggestions(modelerRef, containerRef, status)
+  const spellingIssues = useDiagramSpellingIssues(modelerRef, status)
   const folderId = useCachedDiagram(id)?.folderId
   const backToLibrary = () => navigate(libraryPathFor(folderId))
 
@@ -70,6 +69,7 @@ export function BpmnEditor() {
         diagramId={id}
         diagramName={name}
         autosaveState={autosaveState}
+        spellingIssues={spellingIssues}
         fileLink={{ ...fileLink, saveToFile: () => void fileLink.saveToFile() }}
         onBack={backToLibrary}
         onRename={(nextName) => void persistName(nextName)}
@@ -104,6 +104,7 @@ export function BpmnEditor() {
         <LabelSpellingPopover
           openSuggestions={openSuggestions}
           onClose={closeSuggestions}
+          onAccept={acceptWord}
         />
       </div>
     </div>

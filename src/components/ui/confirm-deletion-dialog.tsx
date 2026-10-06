@@ -2,42 +2,41 @@ import { Button } from '@/components/ui/button'
 import { DialogActions } from '@/components/ui/dialog-actions'
 import { ErrorMessage } from '@/components/ui/error-message'
 import { ModalDialog } from '@/components/ui/modal-dialog'
-import type { DiagramRecord } from '@/lib/db'
 
-interface DeleteDiagramDialogProps {
-  diagram: DiagramRecord
+interface ConfirmDeletionDialogProps {
+  title: string
+  description: string
+  confirmLabel: string
+  error: string | null
   isDeleting: boolean
-  deletionError: string | null
   onCancel: () => void
   onConfirm: () => void
 }
 
-export function DeleteDiagramDialog({
-  diagram,
+export function ConfirmDeletionDialog({
+  title,
+  description,
+  confirmLabel,
+  error,
   isDeleting,
-  deletionError,
   onCancel,
   onConfirm,
-}: Readonly<DeleteDiagramDialogProps>) {
+}: Readonly<ConfirmDeletionDialogProps>) {
   return (
     <ModalDialog
-      title={`Excluir “${diagram.name}”?`}
+      title={title}
       onClose={onCancel}
       isDismissible={!isDeleting}
       className="max-w-md"
     >
-      <p className="text-muted-foreground text-sm">
-        O diagrama sai da sua lista e essa ação não pode ser desfeita.
-      </p>
-      {deletionError && (
-        <ErrorMessage className="mt-3">{deletionError}</ErrorMessage>
-      )}
+      <p className="text-muted-foreground text-sm">{description}</p>
+      {error && <ErrorMessage className="mt-3">{error}</ErrorMessage>}
       <DialogActions>
         <Button variant="outline" onClick={onCancel} disabled={isDeleting}>
           Cancelar
         </Button>
         <Button variant="destructive" onClick={onConfirm} disabled={isDeleting}>
-          {isDeleting ? 'Excluindo…' : 'Excluir diagrama'}
+          {isDeleting ? 'Excluindo…' : confirmLabel}
         </Button>
       </DialogActions>
     </ModalDialog>

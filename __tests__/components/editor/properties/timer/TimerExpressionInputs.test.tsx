@@ -1,8 +1,8 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { describe, expect, it, vi } from 'vitest'
 
-import type { TimerExpression } from '@/components/editor/properties/timer/timer-event-definition'
 import { TimerExpressionInputs } from '@/components/editor/properties/timer/TimerExpressionInputs'
+import type { TimerExpression } from '@/types/properties'
 
 function renderInputs(timerExpression: TimerExpression) {
   const onIsoExpressionChange = vi.fn()

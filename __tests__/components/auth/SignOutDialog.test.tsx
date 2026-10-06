@@ -2,6 +2,7 @@ import { fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
 import { SignOutDialog } from '@/components/auth/SignOutDialog'
+
 import { OWNER_ID } from '../../lib/diagrams/diagram-fixtures'
 
 const { signOutOfThisDevice, flushPendingUploads } = vi.hoisted(() => ({
@@ -15,7 +16,11 @@ vi.mock('@/lib/sync/flush-pending-uploads', () => ({ flushPendingUploads }))
 function renderSignOutDialog(pendingDiagramCount = 2) {
   const onClose = vi.fn()
   render(
-    <SignOutDialog ownerId={OWNER_ID} pendingDiagramCount={pendingDiagramCount} onClose={onClose} />,
+    <SignOutDialog
+      ownerId={OWNER_ID}
+      pendingDiagramCount={pendingDiagramCount}
+      onClose={onClose}
+    />,
   )
   return { onClose }
 }
@@ -29,7 +34,9 @@ describe('SignOutDialog', () => {
   it('warns how many diagrams have changes not in the cloud yet', () => {
     renderSignOutDialog(2)
 
-    expect(screen.getByRole('dialog', { name: 'Sair com alterações pendentes?' })).toHaveTextContent(
+    expect(
+      screen.getByRole('dialog', { name: 'Sair com alterações pendentes?' }),
+    ).toHaveTextContent(
       'Você tem 2 diagramas com alterações que ainda não foram para a nuvem',
     )
   })
@@ -50,10 +57,14 @@ describe('SignOutDialog', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Sincronizar e sair' }))
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('1 diagrama não foi para a nuvem')
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      '1 diagrama não foi para a nuvem',
+    )
     expect(signOutOfThisDevice).not.toHaveBeenCalled()
     expect(onClose).not.toHaveBeenCalled()
-    expect(screen.getByRole('button', { name: 'Sair mesmo assim' })).toBeEnabled()
+    expect(
+      screen.getByRole('button', { name: 'Sair mesmo assim' }),
+    ).toBeEnabled()
   })
 
   it('uses the plural when several diagrams could not be synced', async () => {
@@ -62,7 +73,9 @@ describe('SignOutDialog', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Sincronizar e sair' }))
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('3 diagramas não foram para a nuvem')
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      '3 diagramas não foram para a nuvem',
+    )
   })
 
   it('signs out without syncing on "Sair mesmo assim"', async () => {
@@ -80,7 +93,9 @@ describe('SignOutDialog', () => {
 
     fireEvent.click(screen.getByRole('button', { name: 'Sair mesmo assim' }))
 
-    expect(await screen.findByRole('alert')).toHaveTextContent('Não foi possível sair')
+    expect(await screen.findByRole('alert')).toHaveTextContent(
+      'Não foi possível sair',
+    )
     expect(onClose).not.toHaveBeenCalled()
   })
 

@@ -8,6 +8,7 @@ import { useCurrentDiagramOwnerId } from '@/lib/diagrams/diagram-owner'
 import { moveDiagramToFolder } from '@/lib/diagrams/local-diagram-changes'
 import * as cachedFolders from '@/lib/folders/cached-folders'
 import { LIBRARY_PATH } from '@/lib/routes'
+import type { FolderDialog } from '@/types/library'
 
 export const FOLDER_NAME_MAX_LENGTH = 80
 
@@ -15,11 +16,6 @@ export const INVALID_FOLDER_NAME_MESSAGE = `O nome da pasta precisa ter entre 1 
 
 export const FOLDER_CHANGE_FAILED_MESSAGE =
   'Não foi possível salvar a alteração na pasta. Confira a conexão e tente de novo.'
-
-export type FolderDialog =
-  | { kind: 'create' }
-  | { kind: 'rename'; folder: FolderRecord }
-  | { kind: 'delete'; folder: FolderRecord }
 
 export function normalizeFolderName(typedName: string) {
   const name = typedName.trim().replaceAll(/\s+/g, ' ')

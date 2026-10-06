@@ -5,17 +5,19 @@ import type {
   PaletteService,
   PopupMenuService,
 } from '@/types/diagram-js-services'
+import type {
+  PaletteEntries,
+  PaletteGroup,
+  PaletteVariant,
+} from '@/types/palette'
 
 import { buildGroupMenuEntries, groupMenuId } from './group-menu-entries'
 import { buildGroupPaletteEntry } from './group-palette-entry'
 import { PALETTE_GROUPS } from './groups'
 import { openGroupMenu } from './open-group-menu'
-import type { PaletteGroup, PaletteVariant } from './palette-group'
 import { startVariantCreation } from './start-variant-creation'
 
 export const PRIORITY_AFTER_DEFAULT_PALETTE = 500
-
-type PaletteEntries = Record<string, unknown>
 
 export default class GroupedPaletteProvider {
   static readonly $inject = [

@@ -1,28 +1,26 @@
 import { getLabel } from 'bpmn-js/lib/util/LabelUtil'
 
+import { onUserTermsChange } from '@/lib/spelling/accepted-terms'
 import { findSpellingIssues } from '@/lib/spelling/find-spelling-issues'
-
-import { badgePositionFor, createSpellingBadge } from './spelling-badge'
+import type { EventBusService } from '@/types/diagram-js-services'
 import type {
   ChangedElementsEvent,
+  CheckedLabel,
   DirectEditingEvent,
   DirectEditingService,
   LabeledElement,
   LabeledElementRegistry,
   OverlaysService,
   RemovedElementEvent,
-  SpellingEventBus,
-} from './spelling-services'
+} from '@/types/spelling'
+
+import { badgePositionFor, createSpellingBadge } from './spelling-badge'
+import { SPELLING_ISSUES_CHANGED_EVENT } from './spelling-events'
 
 export const SPELLING_OVERLAY_TYPE = 'archquest-spelling'
 
 const SMALLEST_ZOOM_SHOWING_BADGES = 0.4
 const BADGE_SCALE_LIMITS = { min: 0.75, max: 1.25 }
-
-interface CheckedLabel {
-  text: string
-  overlayId?: string
-}
 
 function labelOwnerOf(element: LabeledElement) {
   return element.labelTarget ?? element
@@ -41,18 +39,20 @@ export default class LabelSpellingMarkers {
     'directEditing',
   ]
 
+  private readonly eventBus: Pick<EventBusService, 'on' | 'fire'>
   private readonly overlays: OverlaysService
   private readonly elementRegistry: LabeledElementRegistry
   private readonly directEditing: DirectEditingService
-  private readonly checkedLabels = new Map<string, CheckedLabel>()
+  readonly checkedLabels = new Map<string, CheckedLabel>()
   private labelOwnerBeingEdited: LabeledElement | null = null
 
   constructor(
-    eventBus: SpellingEventBus,
+    eventBus: Pick<EventBusService, 'on' | 'fire'>,
     overlays: OverlaysService,
     elementRegistry: LabeledElementRegistry,
     directEditing: DirectEditingService,
   ) {
+    this.eventBus = eventBus
     this.overlays = overlays
     this.elementRegistry = elementRegistry
     this.directEditing = directEditing
@@ -60,9 +60,21 @@ export default class LabelSpellingMarkers {
     eventBus.on('import.done', this.checkEveryLabel)
     eventBus.on('elements.changed', this.checkChangedLabels)
     eventBus.on(['shape.remove', 'connection.remove'], this.forgetRemovedLabel)
-    eventBus.on('diagram.clear', () => this.checkedLabels.clear())
+    eventBus.on('diagram.clear', () => {
+      this.checkedLabels.clear()
+      eventBus.fire(SPELLING_ISSUES_CHANGED_EVENT)
+    })
     eventBus.on('directEditing.activate', this.hideBadgeWhileEditing)
     eventBus.on('directEditing.deactivate', this.checkEditedLabel)
+    eventBus.on('diagram.destroy', onUserTermsChange(this.recheckEveryLabel))
+  }
+
+  private readonly recheckEveryLabel = () => {
+    this.checkedLabels.forEach(({ overlayId }) => {
+      if (overlayId) this.overlays.remove(overlayId)
+    })
+    this.checkedLabels.clear()
+    this.checkEveryLabel()
   }
 
   private readonly checkEveryLabel = () => {
@@ -71,7 +83,9 @@ export default class LabelSpellingMarkers {
       .forEach((labelOwner) => void this.checkLabel(labelOwner))
   }
 
-  private readonly checkChangedLabels = ({ elements }: ChangedElementsEvent) => {
+  private readonly checkChangedLabels = ({
+    elements,
+  }: ChangedElementsEvent) => {
     new Set(elements.map(labelOwnerOf)).forEach(
       (labelOwner) => void this.checkLabel(labelOwner),
     )
@@ -97,6 +111,7 @@ export default class LabelSpellingMarkers {
     const overlayId = this.checkedLabels.get(labelOwner.id)?.overlayId
     if (overlayId) this.overlays.remove(overlayId)
     this.checkedLabels.delete(labelOwner.id)
+    this.eventBus.fire(SPELLING_ISSUES_CHANGED_EVENT)
   }
 
   private async checkLabel(labelOwner: LabeledElement) {
@@ -114,18 +129,19 @@ export default class LabelSpellingMarkers {
       this.elementRegistry.get(labelOwner.id) === labelOwner
     if (!isStillCurrent || issues.length === 0) return
 
+    checkedLabel.words = issues.map((issue) => issue.word)
     checkedLabel.overlayId = this.overlays.add(
       labelOwner.label ?? labelOwner,
       SPELLING_OVERLAY_TYPE,
       {
         position: badgePositionFor(labelOwner),
-        html: createSpellingBadge(
-          issues.map((issue) => issue.word),
-          () => this.directEditing.activate(labelOwner),
+        html: createSpellingBadge(checkedLabel.words, () =>
+          this.directEditing.activate(labelOwner),
         ),
         show: { minZoom: SMALLEST_ZOOM_SHOWING_BADGES },
         scale: BADGE_SCALE_LIMITS,
       },
     )
+    this.eventBus.fire(SPELLING_ISSUES_CHANGED_EVENT)
   }
 }

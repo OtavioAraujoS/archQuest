@@ -1,9 +1,9 @@
 import { fireEvent, render, screen } from '@testing-library/react'
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { setTimerExpression } from '@/components/editor/properties/timer/timer-commands'
-import type { TimerEventDefinition } from '@/components/editor/properties/timer/timer-event-definition'
 import { TimerField } from '@/components/editor/properties/timer/TimerField'
+import { setTimerExpression } from '@/components/editor/properties/timer/timer-commands'
+import type { TimerEventDefinition } from '@/types/properties'
 
 vi.mock(
   '@/components/editor/properties/timer/timer-commands',

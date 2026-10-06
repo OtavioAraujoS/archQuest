@@ -1,8 +1,8 @@
-export interface LabeledElement {
+import type { DiagramElement } from '@/lib/bpmn/diagram-element-ancestry'
+
+export interface LabeledElement extends DiagramElement {
   id: string
   type?: string
-  parent?: unknown
-  businessObject?: unknown
   label?: LabeledElement
   labelTarget?: LabeledElement
 }
@@ -17,11 +17,6 @@ export interface ChangedElementsEvent {
 
 export interface RemovedElementEvent {
   element: LabeledElement
-}
-
-export interface SpellingEventBus {
-  on(events: string | string[], callback: (event: never) => void): void
-  fire(event: string, payload?: unknown): void
 }
 
 export interface DirectEditingTextBox {
@@ -55,4 +50,36 @@ export interface OverlaysService {
 export interface LabeledElementRegistry {
   get(id: string): LabeledElement | undefined
   filter(isWanted: (element: LabeledElement) => boolean): LabeledElement[]
+}
+
+export interface CheckedLabel {
+  text: string
+  overlayId?: string
+  words?: string[]
+}
+
+export interface TextPiece {
+  node: Text
+  start: number
+}
+
+export interface EditableTextSnapshot {
+  text: string
+  pieces: TextPiece[]
+}
+
+export interface DocumentTypingCommands {
+  execCommand?: (command: 'insertText', showUI: false, text: string) => boolean
+}
+
+export interface SpellingSuggestionRequest {
+  word: string
+  anchor: DOMRect
+  replaceWith: (suggestion: string) => void
+}
+
+export interface DiagramSpellingIssue {
+  elementId: string
+  text: string
+  words: string[]
 }

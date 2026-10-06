@@ -1,6 +1,11 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { sendMagicLink, signInWithGitHub, signOut } from '@/lib/auth/auth-actions'
+import {
+  sendMagicLink,
+  signInWithGitHub,
+  signOut,
+} from '@/lib/auth/auth-actions'
+
 import { createFakeSupabaseAuth } from './fake-supabase-auth'
 
 const { getSupabaseClient } = vi.hoisted(() => ({ getSupabaseClient: vi.fn() }))
@@ -43,7 +48,10 @@ describe('auth actions', () => {
 
   it('rethrows the error reported by Supabase', async () => {
     const rateLimitError = new Error('email rate limit exceeded')
-    fakeSupabase.auth.signInWithOtp.mockResolvedValueOnce({ data: {}, error: rateLimitError } as never)
+    fakeSupabase.auth.signInWithOtp.mockResolvedValueOnce({
+      data: {},
+      error: rateLimitError,
+    } as never)
 
     await expect(sendMagicLink('dev@example.com')).rejects.toBe(rateLimitError)
   })
@@ -51,6 +59,8 @@ describe('auth actions', () => {
   it('refuses to act when the cloud is not configured', async () => {
     getSupabaseClient.mockResolvedValue(null)
 
-    await expect(signInWithGitHub()).rejects.toThrow('A nuvem não está configurada')
+    await expect(signInWithGitHub()).rejects.toThrow(
+      'A nuvem não está configurada',
+    )
   })
 })

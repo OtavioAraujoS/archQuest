@@ -2,42 +2,38 @@ import {
   findSpellingIssues,
   type SpellingIssue,
 } from '@/lib/spelling/find-spelling-issues'
+import { onUserTermsChange } from '@/lib/spelling/accepted-terms'
 import { isSpellingEngineUnavailable } from '@/lib/spelling/spelling-client'
+import type { EventBusService } from '@/types/diagram-js-services'
+import type {
+  DirectEditingService,
+  DirectEditingTextBox,
+  EditableTextSnapshot,
+  SpellingSuggestionRequest,
+} from '@/types/spelling'
 
 import {
   caretOffsetIn,
-  readEditableText,
   rangeOfTextSpan,
+  readEditableText,
   replaceRangeText,
-  type EditableTextSnapshot,
 } from './editable-text'
 import {
   CLOSE_SPELLING_SUGGESTIONS_EVENT,
+  EDITING_ENDED_EVENTS,
   OPEN_SPELLING_SUGGESTIONS_EVENT,
-  type SpellingSuggestionRequest,
 } from './spelling-events'
 import {
   clearSpellingHighlights,
   paintSpellingHighlights,
 } from './spelling-highlights'
-import type {
-  DirectEditingService,
-  DirectEditingTextBox,
-  SpellingEventBus,
-} from './spelling-services'
 
 export const TYPING_PAUSE_BEFORE_LABEL_CHECK_MS = 400
-
-const EDITING_ENDED_EVENTS = [
-  'directEditing.deactivate',
-  'diagram.clear',
-  'diagram.destroy',
-]
 
 export default class LabelEditingSpellcheck {
   static readonly $inject = ['eventBus', 'directEditing']
 
-  private readonly eventBus: SpellingEventBus
+  private readonly eventBus: Pick<EventBusService, 'on' | 'fire'>
   private readonly textBox: DirectEditingTextBox | undefined
   private isChecking = false
   private areSuggestionsOpen = false
@@ -45,8 +41,12 @@ export default class LabelEditingSpellcheck {
   private typingPauseTimer: ReturnType<typeof setTimeout> | undefined
   private checkedSnapshot: EditableTextSnapshot | null = null
   private issues: SpellingIssue[] = []
+  private stopFollowingTerms = () => {}
 
-  constructor(eventBus: SpellingEventBus, directEditing: DirectEditingService) {
+  constructor(
+    eventBus: Pick<EventBusService, 'on' | 'fire'>,
+    directEditing: DirectEditingService,
+  ) {
     this.eventBus = eventBus
     this.textBox = directEditing._textbox
     if (!this.textBox) return
@@ -66,6 +66,7 @@ export default class LabelEditingSpellcheck {
     content.addEventListener('input', this.checkAfterTypingPause)
     content.addEventListener('click', this.offerSuggestionsAtCaret)
     parent.addEventListener('keydown', this.closeSuggestionsOnEscape, true)
+    this.stopFollowingTerms = onUserTermsChange(this.checkAfterTypingPause)
     void this.checkSpelling()
   }
 
@@ -76,6 +77,7 @@ export default class LabelEditingSpellcheck {
     content.removeEventListener('input', this.checkAfterTypingPause)
     content.removeEventListener('click', this.offerSuggestionsAtCaret)
     parent.removeEventListener('keydown', this.closeSuggestionsOnEscape, true)
+    this.stopFollowingTerms()
     content.removeAttribute('spellcheck')
     this.forgetCheckedText()
     clearSpellingHighlights()

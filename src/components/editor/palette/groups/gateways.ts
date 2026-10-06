@@ -1,4 +1,4 @@
-import type { PaletteGroup } from '../palette-group'
+import type { PaletteGroup } from '@/types/palette'
 
 export const GATEWAY_GROUP: PaletteGroup = {
   id: 'gateways',

@@ -26,14 +26,13 @@ import {
 } from '@/lib/diagrams/local-diagram-changes'
 import { savePendingChangesWhenPageHides } from '@/lib/diagrams/save-pending-changes-when-page-hides'
 import { needsNewThumbnail } from '@/lib/diagrams/thumbnail-health'
-
-type DiagramAutosave = ReturnType<typeof createDiagramAutosave>
+import type { DiagramAutosave, EditorStatus } from '@/types/editor'
 
 export function useBpmnEditor(id: string | undefined) {
   const containerRef = useRef<HTMLDivElement>(null)
   const modelerRef = useRef<BpmnModeler | null>(null)
   const [name, setName] = useState('')
-  const [status, setStatus] = useState<'loading' | 'ready' | 'error'>('loading')
+  const [status, setStatus] = useState<EditorStatus>('loading')
   const [autosaveState, setAutosaveState] = useState<AutosaveState>('idle')
   const [loadRevision, setLoadRevision] = useState(0)
   const discardPendingSaveRef = useRef(false)

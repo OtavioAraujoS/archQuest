@@ -4,14 +4,13 @@ import { Button } from '@/components/ui/button'
 import { ErrorMessage } from '@/components/ui/error-message'
 import { ModalDialog } from '@/components/ui/modal-dialog'
 import { keepLocalVersion, loadCloudVersion } from '@/lib/sync/resolve-conflict'
+import type { ConflictChoice } from '@/types/editor'
 
 interface ConflictDialogProps {
   diagramId: string
   onCloudVersionLoaded: () => void
   onDiagramDeletedInCloud: () => void
 }
-
-type ConflictChoice = 'keep-local' | 'load-cloud'
 
 export function ConflictDialog({
   diagramId,

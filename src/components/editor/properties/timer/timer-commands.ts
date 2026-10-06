@@ -1,22 +1,14 @@
 import type {
-  BpmnFactoryService,
-  ModelingService,
-} from '@/types/diagram-js-services'
+  FormalExpression,
+  TimerCommandServices,
+  TimerEventDefinition,
+  TimerExpression,
+  TimerKind,
+} from '@/types/properties'
 
 import { cycleToIso } from './timer-cycle-and-date'
 import { durationToIso } from './timer-duration'
-import {
-  TIMER_KINDS,
-  type FormalExpression,
-  type TimerEventDefinition,
-  type TimerExpression,
-  type TimerKind,
-} from './timer-event-definition'
-
-export interface TimerCommandServices {
-  modeling: ModelingService
-  bpmnFactory: BpmnFactoryService
-}
+import { TIMER_KINDS } from './timer-event-definition'
 
 const ONE_DAY_MS = 24 * 60 * 60 * 1000
 

@@ -7,13 +7,12 @@ import { ModalDialog } from '@/components/ui/modal-dialog'
 import type { DiagramRecord } from '@/lib/db'
 import { publicDiagramUrl } from '@/lib/sharing/public-link'
 import { publishDiagram, unpublishDiagram } from '@/lib/sharing/publish-diagram'
+import type { SharingChange } from '@/types/editor'
 
 interface ShareDialogProps {
   diagram: DiagramRecord
   onClose: () => void
 }
-
-type SharingChange = 'publishing' | 'unpublishing'
 
 export function ShareDialog({ diagram, onClose }: Readonly<ShareDialogProps>) {
   const [changeInProgress, setChangeInProgress] =

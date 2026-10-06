@@ -1,19 +1,7 @@
 import type { ModelingService } from '@/types/diagram-js-services'
-
-import type {
-  BpmnDefinitions,
-  BpmnMessage,
-  MessageEventDefinition,
-} from './message-event-definition'
+import type { CreateAndAssignMessageContext } from '@/types/properties'
 
 export const CREATE_AND_ASSIGN_MESSAGE = 'archquest.message.createAndAssign'
-
-export interface CreateAndAssignMessageContext {
-  element: unknown
-  definitions: BpmnDefinitions
-  eventDefinition: MessageEventDefinition
-  message: BpmnMessage
-}
 
 export default class CreateAndAssignMessageHandler {
   static readonly $inject = ['modeling']

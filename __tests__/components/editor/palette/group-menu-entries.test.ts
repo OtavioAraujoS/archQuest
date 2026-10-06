@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
 
-import type { TypeOfGateway } from '@/types/pallete'
-
 import { variantMenuEntryKey } from '@/components/editor/palette/group-menu-entries'
-import { PALETTE_GROUPS } from '@/components/editor/palette/groups/index'
 import { GATEWAY_GROUP } from '@/components/editor/palette/groups/gateways'
+import { PALETTE_GROUPS } from '@/components/editor/palette/groups/index'
+import type { TypeOfGateway } from '@/types/palette'
+
 import { setupGroupedPalette } from './palette-test-setup'
 
 const VARIANTS_WITHOUT_INNER_START_EVENT = PALETTE_GROUPS.flatMap((group) =>

@@ -10,6 +10,7 @@ vi.mock('@/lib/spelling/spelling-client', () => ({
 function renderOpenPopover() {
   const replaceWith = vi.fn()
   const onClose = vi.fn()
+  const onAccept = vi.fn()
   render(
     <LabelSpellingPopover
       openSuggestions={{
@@ -18,14 +19,21 @@ function renderOpenPopover() {
         replaceWith,
       }}
       onClose={onClose}
+      onAccept={onAccept}
     />,
   )
-  return { replaceWith, onClose }
+  return { replaceWith, onClose, onAccept }
 }
 
 describe('LabelSpellingPopover', () => {
   it('renders nothing while no suggestions were requested', () => {
-    render(<LabelSpellingPopover openSuggestions={null} onClose={vi.fn()} />)
+    render(
+      <LabelSpellingPopover
+        openSuggestions={null}
+        onClose={vi.fn()}
+        onAccept={vi.fn()}
+      />,
+    )
 
     expect(screen.queryByRole('dialog')).not.toBeInTheDocument()
   })
@@ -36,7 +44,9 @@ describe('LabelSpellingPopover', () => {
     expect(
       screen.getByRole('dialog', { name: 'Ortografia de proceso' }),
     ).toBeVisible()
-    expect(await screen.findByRole('button', { name: 'processo' })).toBeVisible()
+    expect(
+      await screen.findByRole('button', { name: 'processo' }),
+    ).toBeVisible()
     expect(screen.getByRole('button', { name: 'procedo' })).toBeVisible()
   })
 
@@ -46,6 +56,16 @@ describe('LabelSpellingPopover', () => {
     fireEvent.click(await screen.findByRole('button', { name: 'processo' }))
 
     expect(replaceWith).toHaveBeenCalledWith('processo')
+  })
+
+  it('adds the word to the dictionary', () => {
+    const { onAccept } = renderOpenPopover()
+
+    fireEvent.click(
+      screen.getByRole('button', { name: 'Adicionar ao dicionário' }),
+    )
+
+    expect(onAccept).toHaveBeenCalledWith('proceso')
   })
 
   it('never takes the focus away from the label being edited', async () => {

@@ -1,16 +1,8 @@
-interface TextPiece {
-  node: Text
-  start: number
-}
-
-export interface EditableTextSnapshot {
-  text: string
-  pieces: TextPiece[]
-}
-
-interface DocumentTypingCommands {
-  execCommand?: (command: 'insertText', showUI: false, text: string) => boolean
-}
+import type {
+  DocumentTypingCommands,
+  EditableTextSnapshot,
+  TextPiece,
+} from '@/types/spelling'
 
 const BLOCK_ELEMENT_NAMES = new Set(['DIV', 'P'])
 const TEXT_NODE_TYPE = 3

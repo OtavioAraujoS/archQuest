@@ -1,6 +1,6 @@
 import {
-  GROUP_MIN_DIMENSIONS,
   getParticipantResizeConstraints,
+  GROUP_MIN_DIMENSIONS,
   SUB_PROCESS_MIN_DIMENSIONS,
   TEXT_ANNOTATION_MIN_DIMENSIONS,
 } from 'bpmn-js/lib/features/modeling/behavior/ResizeBehavior'
@@ -15,20 +15,12 @@ import {
   isResizableActivity,
 } from '@/components/editor/element-resize/activity-minimum-size'
 import { isOfType } from '@/lib/bpmn/diagram-element-ancestry'
-
+import type { Bounds, EdgeDeltas } from '@/types/geometry'
 import type {
-  Bounds,
   ResizableShape,
   ResizeDirection,
   ResizeService,
-} from './multi-resize-services'
-
-export interface EdgeDeltas {
-  top: number
-  right: number
-  bottom: number
-  left: number
-}
+} from '@/types/resize'
 
 export function measureEdgeDeltas(before: Bounds, after: Bounds): EdgeDeltas {
   return {

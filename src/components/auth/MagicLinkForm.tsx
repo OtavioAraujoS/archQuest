@@ -1,11 +1,10 @@
-import { useState, type SubmitEvent } from 'react'
+import { type SubmitEvent, useState } from 'react'
 
 import { Button } from '@/components/ui/button'
 import { ErrorMessage } from '@/components/ui/error-message'
 import { Input } from '@/components/ui/input'
 import { sendMagicLink } from '@/lib/auth/auth-actions'
-
-type MagicLinkStatus = 'idle' | 'sending' | 'sent' | 'failed'
+import type { MagicLinkStatus } from '@/types/auth'
 
 export function MagicLinkForm() {
   const [email, setEmail] = useState('')

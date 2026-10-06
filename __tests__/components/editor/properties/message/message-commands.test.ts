@@ -7,10 +7,7 @@ import {
   assignMessageToEvent,
   createMessageForEvent,
 } from '@/components/editor/properties/message/message-commands'
-import type {
-  BpmnMessage,
-  MessageEventDefinition,
-} from '@/components/editor/properties/message/message-event-definition'
+import type { BpmnMessage, MessageEventDefinition } from '@/types/properties'
 
 const eventShape = { id: 'Event_1' }
 const existingMessage = {

@@ -1,6 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import { isFileSystemAccessSupported } from '@/lib/file-system/file-system-support'
+
 import { installFilePickers } from './fake-file-handle'
 
 describe('isFileSystemAccessSupported', () => {
@@ -21,7 +22,10 @@ describe('isFileSystemAccessSupported', () => {
   })
 
   it('is true when both pickers exist, as in Chromium browsers', () => {
-    installFilePickers({ showOpenFilePicker: vi.fn(), showSaveFilePicker: vi.fn() })
+    installFilePickers({
+      showOpenFilePicker: vi.fn(),
+      showSaveFilePicker: vi.fn(),
+    })
 
     expect(isFileSystemAccessSupported()).toBe(true)
   })

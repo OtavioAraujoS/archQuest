@@ -1,9 +1,6 @@
 import { vi } from 'vitest'
 
-import type {
-  LabeledElement,
-  SpellingOverlay,
-} from '@/components/editor/spelling/spelling-services'
+import type { LabeledElement, SpellingOverlay } from '@/types/spelling'
 
 type Listener = (event: never) => void
 
@@ -40,11 +37,13 @@ export function createFakeOverlays() {
 
   return {
     addedOverlays,
-    add: vi.fn((element: LabeledElement, _type: string, overlay: SpellingOverlay) => {
-      const overlayId = `overlay-${nextOverlayNumber++}`
-      addedOverlays.set(overlayId, { element, overlay })
-      return overlayId
-    }),
+    add: vi.fn(
+      (element: LabeledElement, _type: string, overlay: SpellingOverlay) => {
+        const overlayId = `overlay-${nextOverlayNumber++}`
+        addedOverlays.set(overlayId, { element, overlay })
+        return overlayId
+      },
+    ),
     remove: vi.fn((overlayId: string) => {
       addedOverlays.delete(overlayId)
     }),

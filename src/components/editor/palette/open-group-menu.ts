@@ -3,9 +3,9 @@ import type {
   MenuPosition,
   PopupMenuService,
 } from '@/types/diagram-js-services'
+import type { PaletteGroup } from '@/types/palette'
 
 import { groupMenuId } from './group-menu-entries'
-import type { PaletteGroup } from './palette-group'
 
 const MENU_OFFSET_FROM_BUTTON = 8
 

@@ -1,10 +1,7 @@
 import { Bold, Italic, type LucideIcon, Underline } from 'lucide-react'
 
 import { Button } from '@/components/ui/button'
-
-import type { TextStyle } from '../text-style'
-
-type TextFormat = 'bold' | 'italic' | 'underline'
+import type { TextFormat, TextStyle } from '@/types/editor'
 
 const TEXT_FORMAT_BUTTONS = [
   { format: 'bold', label: 'Negrito', Icon: Bold },

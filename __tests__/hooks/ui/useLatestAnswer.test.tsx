@@ -1,7 +1,7 @@
 import { act, renderHook } from '@testing-library/react'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
-import { useLatestAnswer } from '@/hooks/spelling/useLatestAnswer'
+import { useLatestAnswer } from '@/hooks/ui/useLatestAnswer'
 
 const PAUSE_BEFORE_ASKING_MS = 200
 

@@ -1,6 +1,6 @@
 import { useLiveQuery } from 'dexie-react-hooks'
-import { useEffect, useState } from 'react'
 
+import { useLatestAnswer } from '@/hooks/ui/useLatestAnswer'
 import { useCurrentDiagramOwnerId } from '@/lib/diagrams/diagram-owner'
 import {
   listAccountDiagrams,
@@ -8,27 +8,20 @@ import {
 } from '@/lib/diagrams/diagram-lists'
 import { pullAccountDiagrams } from '@/lib/diagrams/pull-account-diagrams'
 import { pullAccountFolders } from '@/lib/folders/cached-folders'
+import type { CloudPullStatus } from '@/types/library'
 
-export type CloudPullStatus = 'pulling' | 'pulled' | 'failed'
-
-interface FinishedCloudPull {
-  ownerId: string
-  succeeded: boolean
-}
-
-function cloudPullStatusFor(
-  ownerId: string | null,
-  finishedPull: FinishedCloudPull | null,
-): CloudPullStatus {
-  if (finishedPull?.ownerId !== ownerId) return 'pulling'
-  return finishedPull.succeeded ? 'pulled' : 'failed'
+function pullFromCloud(ownerId: string): Promise<CloudPullStatus> {
+  if (!ownerId) return Promise.resolve('pulling')
+  pullAccountFolders(ownerId).catch(() => undefined)
+  return pullAccountDiagrams(ownerId).then(
+    () => 'pulled',
+    () => 'failed',
+  )
 }
 
 export function useLibraryDiagrams() {
   const ownerId = useCurrentDiagramOwnerId()
-  const [finishedPull, setFinishedPull] = useState<FinishedCloudPull | null>(
-    null,
-  )
+  const cloudPull = useLatestAnswer(ownerId ?? '', pullFromCloud)
 
   const accountDiagrams = useLiveQuery(
     () => (ownerId ? listAccountDiagrams(ownerId) : Promise.resolve([])),
@@ -36,26 +29,10 @@ export function useLibraryDiagrams() {
   )
   const guestDiagrams = useLiveQuery(listGuestDiagrams)
 
-  useEffect(() => {
-    if (!ownerId) return
-    let isCancelled = false
-    const finishPull = (succeeded: boolean) => {
-      if (!isCancelled) setFinishedPull({ ownerId, succeeded })
-    }
-    pullAccountFolders(ownerId).catch(() => undefined)
-    pullAccountDiagrams(ownerId).then(
-      () => finishPull(true),
-      () => finishPull(false),
-    )
-    return () => {
-      isCancelled = true
-    }
-  }, [ownerId])
-
   return {
     ownerId,
     accountDiagrams,
     guestDiagrams,
-    cloudPullStatus: cloudPullStatusFor(ownerId, finishedPull),
+    cloudPullStatus: cloudPull?.answer ?? 'pulling',
   }
 }
