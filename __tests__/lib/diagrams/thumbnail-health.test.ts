@@ -13,6 +13,15 @@ describe('needsNewThumbnail', () => {
     ).toBe(true)
   })
 
+  it('asks again for a thumbnail saved with a broken XML declaration', () => {
+    const declaration = '<?xml version="1.0" encoding="utf-8"?>'
+    expect(
+      needsNewThumbnail(
+        `${declaration}\n${declaration}<svg width="420" height="180">`,
+      ),
+    ).toBe(true)
+  })
+
   it('keeps a thumbnail that shows the diagram', () => {
     expect(
       needsNewThumbnail('<svg width="420" height="180" viewBox="0 0 420 180">'),
