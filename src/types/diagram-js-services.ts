@@ -63,3 +63,16 @@ export interface EventBusService {
 export interface PrioritizedEventBusService {
   on(event: string, priority: number, callback: (event: never) => void): void
 }
+
+export interface MouseService {
+  getLastMoveEvent(): MouseEvent
+}
+
+export interface ContextPadPosition {
+  left?: number
+  top?: number
+}
+
+export interface ContextPadPositioning {
+  _getPosition(target: unknown): ContextPadPosition
+}
