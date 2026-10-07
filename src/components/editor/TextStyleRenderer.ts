@@ -3,6 +3,7 @@ import BaseRenderer from 'diagram-js/lib/draw/BaseRenderer'
 import { attr as svgAttr, select as svgSelect } from 'tiny-svg'
 
 import { makeColorsReadable } from '@/lib/bpmn/readable-colors'
+import { themedDefaultColors } from '@/lib/diagram-colors'
 import { isDarkThemeActive } from '@/lib/theme'
 import type { EventBusService } from '@/types/diagram-js-services'
 
@@ -34,7 +35,7 @@ export default class TextStyleRenderer extends BaseRenderer {
     // @ts-expect-error delegating to the wrapped renderer's own signature
     const gfx = this.bpmnRenderer.drawShape(parentNode, element, attrs)
     applyTextStyle(parentNode, element)
-    makeColorsReadable(parentNode, isDarkThemeActive())
+    makeColorsReadable(parentNode, themedDefaultColors(isDarkThemeActive()))
     return gfx
   }
 
@@ -42,7 +43,7 @@ export default class TextStyleRenderer extends BaseRenderer {
     // @ts-expect-error delegating to the wrapped renderer's own signature
     const gfx = this.bpmnRenderer.drawConnection(parentNode, element, attrs)
     applyTextStyle(parentNode, element)
-    makeColorsReadable(parentNode, isDarkThemeActive())
+    makeColorsReadable(parentNode, themedDefaultColors(isDarkThemeActive()))
     return gfx
   }
 

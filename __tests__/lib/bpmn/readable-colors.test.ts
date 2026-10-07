@@ -5,6 +5,7 @@ import {
   makeColorsReadable,
   readableColor,
 } from '@/lib/bpmn/readable-colors'
+import { DARK_CANVAS_COLORS, LIGHT_PAPER_COLORS } from '@/lib/diagram-colors'
 import type { Rgb } from '@/types/editor'
 
 const WHITE_PAPER = '#ffffff'
@@ -68,7 +69,7 @@ describe('makeColorsReadable', () => {
       <circle class="outline" style="stroke: rgb(255, 255, 255); fill: rgb(255, 255, 255)" />
       <path class="icon" style="fill: rgb(255, 255, 255); stroke: var(--bpmn-shape-fill)" />`)
 
-    makeColorsReadable(gfx, false)
+    makeColorsReadable(gfx, LIGHT_PAPER_COLORS)
 
     expect(styleOf(gfx, '.outline', 'stroke')).not.toBe('rgb(255, 255, 255)')
     expect(styleOf(gfx, '.icon', 'fill')).toBe(
@@ -81,7 +82,7 @@ describe('makeColorsReadable', () => {
       `<rect style="stroke: rgb(255, 0, 0); fill: rgb(255, 255, 255)" />`,
     )
 
-    makeColorsReadable(gfx, false)
+    makeColorsReadable(gfx, LIGHT_PAPER_COLORS)
 
     expect(styleOf(gfx, 'rect', 'fill')).toBe('rgb(255, 255, 255)')
   })
@@ -89,7 +90,7 @@ describe('makeColorsReadable', () => {
   it('lightens a black outline on the dark theme', () => {
     const gfx = drawnElement(`<rect style="stroke: rgb(0, 0, 0)" />`)
 
-    makeColorsReadable(gfx, true)
+    makeColorsReadable(gfx, DARK_CANVAS_COLORS)
 
     expect(styleOf(gfx, 'rect', 'stroke')).not.toBe('rgb(0, 0, 0)')
   })
@@ -99,10 +100,22 @@ describe('makeColorsReadable', () => {
       `<text style="fill: #ffffff !important">Evento</text>`,
     )
 
-    makeColorsReadable(gfx, false)
+    makeColorsReadable(gfx, LIGHT_PAPER_COLORS)
 
     const text = gfx.querySelector<SVGElement>('text')!
     expect(text.style.getPropertyValue('fill')).not.toBe('#ffffff')
     expect(text.style.getPropertyPriority('fill')).toBe('important')
+  })
+
+  it('brings the chosen color back when the theme no longer needs a fix', () => {
+    const gfx = drawnElement(`<rect style="stroke: rgb(0, 0, 0)" />`)
+
+    makeColorsReadable(gfx, DARK_CANVAS_COLORS)
+    makeColorsReadable(gfx, LIGHT_PAPER_COLORS)
+
+    expect(styleOf(gfx, 'rect', 'stroke')).toBe('rgb(0, 0, 0)')
+    expect(
+      gfx.querySelector('rect')!.hasAttribute('data-original-stroke'),
+    ).toBe(false)
   })
 })

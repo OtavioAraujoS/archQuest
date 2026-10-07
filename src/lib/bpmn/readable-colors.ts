@@ -1,5 +1,4 @@
-import { themedDefaultColors } from '@/lib/diagram-colors'
-import type { Rgb } from '@/types/editor'
+import type { CanvasColors, Rgb } from '@/types/editor'
 
 const MIN_SHAPE_CONTRAST = 3
 const MIN_TEXT_CONTRAST = 4.5
@@ -55,31 +54,72 @@ export function readableColor(
   return `rgb(${inkRgb.join(', ')})`
 }
 
-export function makeColorsReadable(gfx: SVGElement, isDarkTheme: boolean) {
-  const { fill: canvas, stroke: ink } = themedDefaultColors(isDarkTheme)
+function originalColor(node: SVGElement, property: 'stroke' | 'fill') {
+  return (
+    node.getAttribute(`data-original-${property}`) ??
+    node.style.getPropertyValue(property)
+  )
+}
+
+function paintReadable(
+  node: SVGElement,
+  property: 'stroke' | 'fill',
+  readable: string | null,
+) {
+  const original = originalColor(node, property)
+  const priority = node.style.getPropertyPriority(property)
+  if (readable) node.setAttribute(`data-original-${property}`, original)
+  else node.removeAttribute(`data-original-${property}`)
+  node.style.setProperty(property, readable ?? original, priority)
+}
+
+export function makeColorsReadable(
+  gfx: Element,
+  { fill: canvas, stroke: ink }: CanvasColors,
+) {
   const nodes = [...gfx.querySelectorAll<SVGElement>('*')]
   const strokeColors = new Set<string>()
 
   for (const node of nodes) {
-    const stroke = node.style.getPropertyValue('stroke')
+    const stroke = originalColor(node, 'stroke')
     const readable = readableColor(stroke, canvas, ink, MIN_SHAPE_CONTRAST)
-    if (!readable) continue
-    strokeColors.add(stroke)
-    node.style.setProperty('stroke', readable)
+    if (readable) strokeColors.add(stroke)
+    if (readable || node.hasAttribute('data-original-stroke')) {
+      paintReadable(node, 'stroke', readable)
+    }
   }
 
-  for (const node of nodes) {
-    const fill = node.style.getPropertyValue('fill')
-    const isText = node.tagName.toLowerCase() === 'text'
-    if (!isText && !strokeColors.has(fill)) continue
-    const minContrast = isText ? MIN_TEXT_CONTRAST : MIN_SHAPE_CONTRAST
-    const readable = readableColor(fill, canvas, ink, minContrast)
-    if (readable) {
-      node.style.setProperty(
-        'fill',
-        readable,
-        node.style.getPropertyPriority('fill'),
-      )
+  const isText = (node: SVGElement) => node.tagName.toLowerCase() === 'text'
+  const isOutlineColored = (node: SVGElement) =>
+    isText(node) || strokeColors.has(originalColor(node, 'fill'))
+
+  for (const node of nodes.filter(isOutlineColored)) {
+    const minContrast = isText(node) ? MIN_TEXT_CONTRAST : MIN_SHAPE_CONTRAST
+    const readable = readableColor(
+      originalColor(node, 'fill'),
+      canvas,
+      ink,
+      minContrast,
+    )
+    if (readable || node.hasAttribute('data-original-fill')) {
+      paintReadable(node, 'fill', readable)
+    }
+  }
+
+  const label = nodes.find(isText)
+  const labelColor = label?.style.getPropertyValue('fill')
+  const textColor = labelColor?.startsWith('var(') ? ink : labelColor
+  for (const node of nodes.filter((node) => !isOutlineColored(node))) {
+    const readable = textColor
+      ? readableColor(
+          originalColor(node, 'fill'),
+          textColor,
+          canvas,
+          MIN_TEXT_CONTRAST,
+        )
+      : null
+    if (readable || node.hasAttribute('data-original-fill')) {
+      paintReadable(node, 'fill', readable)
     }
   }
 }

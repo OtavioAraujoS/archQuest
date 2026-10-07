@@ -22,6 +22,11 @@ export type TranslationReplacements = Record<string, string>
 
 export type Rgb = [number, number, number]
 
+export interface CanvasColors {
+  fill: string
+  stroke: string
+}
+
 export interface TextStyle {
   bold: boolean
   italic: boolean
