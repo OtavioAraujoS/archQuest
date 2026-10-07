@@ -56,10 +56,10 @@ describe('useBpmnEditor loading', () => {
     })
   })
 
-  it('keeps loading when the diagram does not exist', async () => {
+  it('leaves the loading state when the diagram does not exist', async () => {
     renderBpmnEditor('missing')
 
-    await waitForEditorStatus('loading')
+    await waitForEditorStatus('error')
     expect(fakeModeler.importXML).not.toHaveBeenCalled()
   })
 
