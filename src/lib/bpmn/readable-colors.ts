@@ -89,13 +89,34 @@ export function makeColorsReadable(
     }
   }
 
-  for (const node of nodes) {
-    const fill = originalColor(node, 'fill')
-    const isText = node.tagName.toLowerCase() === 'text'
-    const isOutlineColor = isText || strokeColors.has(fill)
-    const minContrast = isText ? MIN_TEXT_CONTRAST : MIN_SHAPE_CONTRAST
-    const readable = isOutlineColor
-      ? readableColor(fill, canvas, ink, minContrast)
+  const isText = (node: SVGElement) => node.tagName.toLowerCase() === 'text'
+  const isOutlineColored = (node: SVGElement) =>
+    isText(node) || strokeColors.has(originalColor(node, 'fill'))
+
+  for (const node of nodes.filter(isOutlineColored)) {
+    const minContrast = isText(node) ? MIN_TEXT_CONTRAST : MIN_SHAPE_CONTRAST
+    const readable = readableColor(
+      originalColor(node, 'fill'),
+      canvas,
+      ink,
+      minContrast,
+    )
+    if (readable || node.hasAttribute('data-original-fill')) {
+      paintReadable(node, 'fill', readable)
+    }
+  }
+
+  const label = nodes.find(isText)
+  const labelColor = label?.style.getPropertyValue('fill')
+  const textColor = labelColor?.startsWith('var(') ? ink : labelColor
+  for (const node of nodes.filter((node) => !isOutlineColored(node))) {
+    const readable = textColor
+      ? readableColor(
+          originalColor(node, 'fill'),
+          textColor,
+          canvas,
+          MIN_TEXT_CONTRAST,
+        )
       : null
     if (readable || node.hasAttribute('data-original-fill')) {
       paintReadable(node, 'fill', readable)
