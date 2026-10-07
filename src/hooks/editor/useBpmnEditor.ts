@@ -76,7 +76,8 @@ export function useBpmnEditor(id: string | undefined) {
 
     async function load() {
       const record = await findDiagram(id!)
-      if (!record || cancelled) return
+      if (cancelled) return
+      if (!record) return setStatus('error')
       setName(record.name)
       await modeler.importXML(record.bpmnXml)
       if (cancelled) return
